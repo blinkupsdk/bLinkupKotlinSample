@@ -3,4 +3,26 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_activity_user_list" />
+    <string name="title_activity_friend_list" />
+    <string name="search_for_friends" />
+    <string name="Friends" />
+    <string name="friend_requests">\n</string>
+    <string name="update_user_info" />
+    <string name="places" />
+    <string name="presence_tests" />
+    <string name="search_for_users" />
+    <string name="search" />
+    <string name="toggle_friends_nearby" />
+    <string name="blinkup_logo" />
+    <string name="submit" />
+    <string name="enter_your_phone_number" />
+    <string name="check_presence" />
+    <string name="make_presence_true" />
+    <string name="make_presence_false" />
+    <string name="enter_your_six_digit_passcode" />
+    <string name="delete_friend" />
+    <string name="accept" />
+    <string name="deny" />
+    <string name="add_friend" />
 </resources>

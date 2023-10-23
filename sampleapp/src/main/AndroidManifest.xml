@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -8,10 +12,41 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SampleApp">
+
+        <receiver
+            android:name="com.blinkupapp.sdk.data.geofence.GeofenceBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".PresenceTest"
+            android:exported="false" />
+        <activity
+            android:name=".VenueMapActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ButtonsPage"
+            android:exported="false" />
+        <activity
+            android:name=".RequestList"
+            android:exported="false" />
+        <activity
+            android:name=".UpdateUser"
+            android:exported="false" />
+        <activity
+            android:name=".FriendList"
+            android:exported="false"
+            android:label="@string/title_activity_friend_list" />
+        <activity
+            android:name=".FindUsers"
+            android:exported="false"
+            android:label="@string/title_activity_user_list" />
+        <activity
+            android:name=".SubmitPasscode"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

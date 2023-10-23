@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.blinkupnewmodule'
+    namespace 'com.example.sampleapp'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.blinkupnewmodule"
+        applicationId "com.example.sampleapp"
         minSdk 24
         targetSdk 33
         versionCode 1
