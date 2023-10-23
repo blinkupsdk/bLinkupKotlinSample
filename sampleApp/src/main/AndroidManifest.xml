@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.BLinkupSDKKotlin">
+
+        <receiver
+            android:name="com.blinkupapp.sdk.data.geofence.GeofenceBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name="com.blinkup.sampleapp.PresenceTest"
+            android:exported="false" />
+        <activity
+            android:name="com.blinkup.sampleapp.VenueMapActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.blinkup.sampleapp.ButtonsPage"
+            android:exported="false" />
+        <activity
+            android:name="com.blinkup.sampleapp.RequestList"
+            android:exported="false" />
+        <activity
+            android:name="com.blinkup.sampleapp.UpdateUser"
+            android:exported="false" />
+        <activity
+            android:name="com.blinkup.sampleapp.FriendList"
+            android:exported="false"
+            android:label="@string/title_activity_friend_list"
+            android:theme="@style/Theme.BLinkupSDKKotlin" />
+        <activity
+            android:name="com.blinkup.sampleapp.FindUsers"
+            android:exported="false"
+            android:label="@string/title_activity_user_list"
+            android:theme="@style/Theme.BLinkupSDKKotlin" />
+        <activity
+            android:name="com.blinkup.sampleapp.SubmitPasscode"
+            android:exported="false" />
+        <activity
+            android:name="com.blinkup.sampleapp.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
