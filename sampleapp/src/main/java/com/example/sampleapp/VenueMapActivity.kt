@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.view.VenueMapView
-import com.example.blinkupnewmodule.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

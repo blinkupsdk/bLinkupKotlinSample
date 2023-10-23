@@ -10,7 +10,6 @@ import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.Blinkup.Companion.getEvents
 import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.Place
-import com.example.blinkupnewmodule.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

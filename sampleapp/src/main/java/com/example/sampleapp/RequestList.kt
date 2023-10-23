@@ -11,7 +11,6 @@ import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.ConnectionRequest
 import com.blinkupapp.sdk.data.model.User
-import com.example.blinkupnewmodule.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

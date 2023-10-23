@@ -7,7 +7,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkupapp.sdk.data.model.User
-import com.example.blinkupnewmodule.R
 
 class UserListAdapter(
     private val data: List<User>,

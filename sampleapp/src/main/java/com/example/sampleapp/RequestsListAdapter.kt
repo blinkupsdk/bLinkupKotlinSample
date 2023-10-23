@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkupapp.sdk.data.model.ConnectionRequest
 import com.blinkupapp.sdk.data.model.User
-import com.example.blinkupnewmodule.R
 
 class RequestsListAdapter(
     var data: List<ConnectionRequest>,
