@@ -69,4 +69,5 @@
     <string name="check_presence">Check Presence</string>
     <string name="presence_tests">Presence tests</string>
     <string name="presence_tests_header">Presence Tests</string>
+    <string name="search_contacts">Search Contacts</string>
 </resources>
