@@ -32,40 +32,40 @@ class SearchContacts : AppCompatActivity() {
         userId = User()
         manager = LinearLayoutManager(this)
 
-        loading.visibility = View.VISIBLE
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-
-                contactList = Blinkup.findContacts()
-                userId = Blinkup.checkSessionAndLogin()
-
-                launch(Dispatchers.Main) {
-                    loading.visibility = View.GONE
-                }
-
-                launch(Dispatchers.Main) {
-                    myAdapter = SearchContactsAdapter(contactList, userId, object : OnSendContactRequestListener {
-                        override fun onSendRequest(user: User) {
-                            lifecycleScope.launch(Dispatchers.IO) {
-                                try {
-                                    Blinkup.sendFriendRequest(user)
-                                } catch (e: BlinkupException) {
-                                    Log.e("deleteConnection", "failed to run requestCode", e)
-                                }
-                            }
-                        }
-                    })
-                    recyclerView = findViewById<RecyclerView>(R.id.friends_list).apply {
-                        layoutManager = manager
-                        adapter = myAdapter
-                    }
-                }
-
-            } catch (e: BlinkupException) {
-                Log.e("FriendList", "failed to run getFriendsList", e)
-                return@launch
-            }
-        }
+//        loading.visibility = View.VISIBLE
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            try {
+//
+//                contactList = Blinkup.findContacts()
+//                userId = Blinkup.checkSessionAndLogin()
+//
+//                launch(Dispatchers.Main) {
+//                    loading.visibility = View.GONE
+//                }
+//
+//                launch(Dispatchers.Main) {
+//                    myAdapter = SearchContactsAdapter(contactList, userId, object : OnSendContactRequestListener {
+//                        override fun onSendRequest(user: User) {
+//                            lifecycleScope.launch(Dispatchers.IO) {
+//                                try {
+//                                    Blinkup.sendFriendRequest(user)
+//                                } catch (e: BlinkupException) {
+//                                    Log.e("deleteConnection", "failed to run requestCode", e)
+//                                }
+//                            }
+//                        }
+//                    })
+//                    recyclerView = findViewById<RecyclerView>(R.id.friends_list).apply {
+//                        layoutManager = manager
+//                        adapter = myAdapter
+//                    }
+//                }
+//
+//            } catch (e: BlinkupException) {
+//                Log.e("FriendList", "failed to run getFriendsList", e)
+//                return@launch
+//            }
+//        }
     }
 }
 
