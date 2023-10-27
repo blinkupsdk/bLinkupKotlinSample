@@ -3,6 +3,7 @@ package com.example.sampleapp
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,6 +55,7 @@ class RequestList : AppCompatActivity() {
                                     launch(Dispatchers.Main) {
                                         myAdapter.data = requestList
                                         myAdapter.notifyDataSetChanged()
+                                        Toast.makeText(this@RequestList, "Request Accepted", Toast.LENGTH_LONG).show()
                                         loading.visibility = View.GONE
                                     }
                                 } catch (e: BlinkupException) {
@@ -73,6 +75,7 @@ class RequestList : AppCompatActivity() {
                                         launch(Dispatchers.Main) {
                                             myAdapter.data = requestList
                                             myAdapter.notifyDataSetChanged()
+                                            Toast.makeText(this@RequestList, "Request Denied", Toast.LENGTH_LONG).show()
                                             loading.visibility = View.GONE
                                         }
                                     } catch (e: BlinkupException) {
@@ -92,6 +95,7 @@ class RequestList : AppCompatActivity() {
                                         launch(Dispatchers.Main) {
                                             myAdapter.data = requestList
                                             myAdapter.notifyDataSetChanged()
+                                            Toast.makeText(this@RequestList, "Request Cancelled", Toast.LENGTH_LONG).show()
                                             loading.visibility = View.GONE
                                         }
                                     } catch (e: BlinkupException) {
