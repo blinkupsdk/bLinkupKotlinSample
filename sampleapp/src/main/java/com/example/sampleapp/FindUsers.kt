@@ -60,7 +60,12 @@ class FindUsers : AppCompatActivity() {
                                             loading.visibility = View.GONE
                                         }
                                     } catch (e: BlinkupException) {
-                                        Log.e("deleteConnection", "failed to run requestCode", e)
+                                        Log.e("sendFriendRequest", "failed to run requestCode", e)
+                                        launch(Dispatchers.Main) {
+                                            Toast.makeText(this@FindUsers, "Already friends", Toast.LENGTH_LONG).show()
+                                            loading.visibility = View.GONE
+                                        }
+
                                     }
                                 }
                             }
