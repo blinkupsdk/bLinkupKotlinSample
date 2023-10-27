@@ -60,6 +60,9 @@ class RequestList : AppCompatActivity() {
                                     }
                                 } catch (e: BlinkupException) {
                                     Log.e("deleteConnection", "failed to run requestCode", e)
+                                    launch(Dispatchers.Main) {
+                                        loading.visibility = View.GONE
+                                    }
                                 }
                             }
                         }
