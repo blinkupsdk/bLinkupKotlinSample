@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,9 +51,14 @@ class FindUsers : AppCompatActivity() {
                     launch(Dispatchers.Main) {
                         myAdapter = UserListAdapter(searchList, object : OnSendRequestListener {
                             override fun onSendRequest(user: User) {
+                                loading.visibility = View.VISIBLE
                                 lifecycleScope.launch(Dispatchers.IO) {
                                     try {
                                         Blinkup.sendFriendRequest(user)
+                                        launch(Dispatchers.Main) {
+                                            Toast.makeText(this@FindUsers, "Request Sent", Toast.LENGTH_LONG).show()
+                                            loading.visibility = View.GONE
+                                        }
                                     } catch (e: BlinkupException) {
                                         Log.e("deleteConnection", "failed to run requestCode", e)
                                     }
