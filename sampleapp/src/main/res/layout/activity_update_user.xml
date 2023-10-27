@@ -38,6 +38,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="25dp"
         android:hint="John"
+        android:gravity="center_horizontal"
         android:ems="10"
         android:inputType="text"/>
 
