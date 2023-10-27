@@ -38,7 +38,7 @@ class UpdateUser : AppCompatActivity() {
                     loading.visibility = View.GONE
                 }
                 withContext(Dispatchers.Main) {
-                    val intent = Intent(this@UpdateUser, FriendList::class.java)
+                    val intent = Intent(this@UpdateUser, ButtonsPage::class.java)
                     startActivity(intent)
                 }
 
