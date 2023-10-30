@@ -3,7 +3,7 @@
     <string name="sign_up">Sign Up</string>
     <string name="login">Log In</string>
     <string name="submit">Submit</string>
-    <string name="toggle_friends_nearby">Toggle Friends Nearby</string>
+    <string name="toggle_friends_at_event">Toggle Friends At Event</string>
     <string name="title_activity_sign_up">SignUp</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -69,4 +69,5 @@
     <string name="check_presence">Check Presence</string>
     <string name="presence_tests">Presence tests</string>
     <string name="presence_tests_header">Presence Tests</string>
+    <string name="friends_at_event">Friends At Event</string>
 </resources>

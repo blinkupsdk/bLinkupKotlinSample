@@ -17,6 +17,7 @@ class ButtonsPage : AppCompatActivity() {
         setContentView(R.layout.activity_buttons_page)
 
         val searchUserButton = findViewById<Button>(R.id.go_to_user_search_button)
+        val friendsAtEventButton = findViewById<Button>(R.id.friends_at_event)
         val friendPage = findViewById<Button>(R.id.go_to_friends)
         val updateUserButton = findViewById<Button>(R.id.update_user_info)
         val friendRequests = findViewById<Button>(R.id.friend_requests)
@@ -37,6 +38,10 @@ class ButtonsPage : AppCompatActivity() {
         }
         friendPage.setOnClickListener {
             val intent = Intent(this@ButtonsPage, FriendList::class.java)
+            startActivity(intent)
+        }
+        friendsAtEventButton.setOnClickListener {
+            val intent = Intent(this@ButtonsPage, FriendsAtEventList::class.java)
             startActivity(intent)
         }
         updateUserButton.setOnClickListener {
