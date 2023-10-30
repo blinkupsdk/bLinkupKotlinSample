@@ -39,8 +39,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-        val API_KEY = com.example.sampleapp.BuildConfig.API_KEY
-        Blinkup.init(API_KEY, this)
+        Blinkup.init("n_I9-4SG2Ec4O9fgMQsYlofv2oBuQAmXgVIlBWmeWOo=", this)
 
         //find loading view by id
         val loading = findViewById<View>(R.id.loading)
