@@ -40,6 +40,10 @@ class FriendList : AppCompatActivity() {
                     Blinkup.getFriendList().filter { it.status == ConnectionStatus.CONNECTED }
                 userId = Blinkup.checkSessionAndLogin()
 
+                val place1 = Blinkup.getEvents()
+                val logcheck = Blinkup.getUsersAtEvent(place1[0])
+                Log.i("test1", "$logcheck")
+
                 launch(Dispatchers.Main) {
                     loading.visibility = View.GONE
                 }
