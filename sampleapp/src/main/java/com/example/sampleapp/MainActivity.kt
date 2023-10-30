@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-        Blinkup.init("vLS3coQflmUxMzzFOCOH9tyzdMLU_5Yi1LjdpG84dzg=", this)
+        Blinkup.init("Ph_yH2e8JRpc0WBKiNNOYUYJs03kNEY3DXh7WIrXlJo=", this)
 
         //find loading view by id
         val loading = findViewById<View>(R.id.loading)
