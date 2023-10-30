@@ -20,15 +20,18 @@ class FriendsAtEventAdapter(
             friendsView = view.findViewById<TextView>(R.id.friends_at_event_item)
         }
 
-        fun bind(user: User) {
+        fun bind(user: User, currentUserId: User) {
             friendsView.text =
                 user.name
+                if (user.id == currentUserId.id) {
+                    friendsView.visibility = View.GONE
+                }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.friend_list_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.friends_at_event_item, parent, false)
         return MyViewHolder(view)
     }
 
@@ -37,7 +40,7 @@ class FriendsAtEventAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(data[position])
+        holder.bind(data[position], userId)
     }
 
 }
