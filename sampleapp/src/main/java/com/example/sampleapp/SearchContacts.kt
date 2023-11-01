@@ -11,6 +11,7 @@ import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.Connection
 import com.blinkupapp.sdk.data.model.Contact
+import com.blinkupapp.sdk.data.model.ContactResult
 import com.blinkupapp.sdk.data.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,7 +21,7 @@ class SearchContacts : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var manager: RecyclerView.LayoutManager
     private lateinit var myAdapter: SearchContactsAdapter
-    private lateinit var contactList: List<Contact>
+    private lateinit var contactList: List<ContactResult>
     private lateinit var userId: User
 
     override fun onCreate(savedInstanceState: Bundle?) {

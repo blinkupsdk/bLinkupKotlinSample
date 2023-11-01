@@ -7,10 +7,11 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkupapp.sdk.data.model.Contact
+import com.blinkupapp.sdk.data.model.ContactResult
 import com.blinkupapp.sdk.data.model.User
 
 class SearchContactsAdapter(
-    val data: List<Contact>,
+    val data: List<ContactResult>,
     val userId: User,
     val onSendContactRequestListener: OnSendContactRequestListener
 ) : RecyclerView.Adapter<SearchContactsAdapter.MyViewHolder>() {
@@ -25,7 +26,7 @@ class SearchContactsAdapter(
             connectButton = view.findViewById(R.id.connect_button)
         }
 
-        fun bind(contact: Contact, userId: User, onSendContactRequestListener: OnSendContactRequestListener) {
+        fun bind(contact: ContactResult, userId: User, onSendContactRequestListener: OnSendContactRequestListener) {
             contactsView.text = "temp"
             connectButton.setOnClickListener {
                 onSendContactRequestListener.onSendRequest(userId)
