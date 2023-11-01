@@ -39,7 +39,7 @@ class SearchContacts : AppCompatActivity() {
 
                 contactList = Blinkup.findContacts()
                 Log.i("findContacts", "contact list: $contactList")
-//                userId = Blinkup.checkSessionAndLogin()
+                userId = Blinkup.checkSessionAndLogin()
 
                 launch(Dispatchers.Main) {
                     loading.visibility = View.GONE
