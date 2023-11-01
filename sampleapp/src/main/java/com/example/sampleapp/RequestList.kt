@@ -3,6 +3,7 @@ package com.example.sampleapp
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,10 +55,14 @@ class RequestList : AppCompatActivity() {
                                     launch(Dispatchers.Main) {
                                         myAdapter.data = requestList
                                         myAdapter.notifyDataSetChanged()
+                                        Toast.makeText(this@RequestList, "Request Accepted", Toast.LENGTH_LONG).show()
                                         loading.visibility = View.GONE
                                     }
                                 } catch (e: BlinkupException) {
                                     Log.e("deleteConnection", "failed to run requestCode", e)
+                                    launch(Dispatchers.Main) {
+                                        loading.visibility = View.GONE
+                                    }
                                 }
                             }
                         }
@@ -73,6 +78,7 @@ class RequestList : AppCompatActivity() {
                                         launch(Dispatchers.Main) {
                                             myAdapter.data = requestList
                                             myAdapter.notifyDataSetChanged()
+                                            Toast.makeText(this@RequestList, "Request Denied", Toast.LENGTH_LONG).show()
                                             loading.visibility = View.GONE
                                         }
                                     } catch (e: BlinkupException) {
@@ -84,6 +90,7 @@ class RequestList : AppCompatActivity() {
                         },
                         object : OnCancelListener {
                             override fun onCancel(connection: ConnectionRequest) {
+                                loading.visibility = View.VISIBLE
                                 lifecycleScope.launch(Dispatchers.IO) {
                                     try {
                                         Blinkup.denyFriendRequest(connection)
@@ -91,6 +98,8 @@ class RequestList : AppCompatActivity() {
                                         launch(Dispatchers.Main) {
                                             myAdapter.data = requestList
                                             myAdapter.notifyDataSetChanged()
+                                            Toast.makeText(this@RequestList, "Request Cancelled", Toast.LENGTH_LONG).show()
+                                            loading.visibility = View.GONE
                                         }
                                     } catch (e: BlinkupException) {
                                         Log.e("deleteConnection", "failed to run requestCode", e)

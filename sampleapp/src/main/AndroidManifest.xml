@@ -13,15 +13,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SampleApp">
-        <activity
-            android:name=".SearchContacts"
-            android:exported="false" />
 
         <receiver
             android:name="com.blinkupapp.sdk.data.geofence.GeofenceBroadcastReceiver"
             android:enabled="true"
             android:exported="true" />
 
+        <activity
+            android:name=".SearchContacts"
+            android:exported="false" />
+        <activity
+            android:name=".FriendsAtEventList"
+            android:exported="false" />
         <activity
             android:name=".PresenceTest"
             android:exported="false" />
