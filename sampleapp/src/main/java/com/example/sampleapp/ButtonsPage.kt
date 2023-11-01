@@ -23,6 +23,7 @@ class ButtonsPage : AppCompatActivity() {
         val friendRequests = findViewById<Button>(R.id.friend_requests)
         val blinkMap = findViewById<Button>(R.id.places)
         val presenceTest = findViewById<Button>(R.id.presence_test)
+        val searchContacts = findViewById<Button>(R.id.search_contacts)
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -58,6 +59,10 @@ class ButtonsPage : AppCompatActivity() {
         }
         presenceTest.setOnClickListener {
             val intent = Intent(this@ButtonsPage, PresenceTest::class.java)
+            startActivity(intent)
+        }
+        searchContacts.setOnClickListener {
+            val intent = Intent(this@ButtonsPage, SearchContacts::class.java)
             startActivity(intent)
         }
     }

@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         PermissionX.init(this)
-            .permissions(Manifest.permission.ACCESS_FINE_LOCATION)
+            .permissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_CONTACTS)
             .request { allGranted, grantedList, deniedList ->
                 if (allGranted) {
                     Toast.makeText(this, "All permissions are granted", Toast.LENGTH_LONG).show()
