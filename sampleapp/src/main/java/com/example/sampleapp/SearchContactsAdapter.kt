@@ -27,7 +27,7 @@ class SearchContactsAdapter(
         }
 
         fun bind(contact: ContactResult, userId: User, onSendContactRequestListener: OnSendContactRequestListener) {
-            contactsView.text = "temp"
+            contactsView.text = contact.name
             connectButton.setOnClickListener {
                 onSendContactRequestListener.onSendRequest(userId)
             }
