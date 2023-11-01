@@ -72,4 +72,5 @@
     <string name="search_contacts">Search Contacts</string>
     <string name="contacts">Contacts</string>
     <string name="friends_at_event">Friends At Event</string>
+    <string name="choose_event">Choose Event</string>
 </resources>
