@@ -57,7 +57,7 @@ class SearchContacts : AppCompatActivity() {
                             }
                         }
                     })
-                    recyclerView = findViewById<RecyclerView>(R.id.friends_list).apply {
+                    recyclerView = findViewById<RecyclerView>(R.id.contacts).apply {
                         layoutManager = manager
                         adapter = myAdapter
                     }
