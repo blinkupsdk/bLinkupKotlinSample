@@ -33,8 +33,6 @@ class VenueMapActivity : AppCompatActivity() {
                 eventNames.add(name)
             }
 
-
-
             launch(Dispatchers.Main) {
                 val arrayAdp = ArrayAdapter(this@VenueMapActivity, android.R.layout.simple_spinner_dropdown_item, eventNames)
                 spinnerId.adapter = arrayAdp
