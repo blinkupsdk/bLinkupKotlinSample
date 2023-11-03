@@ -19,6 +19,8 @@ class SubmitPasscode : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_submit_passcode)
 
+        var userInfo: String?
+
         val loading = findViewById<View>(R.id.loading)
 
         val submitPasscodeButton = findViewById<Button>(R.id.submit_passcode_button)
@@ -28,6 +30,7 @@ class SubmitPasscode : AppCompatActivity() {
                 val passcode = findViewById<EditText>(R.id.submit_signup_passcode).text.toString()
                 try {
                     val user = Blinkup.confirmCode(passcode)
+                    userInfo = Blinkup.checkSessionAndLogin().name
                     Log.i("user", "${user.phoneNumber}")
                 } catch (e: BlinkupException) {
                     Log.e("confirmCode", "failed to run confirmCode", e)
@@ -37,7 +40,8 @@ class SubmitPasscode : AppCompatActivity() {
                     loading.visibility = View.GONE
                 }
                 withContext(Dispatchers.Main) {
-                    val intent = Intent(this@SubmitPasscode, ButtonsPage::class.java)
+
+                    val intent = if (userInfo == null) Intent(this@SubmitPasscode, UpdateUser::class.java) else Intent(this@SubmitPasscode, ButtonsPage::class.java)
                     startActivity(intent)
                 }
             }
