@@ -36,7 +36,7 @@
         android:text="@string/friends_at_event"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/presence_test"
+        app:layout_constraintTop_toBottomOf="@+id/go_to_friends"
         tools:ignore="MissingConstraints" />
 
     <Button
@@ -47,7 +47,7 @@
         android:text="@string/friend_requests"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/go_to_friends"
+        app:layout_constraintTop_toBottomOf="@+id/friends_at_event"
         tools:ignore="MissingConstraints" />
 
     <Button
