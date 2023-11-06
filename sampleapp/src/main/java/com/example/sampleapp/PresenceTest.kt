@@ -2,6 +2,7 @@ package com.example.sampleapp
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -18,9 +19,14 @@ class PresenceTest : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_presence_test)
 
+        val loading = findViewById<View>(R.id.loading)
         val checkPresenceTest = findViewById<Button>(R.id.check_presence)
         val isPresent = findViewById<Button>(R.id.is_present)
         val isNotPresent = findViewById<Button>(R.id.is_not_present)
+
+        loading.visibility = View.VISIBLE
+
+
 
         checkPresenceTest.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
