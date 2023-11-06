@@ -3,7 +3,10 @@ package com.example.sampleapp
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -20,12 +23,46 @@ class PresenceTest : AppCompatActivity() {
         setContentView(R.layout.activity_presence_test)
 
         val loading = findViewById<View>(R.id.loading)
+        val spinnerId = findViewById<Spinner>(R.id.dropdown_menu)
         val checkPresenceTest = findViewById<Button>(R.id.check_presence)
         val isPresent = findViewById<Button>(R.id.is_present)
         val isNotPresent = findViewById<Button>(R.id.is_not_present)
 
         loading.visibility = View.VISIBLE
 
+        lifecycleScope.launch(Dispatchers.IO) {
+            val places = Blinkup.getEvents()
+
+            val eventNames = ArrayList<String>()
+
+            for (name in places) {
+                val name = name.name!!
+                eventNames.add(name)
+            }
+
+            launch(Dispatchers.Main) {
+                val arrayAdp = ArrayAdapter(this@PresenceTest, android.R.layout.simple_spinner_dropdown_item, eventNames)
+                spinnerId.adapter = arrayAdp
+
+                spinnerId?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        map.place = places[position]
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        TODO("Not yet implemented")
+                    }
+                }
+
+            }
+
+        }
 
 
         checkPresenceTest.setOnClickListener {
