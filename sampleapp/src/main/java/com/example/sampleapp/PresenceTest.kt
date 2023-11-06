@@ -67,6 +67,9 @@ class PresenceTest : AppCompatActivity() {
                                         }
                                     } catch (e: BlinkupException) {
                                         Log.e("isAtEvent", "failed to run isUserAtEvent", e)
+                                        launch(Dispatchers.Main) {
+                                            loading.visibility = View.GONE
+                                        }
                                         return@launch
                                     }
                                 }
@@ -85,6 +88,9 @@ class PresenceTest : AppCompatActivity() {
                                         }
                                     } catch (e: BlinkupException) {
                                         Log.e("isAtEvent", "failed to run setUserAtEvent", e)
+                                        launch(Dispatchers.Main) {
+                                            loading.visibility = View.GONE
+                                        }
                                         return@launch
                                     }
                                 }
@@ -104,6 +110,9 @@ class PresenceTest : AppCompatActivity() {
                                                 .show()
                                         }
                                     } catch (e: BlinkupException) {
+                                        launch(Dispatchers.Main) {
+                                            loading.visibility = View.GONE
+                                        }
                                         Log.e("isAtEvent", "failed to run setUserOnEvent", e)
                                         return@launch
                                     }
@@ -115,6 +124,10 @@ class PresenceTest : AppCompatActivity() {
                     override fun onNothingSelected(parent: AdapterView<*>?) {
                         TODO("Not yet implemented")
                     }
+                }
+
+                launch(Dispatchers.Main) {
+                    loading.visibility = View.GONE
                 }
 
             }
