@@ -52,7 +52,64 @@ class PresenceTest : AppCompatActivity() {
                         position: Int,
                         id: Long
                     ) {
-                        map.place = places[position]
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            val place = places[position]
+
+                            checkPresenceTest.setOnClickListener {
+                                launch(Dispatchers.IO) {
+                                    try {
+                                        val isAtEvent = Blinkup.isUserAtEvent(place)
+                                        launch(Dispatchers.Main) {
+                                            Toast.makeText(
+                                                this@PresenceTest,
+                                                "Is At Event: ${isAtEvent}",
+                                                Toast.LENGTH_SHORT).show()
+                                        }
+                                    } catch (e: BlinkupException) {
+                                        Log.e("isAtEvent", "failed to run isUserAtEvent", e)
+                                        return@launch
+                                    }
+                                }
+                            }
+
+                            isPresent.setOnClickListener {
+                                launch(Dispatchers.IO) {
+                                    try {
+                                        Blinkup.setUserAtEvent(true, place)
+                                        launch(Dispatchers.Main) {
+                                            Toast.makeText(
+                                                this@PresenceTest,
+                                                "Is now at event",
+                                                Toast.LENGTH_SHORT)
+                                                .show()
+                                        }
+                                    } catch (e: BlinkupException) {
+                                        Log.e("isAtEvent", "failed to run setUserAtEvent", e)
+                                        return@launch
+                                    }
+                                }
+
+                            }
+
+                            isNotPresent.setOnClickListener {
+                                launch(Dispatchers.IO) {
+                                    try {
+                                        Blinkup.setUserAtEvent(false, place)
+                                        launch(Dispatchers.Main) {
+                                            Toast.makeText(
+                                                this@PresenceTest,
+                                                "Is no longer at event",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                                .show()
+                                        }
+                                    } catch (e: BlinkupException) {
+                                        Log.e("isAtEvent", "failed to run setUserOnEvent", e)
+                                        return@launch
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -65,61 +122,55 @@ class PresenceTest : AppCompatActivity() {
         }
 
 
-        checkPresenceTest.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val event: List<Place> = getEvents()
-                val place = event[0]
-                try {
-                    val isAtEvent = Blinkup.isUserAtEvent(place)
-                    launch(Dispatchers.Main) {
-                        Toast.makeText(
-                            this@PresenceTest,
-                            "Is At Event: ${isAtEvent}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                } catch (e: BlinkupException) {
-                    Log.e("isAtEvent", "failed to run isUserAtEvent", e)
-                    return@launch
-                }
-            }
-        }
-        isPresent.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val event: List<Place> = getEvents()
-                val place: Place = event[0]
-                try {
-                    Blinkup.setUserAtEvent(true, place)
-                    launch(Dispatchers.Main) {
-                        Toast.makeText(this@PresenceTest, "Is now at event", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                } catch (e: BlinkupException) {
-                    Log.e("isAtEvent", "failed to run setUserAtEvent", e)
-                    return@launch
-                }
-            }
-        }
-        isNotPresent.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val event: List<Place> = getEvents()
-                Log.i("placeList", "$event")
-                val place: Place = event[0]
-                try {
-                    Blinkup.setUserAtEvent(false, place)
-                    launch(Dispatchers.Main) {
-                        Toast.makeText(
-                            this@PresenceTest,
-                            "Is no longer at event",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                    }
-                } catch (e: BlinkupException) {
-                    Log.e("isAtEvent", "failed to run setUserOnEvent", e)
-                    return@launch
-                }
-            }
-        }
+//        checkPresenceTest.setOnClickListener {
+//            lifecycleScope.launch(Dispatchers.IO) {
+//                val event: List<Place> = getEvents()
+//                val place = event[0]
+//                try {
+//                    val isAtEvent = Blinkup.isUserAtEvent(place)
+//
+//                } catch (e: BlinkupException) {
+//                    Log.e("isAtEvent", "failed to run isUserAtEvent", e)
+//                    return@launch
+//                }
+//            }
+//        }
+//        isPresent.setOnClickListener {
+//            lifecycleScope.launch(Dispatchers.IO) {
+//                val event: List<Place> = getEvents()
+//                val place: Place = event[0]
+//                try {
+//                    Blinkup.setUserAtEvent(true, place)
+//                    launch(Dispatchers.Main) {
+//                        Toast.makeText(this@PresenceTest, "Is now at event", Toast.LENGTH_SHORT)
+//                            .show()
+//                    }
+//                } catch (e: BlinkupException) {
+//                    Log.e("isAtEvent", "failed to run setUserAtEvent", e)
+//                    return@launch
+//                }
+//            }
+//        }
+//        isNotPresent.setOnClickListener {
+//            lifecycleScope.launch(Dispatchers.IO) {
+//                val event: List<Place> = getEvents()
+//                Log.i("placeList", "$event")
+//                val place: Place = event[0]
+//                try {
+//                    Blinkup.setUserAtEvent(false, place)
+//                    launch(Dispatchers.Main) {
+//                        Toast.makeText(
+//                            this@PresenceTest,
+//                            "Is no longer at event",
+//                            Toast.LENGTH_SHORT
+//                        )
+//                            .show()
+//                    }
+//                } catch (e: BlinkupException) {
+//                    Log.e("isAtEvent", "failed to run setUserOnEvent", e)
+//                    return@launch
+//                }
+//            }
+//        }
     }
 }
