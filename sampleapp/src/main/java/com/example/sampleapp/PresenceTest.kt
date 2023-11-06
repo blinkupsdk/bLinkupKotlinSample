@@ -56,7 +56,7 @@ class PresenceTest : AppCompatActivity() {
                             val place = places[position]
 
                             checkPresenceTest.setOnClickListener {
-                                launch(Dispatchers.IO) {
+                                lifecycleScope.launch(Dispatchers.IO) {
                                     try {
                                         val isAtEvent = Blinkup.isUserAtEvent(place)
                                         launch(Dispatchers.Main) {
@@ -76,7 +76,7 @@ class PresenceTest : AppCompatActivity() {
                             }
 
                             isPresent.setOnClickListener {
-                                launch(Dispatchers.IO) {
+                                lifecycleScope.launch(Dispatchers.IO) {
                                     try {
                                         Blinkup.setUserAtEvent(true, place)
                                         launch(Dispatchers.Main) {
@@ -98,7 +98,7 @@ class PresenceTest : AppCompatActivity() {
                             }
 
                             isNotPresent.setOnClickListener {
-                                launch(Dispatchers.IO) {
+                                lifecycleScope.launch(Dispatchers.IO) {
                                     try {
                                         Blinkup.setUserAtEvent(false, place)
                                         launch(Dispatchers.Main) {
