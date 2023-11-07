@@ -54,6 +54,7 @@ class PresenceTest : AppCompatActivity() {
                     ) {
                         lifecycleScope.launch(Dispatchers.IO) {
                             val place = places[position]
+                            Log.i("isAtEvent", "places call: $place")
 
                             checkPresenceTest.setOnClickListener {
                                 lifecycleScope.launch(Dispatchers.IO) {
