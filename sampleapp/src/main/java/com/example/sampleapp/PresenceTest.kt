@@ -11,9 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.blinkupapp.sdk.Blinkup
-import com.blinkupapp.sdk.Blinkup.Companion.getEvents
 import com.blinkupapp.sdk.data.exception.BlinkupException
-import com.blinkupapp.sdk.data.model.Place
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -54,7 +52,6 @@ class PresenceTest : AppCompatActivity() {
                     ) {
                         lifecycleScope.launch(Dispatchers.IO) {
                             val place = places[position]
-                            Log.i("isAtEvent", "places call: $place")
 
                             checkPresenceTest.setOnClickListener {
                                 lifecycleScope.launch(Dispatchers.IO) {
