@@ -60,7 +60,7 @@ class PresenceTest : AppCompatActivity() {
                                         launch(Dispatchers.Main) {
                                             Toast.makeText(
                                                 this@PresenceTest,
-                                                "Is At Event: ${isAtEvent}",
+                                                "User is at ${place.name}: ${isAtEvent}",
                                                 Toast.LENGTH_SHORT).show()
                                         }
                                     } catch (e: BlinkupException) {
@@ -80,7 +80,7 @@ class PresenceTest : AppCompatActivity() {
                                         launch(Dispatchers.Main) {
                                             Toast.makeText(
                                                 this@PresenceTest,
-                                                "Is now at event",
+                                                "User is now at ${place.name}",
                                                 Toast.LENGTH_SHORT)
                                                 .show()
                                         }
@@ -102,7 +102,7 @@ class PresenceTest : AppCompatActivity() {
                                         launch(Dispatchers.Main) {
                                             Toast.makeText(
                                                 this@PresenceTest,
-                                                "Is no longer at event",
+                                                "User has left ${place.name}",
                                                 Toast.LENGTH_SHORT
                                             )
                                                 .show()
