@@ -56,6 +56,9 @@ class MainActivity : AppCompatActivity() {
                     Log.i("response", Blinkup.requestCode(phoneNumber))
                 } catch (e: BlinkupException) {
                     Log.e("requestCode", "failed to run requestCode", e)
+                    launch(Dispatchers.Main) {
+                        loading.visibility = View.GONE
+                    }
                     return@launch
                 }
                 //now hiding the loading. Here we need to launch it with MAIN dispatcher because it is in the coroutine running in IO dispatcher
