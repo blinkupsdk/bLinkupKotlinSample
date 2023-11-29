@@ -10,12 +10,12 @@ import com.blinkup.clientsampleapp.R
 import com.blinkup.clientsampleapp.data.UserWithPresence
 
 class FriendsListAdapter(var data: List<UserWithPresence>) :
-    RecyclerView.Adapter<FriendsListAdapter.ViewHolder>() {
-        private var filteredItems = data
-            set(value) {
-                field = value
-                notifyDataSetChanged()
-            }
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var filteredItems = data
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val nameView: TextView = view.findViewById(R.id.name)
@@ -29,18 +29,48 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.user_list_item, parent, false)
-        return ViewHolder(view)
+    class TailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        fun bind() {
+            matchPhoneContacts.setOnClickListener {
+                //TODO:open dialog to match contacts
+            }
+            pendingRequests.setOnClickListener {
+                //TODO:open dialog to show pending requests
+            }
+            blockedUsers.setOnClickListener {
+                //TODO:open dialog to show blocked users
+            }
+        }
+
+        private val matchPhoneContacts: TextView = view.findViewById(R.id.matchPhoneContacts)
+        private val pendingRequests: TextView = view.findViewById(R.id.pendingRequests)
+        private val blockedUsers: TextView = view.findViewById(R.id.blockedUsers)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == VIEW_TYPE_ITEM) {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.user_list_item, parent, false)
+            ViewHolder(view)
+        } else {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.user_list_tail, parent, false)
+            TailViewHolder(view)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == filteredItems.size) VIEW_TYPE_TAIL else VIEW_TYPE_ITEM
     }
 
     override fun getItemCount(): Int {
-        return filteredItems.size
+        return filteredItems.size + 1
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(filteredItems[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is ViewHolder) {
+            holder.bind(filteredItems[position])
+        } else if (holder is TailViewHolder) {
+            holder.bind()
+        }
     }
 
     fun filter(query: String?) {
@@ -52,5 +82,10 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
                         it.user?.id?.contains(query, true) ?: false
             }
         }
+    }
+
+    companion object {
+        private const val VIEW_TYPE_ITEM = 0
+        private const val VIEW_TYPE_TAIL = 1
     }
 }
