@@ -15,10 +15,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import com.blinkup.clientsampleapp.LoginActivity
+import com.blinkup.clientsampleapp.R
 import com.blinkup.clientsampleapp.base.BaseFragment
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.model.User
-import com.blinkup.clientsampleapp.ViewPagerAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
