@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Client Sample App</string>
+    <string name="my_account">MY ACCOUNT</string>
+    <string name="settings">Settings</string>
+    <string name="more_information">MORE INFORMATION</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="app_settings">App Settings</string>
+    <string name="account_actions">ACCOUNT ACTIONS</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="log_out">Log Out</string>
+    <string name="edit_icon">Edit Icon</string>
+    <string name="_1234657890">1234657890</string>
+    <string name="sample_name">Sample Name</string>
+</resources>
