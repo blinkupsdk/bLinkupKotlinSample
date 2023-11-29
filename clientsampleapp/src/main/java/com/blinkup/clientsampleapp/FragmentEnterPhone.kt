@@ -1,5 +1,6 @@
 package com.blinkup.clientsampleapp
 
+import android.content.Intent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import android.os.Bundle
@@ -22,20 +23,35 @@ class FragmentEnterPhone : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<View>(R.id.submit_button).setOnClickListener {
-            showLoading()
-            view.findViewById<TextInputEditText>(R.id.phone_number).text?.toString()?.let { phone ->
-                lifecycleScope.launch {
-                    try {
-                        Blinkup.requestCode(phone)
-                        showMessage("Code sent")
-                        openEnterCodeFragment()
+        if (Blinkup.isLoginRequired()) {
+            view.findViewById<View>(R.id.submit_button).setOnClickListener {
+                showLoading()
+                view.findViewById<TextInputEditText>(R.id.phone_number).text?.toString()
+                    ?.let { phone ->
+                        lifecycleScope.launch {
+                            try {
+                                Blinkup.requestCode(phone)
+                                showMessage("Code sent")
+                                openEnterCodeFragment()
 
-                    } catch (e: Exception) {
-                        showErrorMessage(e.message ?: "Something went wrong")
-                    } finally {
-                        hideLoading()
+                            } catch (e: Exception) {
+                                showErrorMessage(e.message ?: "Something went wrong")
+                            } finally {
+                                hideLoading()
+                            }
+                        }
                     }
+            }
+        } else {
+            showLoading()
+            lifecycleScope.launch {
+                try {
+                    App.user = Blinkup.checkSessionAndLogin()
+                    openMainActivity()
+                } catch (e: Exception) {
+                    showErrorMessage(e.message ?: "Something went wrong")
+                } finally {
+                    hideLoading()
                 }
             }
         }
@@ -46,5 +62,12 @@ class FragmentEnterPhone : BaseFragment() {
             .replace(R.id.container, FragmentEnterCode())
             .addToBackStack(null)
             .commit()
+    }
+
+    private fun openMainActivity() {
+        activity?.let {
+            it.finish()
+            startActivity(Intent(it, MainActivity::class.java))
+        }
     }
 }

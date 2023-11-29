@@ -2,6 +2,7 @@ package com.blinkup.clientsampleapp
 
 import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
+import com.blinkup.clientsampleapp.adapter.ViewPagerAdapter
 import com.blinkup.clientsampleapp.base.BaseActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator

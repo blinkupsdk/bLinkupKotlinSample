@@ -29,6 +29,7 @@ class FragmentEnterCode : BaseFragment() {
                 lifecycleScope.launch {
                     try {
                         val user = Blinkup.confirmCode(smsCode)
+                        App.user = user
                         showMessage("Code accepted")
                         openMainActivity()
 
