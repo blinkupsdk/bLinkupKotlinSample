@@ -68,12 +68,12 @@ class FragmentSettings : BaseFragment() {
         }
 
         view.findViewById<TextView>(R.id.privacy_policy).setOnClickListener { _ ->
-            val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://www.youtube.com"))
+            val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://www.blinkupapp.com/privacy-policy"))
             startActivity(intent)
         }
 
         view.findViewById<TextView>(R.id.terms_of_service).setOnClickListener { _ ->
-            val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://www.google.com"))
+            val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://www.blinkupapp.com/terms-and-conditions"))
             startActivity(intent)
         }
 

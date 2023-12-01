@@ -4,7 +4,10 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingHorizontal="16dp"
-    android:paddingVertical="8dp">
+    android:paddingVertical="8dp"
+    android:layout_margin="10dp"
+    android:background="@drawable/rounded_corners"
+    >
 
     <TextView
         android:id="@+id/matchPhoneContacts"
