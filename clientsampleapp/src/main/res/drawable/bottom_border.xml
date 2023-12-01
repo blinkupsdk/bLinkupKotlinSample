@@ -8,7 +8,6 @@
     <item android:bottom="2dp">
         <shape xmlns:android="http://schemas.android.com/apk/res/android">
             <solid android:color="#FFFFFF" />
-            <corners android:topLeftRadius="10dp" android:topRightRadius="10dp" />
         </shape>
     </item>
 </layer-list>
