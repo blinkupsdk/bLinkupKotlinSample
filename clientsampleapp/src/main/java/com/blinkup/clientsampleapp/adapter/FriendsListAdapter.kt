@@ -1,5 +1,6 @@
 package com.blinkup.clientsampleapp.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,12 +22,33 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
         private val nameView: TextView = view.findViewById(R.id.name)
         private val userIdView: TextView = view.findViewById(R.id.user_id)
         private val isHere: ImageView = view.findViewById(R.id.isHere)
+        private val root = view
 
-        fun bind(user: UserWithPresence) {
+        fun bind(user: UserWithPresence, viewType: ViewType) {
             nameView.text = user.user?.name
             userIdView.text = user.user?.id
             isHere.visibility = if (user.isPresent) View.VISIBLE else View.GONE
+
+            when (viewType) {
+                ViewType.TOP -> {
+                    root.setBackgroundResource(R.drawable.rounded_corners_top)
+                }
+
+                ViewType.MIDDLE -> {
+                    root.setBackgroundColor(Color.WHITE)
+                }
+
+                ViewType.BOTTOM -> {
+                    root.setBackgroundResource(R.drawable.rounded_corners_bottom)
+                }
+            }
         }
+    }
+
+    enum class ViewType {
+        TOP,
+        MIDDLE,
+        BOTTOM
     }
 
     class TailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -49,10 +71,12 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_ITEM) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.user_list_item, parent, false)
+            val view =
+                LayoutInflater.from(parent.context).inflate(R.layout.user_list_item, parent, false)
             ViewHolder(view)
         } else {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.user_list_tail, parent, false)
+            val view =
+                LayoutInflater.from(parent.context).inflate(R.layout.user_list_tail, parent, false)
             TailViewHolder(view)
         }
     }
@@ -67,7 +91,13 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ViewHolder) {
-            holder.bind(filteredItems[position])
+            holder.bind(
+                filteredItems[position], when (position) {
+                    0 -> ViewType.TOP
+                    filteredItems.size - 1 -> ViewType.BOTTOM
+                    else -> ViewType.MIDDLE
+                }
+            )
         } else if (holder is TailViewHolder) {
             holder.bind()
         }
