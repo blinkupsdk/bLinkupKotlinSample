@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingHorizontal="16dp"
     android:paddingVertical="8dp"
     android:background="@drawable/rounded_corners"
     android:layout_marginTop="20dp"
@@ -13,24 +12,41 @@
         android:id="@+id/matchPhoneContacts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
         android:layout_marginVertical="8dp"
         android:text="Match Phone Contacts"
         android:textColor="#0000EE"
         android:textSize="16sp" />
 
+    <View
+        android:id="@+id/line1"
+        android:layout_width="match_parent"
+        android:layout_height=".75dp"
+        android:background="#D3D3D3"
+        />
+
     <TextView
         android:id="@+id/pendingRequests"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
         android:layout_marginVertical="8dp"
         android:text="Pending Requests"
         android:textColor="#0000EE"
         android:textSize="16sp" />
 
+    <View
+        android:id="@+id/line2"
+        android:layout_width="match_parent"
+        android:layout_height=".75dp"
+        android:background="#D3D3D3"
+        />
+
     <TextView
         android:id="@+id/blockedUsers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
         android:layout_marginVertical="8dp"
         android:text="Blocked Users"
         android:textColor="#0000EE"
