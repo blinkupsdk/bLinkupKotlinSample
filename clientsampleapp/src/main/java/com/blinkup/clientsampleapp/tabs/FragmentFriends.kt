@@ -1,5 +1,6 @@
 package com.blinkup.clientsampleapp.tabs
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,11 +19,11 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FragmentFriends : BaseFragment() {
+class FragmentFriends(private val context: Context) : BaseFragment() {
     private lateinit var searchView: SearchView
     private var friendsList: List<UserWithPresence> = emptyList()
     private lateinit var recyclerView: RecyclerView
-    private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList())
+    private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList(), context)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
