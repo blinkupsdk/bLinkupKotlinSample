@@ -1,16 +1,26 @@
 package com.blinkup.clientsampleapp.adapter
 
+import android.app.AlertDialog
+import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.blinkup.clientsampleapp.App
 import com.blinkup.clientsampleapp.R
 import com.blinkup.clientsampleapp.data.UserWithPresence
+import com.blinkupapp.sdk.Blinkup
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class FriendsListAdapter(var data: List<UserWithPresence>) :
+class FriendsListAdapter(var data: List<UserWithPresence>, var context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var filteredItems = data
         set(value) {
@@ -51,10 +61,29 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
         BOTTOM
     }
 
-    class TailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class TailViewHolder(view: View, var context: Context) : RecyclerView.ViewHolder(view) {
+
         fun bind() {
+
+            val dialogBuilder = AlertDialog.Builder(context)
+            val layout = LinearLayout(context)
+            layout.orientation = LinearLayout.VERTICAL
+
             matchPhoneContacts.setOnClickListener {
-                //TODO:open dialog to match contacts
+
+                dialogBuilder.setView(layout)
+                dialogBuilder.setTitle("TEMP TITLE")
+
+                val editName = EditText(context)
+
+                layout.addView(editName)
+
+                dialogBuilder.setNegativeButton("Close") { dialog, _ ->
+                    dialog.cancel()
+                }
+
+                dialogBuilder.create().show()
+
             }
             pendingRequests.setOnClickListener {
                 //TODO:open dialog to show pending requests
@@ -77,7 +106,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
         } else {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.user_list_tail, parent, false)
-            TailViewHolder(view)
+            TailViewHolder(view, context)
         }
     }
 
