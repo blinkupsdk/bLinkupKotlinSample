@@ -61,36 +61,56 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var context: Context)
         BOTTOM
     }
 
-    class TailViewHolder(view: View, var context: Context) : RecyclerView.ViewHolder(view) {
+    class TailViewHolder(val view: View, var context: Context) : RecyclerView.ViewHolder(view) {
+
 
         fun bind() {
 
+            matchPhoneContacts.setOnClickListener {
+
+                showDialog("Phone Contacts")
+
+            }
+
+            pendingRequests.setOnClickListener {
+
+                showDialog("Pending Requests")
+
+            }
+            blockedUsers.setOnClickListener {
+
+                showDialog("Blocked Users")
+
+            }
+        }
+
+        fun showDialog(title: String) {
+
             val dialogBuilder = AlertDialog.Builder(context)
+
             val layout = LinearLayout(context)
             layout.orientation = LinearLayout.VERTICAL
 
-            matchPhoneContacts.setOnClickListener {
-
-                dialogBuilder.setView(layout)
-                dialogBuilder.setTitle("TEMP TITLE")
-
-                val editName = EditText(context)
-
-                layout.addView(editName)
-
-                dialogBuilder.setNegativeButton("Close") { dialog, _ ->
-                    dialog.cancel()
+            when (title) {
+                "Phone Contacts" -> {
+                    //TODO add contacts call/list logic
                 }
+                "Pending Requests" -> {
+                    //TODO add pending requests call/list logic
+                }
+                "Blocked Users" -> {
+                    //TODO add blocked users temp text call/list
+                }
+            }
 
-                dialogBuilder.create().show()
+            dialogBuilder.setView(layout)
+            dialogBuilder.setTitle(title)
 
+            dialogBuilder.setNegativeButton("Close") { dialog, _ ->
+                dialog.cancel()
             }
-            pendingRequests.setOnClickListener {
-                //TODO:open dialog to show pending requests
-            }
-            blockedUsers.setOnClickListener {
-                //TODO:open dialog to show blocked users
-            }
+
+            dialogBuilder.create().show()
         }
 
         private val matchPhoneContacts: TextView = view.findViewById(R.id.matchPhoneContacts)
