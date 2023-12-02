@@ -13,7 +13,7 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
 
         val viewPager = findViewById<ViewPager2>(R.id.view_pager)
-        viewPager.adapter = ViewPagerAdapter(this)
+        viewPager.adapter = ViewPagerAdapter(this, this)
 
         val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
