@@ -39,7 +39,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
                 }
 
                 ViewType.MIDDLE -> {
-                    root.setBackgroundColor(Color.WHITE)
+                    root.setBackgroundResource(R.drawable.bottom_border)
                 }
 
                 ViewType.BOTTOM -> {
