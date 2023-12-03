@@ -87,6 +87,7 @@ class FragmentFriends : BaseFragment() {
 
     private fun getFriends() = lifecycleScope.launch(Dispatchers.IO) {
         try {
+            showLoading()
             val friends = Blinkup.getFriendList()
             val events = Blinkup.getEvents()
             val currentEvent = events.find { Blinkup.isUserAtEvent(it) }
@@ -107,6 +108,8 @@ class FragmentFriends : BaseFragment() {
             tabSelected(0)
         } catch (e: Exception) {
             showErrorMessage(e.message ?: "Unknown error")
+        } finally {
+            hideLoading()
         }
     }
 

@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
-        android:text="Match Phone Contacts"
+        android:text="@string/match_phone_contacts"
         android:textColor="#0000EE"
         android:textSize="16sp" />
 
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
-        android:text="Pending Requests"
+        android:text="@string/pending_requests"
         android:textColor="#0000EE"
         android:textSize="16sp" />
 
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
-        android:text="Blocked Users"
+        android:text="@string/blocked_users"
         android:textColor="#0000EE"
         android:textSize="16sp" />
 

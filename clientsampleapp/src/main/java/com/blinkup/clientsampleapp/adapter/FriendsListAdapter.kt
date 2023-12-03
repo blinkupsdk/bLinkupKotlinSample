@@ -21,13 +21,17 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val nameView: TextView = view.findViewById(R.id.name)
         private val userIdView: TextView = view.findViewById(R.id.user_id)
+        private val userNameUnderlined: TextView = view.findViewById(R.id.nameUnderlined)
         private val isHere: ImageView = view.findViewById(R.id.isHere)
         private val root = view
 
         fun bind(user: UserWithPresence, viewType: ViewType) {
             nameView.text = user.user?.name
+            userNameUnderlined.text = user.user?.name
             userIdView.text = user.user?.id
             isHere.visibility = if (user.isPresent) View.VISIBLE else View.GONE
+            userNameUnderlined.visibility = if (user.isPresent) View.VISIBLE else View.GONE
+            nameView.visibility = if (user.isPresent) View.GONE else View.VISIBLE
 
             when (viewType) {
                 ViewType.TOP -> {
