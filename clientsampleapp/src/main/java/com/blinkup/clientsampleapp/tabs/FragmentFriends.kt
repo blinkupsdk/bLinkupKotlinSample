@@ -21,12 +21,12 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FragmentFriends(private val context: Context) : BaseFragment() {
+class FragmentFriends() : BaseFragment() {
     private lateinit var searchView: SearchView
     private var friendsList: List<UserWithPresence> = emptyList()
     private var phoneContacts: List<ContactResult> = emptyList()
     private lateinit var recyclerView: RecyclerView
-    private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList(), emptyList(), context)
+    private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList(), emptyList())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

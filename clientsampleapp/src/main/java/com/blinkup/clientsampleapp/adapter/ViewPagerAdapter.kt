@@ -18,7 +18,7 @@ class ViewPagerAdapter(fragmentActivity: FragmentActivity, var context: Context)
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> FragmentFriends(context)
+            0 -> FragmentFriends()
             1 -> FragmentPresence()
             2 -> FragmentMapHolder()
             3 -> FragmentSettings()

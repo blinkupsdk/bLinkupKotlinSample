@@ -24,7 +24,7 @@ import com.blinkupapp.sdk.data.model.ContactResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<ContactResult>, var context: Context) :
+class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<ContactResult>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var filteredItems = data
         set(value) {
@@ -69,7 +69,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
         BOTTOM
     }
 
-    class TailViewHolder(val view: View, var contacts: List<ContactResult>, var context: Context) : RecyclerView.ViewHolder(view) {
+    class TailViewHolder(val view: View, var contacts: List<ContactResult>) : RecyclerView.ViewHolder(view) {
 
 
         fun bind() {
@@ -94,12 +94,12 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
 
         fun showDialog(title: String) {
 
-            val dialogBuilder = AlertDialog.Builder(context)
+            val dialogBuilder = AlertDialog.Builder(view.context)
 
-            val layout = LinearLayout(context)
+            val layout = LinearLayout(view.context)
             layout.orientation = LinearLayout.VERTICAL
 
-            val listView = ListView(context)
+            val listView = ListView(view.context)
 
             Log.i("contacts", "$contacts")
 
@@ -107,7 +107,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
                 "Phone Contacts" -> {
                     //TODO add contacts call/list logic
 
-                    val adapter = ArrayAdapter(context,R.layout.contact_list_item, contacts)
+                    val adapter = ArrayAdapter(view.context,R.layout.contact_list_item, contacts)
 
                     listView.adapter = adapter
                     layout.addView(listView)
@@ -119,7 +119,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
                 }
                 "Blocked Users" -> {
                     //TODO add blocked users temp text call/list
-                    val textView = TextView(context)
+                    val textView = TextView(view.context)
                     textView.text = "Feature Coming Soon"
 
                     layout.addView(textView)
@@ -149,7 +149,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
         } else {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.user_list_tail, parent, false)
-            TailViewHolder(view, contacts, context)
+            TailViewHolder(view, contacts)
         }
     }
 
