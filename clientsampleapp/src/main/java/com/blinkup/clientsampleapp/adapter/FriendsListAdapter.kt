@@ -3,12 +3,15 @@ package com.blinkup.clientsampleapp.adapter
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.TextView
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.lifecycleScope
@@ -17,10 +20,11 @@ import com.blinkup.clientsampleapp.App
 import com.blinkup.clientsampleapp.R
 import com.blinkup.clientsampleapp.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
+import com.blinkupapp.sdk.data.model.ContactResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FriendsListAdapter(var data: List<UserWithPresence>, var context: Context) :
+class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<ContactResult>, var context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var filteredItems = data
         set(value) {
@@ -65,7 +69,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var context: Context)
         BOTTOM
     }
 
-    class TailViewHolder(val view: View, var context: Context) : RecyclerView.ViewHolder(view) {
+    class TailViewHolder(val view: View, var contacts: List<ContactResult>, var context: Context) : RecyclerView.ViewHolder(view) {
 
 
         fun bind() {
@@ -95,12 +99,23 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var context: Context)
             val layout = LinearLayout(context)
             layout.orientation = LinearLayout.VERTICAL
 
+            val listView = ListView(context)
+
+            Log.i("contacts", "$contacts")
+
             when (title) {
                 "Phone Contacts" -> {
                     //TODO add contacts call/list logic
+
+                    val adapter = ArrayAdapter(context,R.layout.contact_list_item, contacts)
+
+                    listView.adapter = adapter
+                    layout.addView(listView)
+
                 }
                 "Pending Requests" -> {
                     //TODO add pending requests call/list logic
+
                 }
                 "Blocked Users" -> {
                     //TODO add blocked users temp text call/list
@@ -134,7 +149,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var context: Context)
         } else {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.user_list_tail, parent, false)
-            TailViewHolder(view, context)
+            TailViewHolder(view, contacts, context)
         }
     }
 
