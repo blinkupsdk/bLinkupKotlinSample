@@ -11,7 +11,7 @@ import com.blinkup.clientsampleapp.tabs.FragmentMapHolder
 import com.blinkup.clientsampleapp.tabs.FragmentPresence
 import com.blinkup.clientsampleapp.tabs.FragmentSettings
 
-class ViewPagerAdapter(fragmentActivity: FragmentActivity, var context: Context) :
+class ViewPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
 
     override fun getItemCount(): Int = 4
