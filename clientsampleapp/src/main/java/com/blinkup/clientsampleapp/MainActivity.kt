@@ -4,16 +4,26 @@ import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
 import com.blinkup.clientsampleapp.adapter.ViewPagerAdapter
 import com.blinkup.clientsampleapp.base.BaseActivity
+import com.blinkup.clientsampleapp.base.BaseFragment
+import com.blinkup.clientsampleapp.utils.findCurrentFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : BaseActivity() {
+    val adapter = ViewPagerAdapter(this)
+    lateinit var viewPager: ViewPager2
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+<<<<<<< HEAD
         val viewPager = findViewById<ViewPager2>(R.id.view_pager)
         viewPager.adapter = ViewPagerAdapter(this, this)
+=======
+
+        viewPager = findViewById<ViewPager2>(R.id.view_pager)
+        viewPager.adapter = adapter
+>>>>>>> 985fe15ba8f0d61c72422504c914e34996245419
 
         val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
@@ -39,5 +49,12 @@ class MainActivity : BaseActivity() {
                 }
             }
         }.attach()
+    }
+
+    override fun onBackPressed() {
+        val fragment = viewPager.findCurrentFragment(fragmentManager = supportFragmentManager)
+        if ((fragment as BaseFragment?)?.onBackPressed() != true) {
+            super.onBackPressed()
+        }
     }
 }
