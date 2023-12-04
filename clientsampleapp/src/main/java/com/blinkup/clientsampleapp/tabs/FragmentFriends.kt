@@ -72,18 +72,19 @@ class FragmentFriends() : BaseFragment() {
             }
         })
         getFriends()
-        getPhoneContacts()
     }
 
     private fun tabSelected(position: Int) = lifecycleScope.launch(Dispatchers.Main) {
         when (position) {
             0 -> {
                 adapter.data = getAllFriends()
+                adapter.contacts = matchContacts()
                 adapter.filter(searchView.query.toString())
             }
 
             1 -> {
                 adapter.data = getPresentFriends()
+                adapter.contacts = matchContacts()
                 adapter.filter(searchView.query.toString())
             }
         }
@@ -93,6 +94,12 @@ class FragmentFriends() : BaseFragment() {
     private fun getFriends() = lifecycleScope.launch(Dispatchers.IO) {
         try {
             showLoading()
+
+
+            val contacts = Blinkup.findContacts()
+            phoneContacts = contacts
+
+
             val friends = Blinkup.getFriendList()
             val events = Blinkup.getEvents()
             val currentEvent = events.find { Blinkup.isUserAtEvent(it) }
@@ -126,34 +133,8 @@ class FragmentFriends() : BaseFragment() {
         return friendsList.filter { it.isPresent }
     }
 
-//    private fun getPhoneContacts(): List<ContactResult> {
-//
-//        lifecycleScope.launch(Dispatchers.IO) {
-//            try {
-//                val contacts = Blinkup.findContacts()
-//                phoneContacts = contacts
-//                Log.i("contacts", "getPhoneContacts try block: $phoneContacts")
-//
-//            } catch (e: Exception) {
-//                showErrorMessage(e.message ?: "Unknown error")
-//            }
-//        }
-//
-//        Log.i("contacts", "getPhoneContacts: $phoneContacts")
-//        return phoneContacts
-//    }
-
-    private fun getPhoneContacts() = lifecycleScope.launch(Dispatchers.IO) {
-        try {
-            val contacts = Blinkup.findContacts()
-            phoneContacts = contacts
-            adapter.contacts = phoneContacts
-            Log.i("contacts", "getPhoneContacts try block: $phoneContacts")
-        }
-        catch (e: Exception) {
-            showErrorMessage(e.message ?: "Unknown error")
-        }
-
-        Log.i("contacts", "getPhoneContacts: $phoneContacts")
+    private fun matchContacts(): List<ContactResult> {
+        return phoneContacts
     }
+
 }

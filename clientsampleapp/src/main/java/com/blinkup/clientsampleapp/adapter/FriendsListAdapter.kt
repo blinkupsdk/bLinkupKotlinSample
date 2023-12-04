@@ -32,6 +32,12 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
             notifyDataSetChanged()
         }
 
+    private var phoneContacts = contacts
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val nameView: TextView = view.findViewById(R.id.name)
         private val userIdView: TextView = view.findViewById(R.id.user_id)
@@ -69,10 +75,15 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
         BOTTOM
     }
 
-    class TailViewHolder(val view: View, var contacts: List<ContactResult>) : RecyclerView.ViewHolder(view) {
+    class TailViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val nameView: TextView = view.findViewById(R.id.name)
+        private val userIdView: TextView = view.findViewById(R.id.user_id)
 
-        fun bind() {
+        fun bind(contacts: ContactResult) {
+
+//            nameView.text = contacts.name
+//            userIdView.text = contacts.userId
 
             matchPhoneContacts.setOnClickListener {
 
@@ -101,13 +112,11 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
 
             val listView = ListView(view.context)
 
-            Log.i("contacts", "$contacts")
-
             when (title) {
                 "Phone Contacts" -> {
                     //TODO add contacts call/list logic
 
-                    val adapter = ArrayAdapter(view.context,R.layout.contact_list_item, contacts)
+                    val adapter = ArrayAdapter(view.context,R.layout.contact_list_item, )
 
                     listView.adapter = adapter
                     layout.addView(listView)
@@ -171,7 +180,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
                 }
             )
         } else if (holder is TailViewHolder) {
-            holder.bind()
+            holder.bind(phoneContacts[position])
         }
     }
 
