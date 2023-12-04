@@ -104,6 +104,10 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var context: Context)
                 }
                 "Blocked Users" -> {
                     //TODO add blocked users temp text call/list
+                    val textView = TextView(context)
+                    textView.text = "Feature Coming Soon"
+
+                    layout.addView(textView)
                 }
             }
 
