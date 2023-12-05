@@ -15,6 +15,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.clientsampleapp.App
 import com.blinkup.clientsampleapp.R
@@ -75,12 +76,12 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
         BOTTOM
     }
 
-    class TailViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    class TailViewHolder(val view: View, private val phoneContacts: List<ContactResult>) : RecyclerView.ViewHolder(view) {
 
         fun bind(contacts: List<ContactResult>) {
 
             matchPhoneContacts.setOnClickListener {
-
+                Log.i("contactsatbind", "$contacts")
                 showDialog("Phone Contacts", contacts)
 
             }
@@ -97,8 +98,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
             }
         }
 
-        fun showDialog(title: String, contacts: List<ContactResult>) {
-
+        fun showDialog(title: String, phoneContacts: List<ContactResult>) {
             val dialogBuilder = AlertDialog.Builder(view.context)
 
             val layout = LinearLayout(view.context)
@@ -109,11 +109,12 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
             when (title) {
                 "Phone Contacts" -> {
 
-                    val adapter = MatchContactsAdapter(contacts)
+                    val adapter = MatchContactsAdapter(phoneContacts)
 
                     Log.i("contacts", "Phone Contacts")
 
-                    recyclerView.setAdapter(adapter)
+                    recyclerView.adapter = adapter
+                    recyclerView.layoutManager = LinearLayoutManager(view.context)
 
                     layout.addView(recyclerView)
 
@@ -127,7 +128,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
                     val textView = TextView(view.context)
                     textView.text = "Feature Coming Soon"
 
-                    layout.addView(textView)
+                    return layout.addView(textView)
                 }
             }
 
@@ -154,7 +155,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
         } else {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.user_list_tail, parent, false)
-            TailViewHolder(view)
+            TailViewHolder(view, phoneContacts)
         }
     }
 
@@ -176,7 +177,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
                 }
             )
         } else if (holder is TailViewHolder) {
-            holder.bind(contacts)
+            holder.bind(phoneContacts)
         }
     }
 

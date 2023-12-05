@@ -50,7 +50,7 @@ class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return data.size + 1
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
