@@ -77,49 +77,45 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
 
     class TailViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        private val nameView: TextView = view.findViewById(R.id.name)
-        private val userIdView: TextView = view.findViewById(R.id.user_id)
-
-        fun bind(contacts: ContactResult) {
-
-//            nameView.text = contacts.name
-//            userIdView.text = contacts.userId
+        fun bind(contacts: List<ContactResult>) {
 
             matchPhoneContacts.setOnClickListener {
 
-                showDialog("Phone Contacts")
+                showDialog("Phone Contacts", contacts)
 
             }
 
             pendingRequests.setOnClickListener {
 
-                showDialog("Pending Requests")
+                showDialog("Pending Requests", contacts)
 
             }
             blockedUsers.setOnClickListener {
 
-                showDialog("Blocked Users")
+                showDialog("Blocked Users", contacts)
 
             }
         }
 
-        fun showDialog(title: String) {
+        fun showDialog(title: String, contacts: List<ContactResult>) {
 
             val dialogBuilder = AlertDialog.Builder(view.context)
 
             val layout = LinearLayout(view.context)
             layout.orientation = LinearLayout.VERTICAL
 
-            val listView = ListView(view.context)
+            val recyclerView = RecyclerView(view.context)
 
             when (title) {
                 "Phone Contacts" -> {
-                    //TODO add contacts call/list logic
 
-                    val adapter = ArrayAdapter(view.context,R.layout.contact_list_item, )
+                    val adapter = MatchContactsAdapter(contacts)
 
-                    listView.adapter = adapter
-                    layout.addView(listView)
+                    Log.i("contacts", "Phone Contacts")
+
+                    recyclerView.setAdapter(adapter)
+
+                    layout.addView(recyclerView)
 
                 }
                 "Pending Requests" -> {
@@ -158,7 +154,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
         } else {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.user_list_tail, parent, false)
-            TailViewHolder(view, contacts)
+            TailViewHolder(view)
         }
     }
 
@@ -180,7 +176,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
                 }
             )
         } else if (holder is TailViewHolder) {
-            holder.bind(phoneContacts[position])
+            holder.bind(contacts)
         }
     }
 
