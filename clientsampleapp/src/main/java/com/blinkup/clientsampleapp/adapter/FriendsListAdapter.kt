@@ -81,7 +81,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
         fun bind(contacts: List<ContactResult>) {
 
             matchPhoneContacts.setOnClickListener {
-                Log.i("contactsatbind", "$contacts")
+
                 showDialog("Phone Contacts", contacts)
 
             }
@@ -110,8 +110,6 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
                 "Phone Contacts" -> {
 
                     val adapter = MatchContactsAdapter(phoneContacts)
-
-                    Log.i("contacts", "Phone Contacts")
 
                     recyclerView.adapter = adapter
                     recyclerView.layoutManager = LinearLayoutManager(view.context)
@@ -177,7 +175,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
                 }
             )
         } else if (holder is TailViewHolder) {
-            holder.bind(phoneContacts)
+            holder.bind(contacts)
         }
     }
 

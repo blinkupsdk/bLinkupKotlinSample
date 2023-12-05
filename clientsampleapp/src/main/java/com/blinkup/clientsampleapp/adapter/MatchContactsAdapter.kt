@@ -17,7 +17,11 @@ import com.blinkupapp.sdk.data.model.Contact
 
 class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter<MatchContactsAdapter.MyViewHolder>() {
 
-
+    private var phoneContacts = data
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
     class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
 
@@ -32,8 +36,6 @@ class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter
 
         fun bind(contact: ContactResult) {
 
-            Log.i("contacts", "contacts adapter: $contact")
-
             contactName.text = contact.name
 
             sendRequest.setOnClickListener {
@@ -45,17 +47,15 @@ class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.contact_list_item, parent, false)
-        Log.i("contacts", "onCreateViewHolder")
         return MyViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return data.size + 1
+        return phoneContacts.size + 1
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        Log.i("contacts", "onBindViewHolder: $data")
-        holder.bind(data[position])
+        holder.bind(phoneContacts[position])
     }
 
 }
