@@ -22,4 +22,5 @@
     <string name="enter_phone_number">Enter phone number</string>
     <string name="manually_set_presence">Manually set presence</string>
     <string name="map">Map</string>
+    <string name="invite">Invite</string>
 </resources>

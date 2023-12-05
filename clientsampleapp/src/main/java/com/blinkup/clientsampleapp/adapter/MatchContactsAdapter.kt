@@ -27,16 +27,19 @@ class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter
 
 
         private val contactName: TextView
+        private val userId: TextView
         private val sendRequest: Button
 
         init{
             contactName = view.findViewById(R.id.name)
+            userId = view.findViewById(R.id.user_id)
             sendRequest = view.findViewById(R.id.send_request_button)
         }
 
         fun bind(contact: ContactResult) {
 
             contactName.text = contact.name
+            userId.text = contact.userId
 
             sendRequest.setOnClickListener {
                 //TODO
@@ -51,7 +54,7 @@ class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter
     }
 
     override fun getItemCount(): Int {
-        return phoneContacts.size + 1
+        return phoneContacts.size
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {

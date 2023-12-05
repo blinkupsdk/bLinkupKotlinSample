@@ -34,15 +34,17 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp" />
 
+    </LinearLayout>
+
         <Button
             android:id="@+id/send_request_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="Send Request"
             android:layout_gravity="center"
-            android:backgroundTint="#008800"/>
+            android:layout_marginHorizontal="10dp"
+            android:backgroundTint="#008800"
+            android:text="@string/invite"
+            android:textSize="15sp" />
 
-    </LinearLayout>
 
 </LinearLayout>
