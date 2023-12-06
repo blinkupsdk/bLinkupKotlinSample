@@ -72,19 +72,20 @@ class FragmentFriends() : BaseFragment() {
             }
         })
         getFriends()
+        matchContacts()
     }
 
     private fun tabSelected(position: Int) = lifecycleScope.launch(Dispatchers.Main) {
         when (position) {
             0 -> {
                 adapter.data = getAllFriends()
-                adapter.contacts = matchContacts()
+                adapter.contacts = phoneContacts
                 adapter.filter(searchView.query.toString())
             }
 
             1 -> {
                 adapter.data = getPresentFriends()
-                adapter.contacts = matchContacts()
+                adapter.contacts = phoneContacts
                 adapter.filter(searchView.query.toString())
             }
         }
@@ -94,12 +95,6 @@ class FragmentFriends() : BaseFragment() {
     private fun getFriends() = lifecycleScope.launch(Dispatchers.IO) {
         try {
             showLoading()
-
-
-            val contacts = Blinkup.findContacts()
-            phoneContacts = contacts
-
-
             val friends = Blinkup.getFriendList()
             val events = Blinkup.getEvents()
             val currentEvent = events.find { Blinkup.isUserAtEvent(it) }
@@ -133,8 +128,18 @@ class FragmentFriends() : BaseFragment() {
         return friendsList.filter { it.isPresent }
     }
 
-    private fun matchContacts(): List<ContactResult> {
-        return phoneContacts
+    private fun matchContacts() = lifecycleScope.launch(Dispatchers.IO) {
+        try{
+            showLoading()
+            phoneContacts = Blinkup.findContacts()
+            tabSelected(0)
+        }
+        catch (e: Exception) {
+            showErrorMessage(e.message ?: "Unknown error")
+        }
+        finally {
+            hideLoading()
+        }
     }
 
 }
