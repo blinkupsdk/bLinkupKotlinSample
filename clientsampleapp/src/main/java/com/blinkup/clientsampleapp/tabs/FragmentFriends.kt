@@ -17,6 +17,7 @@ import com.blinkup.clientsampleapp.base.BaseFragment
 import com.blinkup.clientsampleapp.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.model.ContactResult
+import com.blinkupapp.sdk.data.model.User
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -133,6 +134,18 @@ class FragmentFriends() : BaseFragment() {
             showLoading()
             phoneContacts = Blinkup.findContacts()
             tabSelected(0)
+        }
+        catch (e: Exception) {
+            showErrorMessage(e.message ?: "Unknown error")
+        }
+        finally {
+            hideLoading()
+        }
+    }
+    private fun sendFriendRequest(user: User) = lifecycleScope.launch(Dispatchers.IO) {
+        try {
+            showLoading()
+            Blinkup.sendFriendRequest(user)
         }
         catch (e: Exception) {
             showErrorMessage(e.message ?: "Unknown error")
