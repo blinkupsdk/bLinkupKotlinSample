@@ -9,10 +9,17 @@ import android.widget.TextView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
+import android.widget.Toast
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkupapp.sdk.data.model.ContactResult
 import com.blinkup.clientsampleapp.R
+import com.blinkupapp.sdk.Blinkup
+import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.Contact
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter<MatchContactsAdapter.MyViewHolder>() {
@@ -22,7 +29,9 @@ class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter
             field = value
             notifyDataSetChanged()
         }
-    class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
+
+    lateinit var lifecycleOwner: LifecycleOwner
+    class MyViewHolder(val view: View, val lifecycleOwner: LifecycleOwner): RecyclerView.ViewHolder(view) {
 
 
 
@@ -42,7 +51,21 @@ class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter
             userId.text = contact.userId
 
             sendRequest.setOnClickListener {
-                //TODO
+                lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        val userId = Blinkup.checkSessionAndLogin()
+                        Blinkup.sendFriendRequest(userId)
+                        launch(Dispatchers.Main) {
+                            Toast.makeText(view.context, "Request Sent", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                    catch (e: BlinkupException) {
+                        launch(Dispatchers.Main) {
+                            Log.i("friend request", "$e")
+                            Toast.makeText(view.context, "Check Logcat for error", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
             }
 
         }
@@ -50,7 +73,7 @@ class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.contact_list_item, parent, false)
-        return MyViewHolder(view)
+        return MyViewHolder(view, lifecycleOwner)
     }
 
     override fun getItemCount(): Int {
