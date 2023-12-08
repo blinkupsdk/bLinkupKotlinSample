@@ -18,6 +18,7 @@ import com.blinkup.clientsampleapp.R
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.Contact
+import com.blinkupapp.sdk.data.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -39,6 +40,8 @@ class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter
         private val userId: TextView
         private val sendRequest: Button
 
+        private var targetId : User = User()
+
         init{
             contactName = view.findViewById(R.id.name)
             userId = view.findViewById(R.id.user_id)
@@ -53,17 +56,14 @@ class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter
             sendRequest.setOnClickListener {
                 lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
-                        val userId = Blinkup.checkSessionAndLogin()
-                        Blinkup.sendFriendRequest(userId)
+                        targetId.id = contact.userId
+                        Blinkup.sendFriendRequest(targetId)
                         launch(Dispatchers.Main) {
                             Toast.makeText(view.context, "Request Sent", Toast.LENGTH_LONG).show()
                         }
                     }
                     catch (e: BlinkupException) {
-                        launch(Dispatchers.Main) {
-                            Log.i("friend request", "$e")
-                            Toast.makeText(view.context, "Check Logcat for error", Toast.LENGTH_LONG).show()
-                        }
+
                     }
                 }
             }
