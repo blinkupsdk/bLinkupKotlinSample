@@ -28,7 +28,7 @@ class FragmentFriends() : BaseFragment() {
     private var friendsList: List<UserWithPresence> = emptyList()
     private var phoneContacts: List<ContactResult> = emptyList()
     private lateinit var recyclerView: RecyclerView
-    private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList(), emptyList())
+    private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,13 +83,11 @@ class FragmentFriends() : BaseFragment() {
         when (position) {
             0 -> {
                 adapter.data = getAllFriends()
-                adapter.contacts = phoneContacts
                 adapter.filter(searchView.query.toString())
             }
 
             1 -> {
                 adapter.data = getPresentFriends()
-                adapter.contacts = phoneContacts
                 adapter.filter(searchView.query.toString())
             }
         }
