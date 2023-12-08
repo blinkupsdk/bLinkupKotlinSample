@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,6 +39,8 @@ class FragmentFriends() : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        adapter.lifecycleOwner = requireActivity()
 
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -134,18 +137,6 @@ class FragmentFriends() : BaseFragment() {
             showLoading()
             phoneContacts = Blinkup.findContacts()
             tabSelected(0)
-        }
-        catch (e: Exception) {
-            showErrorMessage(e.message ?: "Unknown error")
-        }
-        finally {
-            hideLoading()
-        }
-    }
-    private fun sendFriendRequest(user: User) = lifecycleScope.launch(Dispatchers.IO) {
-        try {
-            showLoading()
-            Blinkup.sendFriendRequest(user)
         }
         catch (e: Exception) {
             showErrorMessage(e.message ?: "Unknown error")
