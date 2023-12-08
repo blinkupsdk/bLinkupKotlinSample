@@ -20,13 +20,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.clientsampleapp.App
 import com.blinkup.clientsampleapp.R
+import com.blinkup.clientsampleapp.base.BaseFragment
 import com.blinkup.clientsampleapp.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
+import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.ContactResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<ContactResult>) :
+class FriendsListAdapter(var data: List<UserWithPresence>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var filteredItems = data
         set(value) {
@@ -34,13 +36,8 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
             notifyDataSetChanged()
         }
 
-    private var phoneContacts = contacts
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
-
     lateinit var lifecycleOwner : LifecycleOwner
+    private lateinit var contactResult: ContactResult
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val nameView: TextView = view.findViewById(R.id.name)
@@ -79,31 +76,33 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
         BOTTOM
     }
 
-    class TailViewHolder(val view: View, private val phoneContacts: List<ContactResult>, val lifecycleOwner: LifecycleOwner) : RecyclerView.ViewHolder(view) {
+    class TailViewHolder(val view: View, val lifecycleOwner: LifecycleOwner) : RecyclerView.ViewHolder(view) {
 
-        fun bind(contacts: List<ContactResult>) {
+        fun bind() {
 
             matchPhoneContacts.setOnClickListener {
 
-                showDialog("Phone Contacts", contacts, lifecycleOwner)
+                showDialog("Phone Contacts", lifecycleOwner)
 
             }
 
             pendingRequests.setOnClickListener {
 
-                showDialog("Pending Requests", contacts, lifecycleOwner)
+                showDialog("Pending Requests", lifecycleOwner)
 
             }
             blockedUsers.setOnClickListener {
 
-                showDialog("Blocked Users", contacts, lifecycleOwner)
+                showDialog("Blocked Users", lifecycleOwner)
 
             }
         }
 
-        fun showDialog(title: String, phoneContacts: List<ContactResult>, lifecycleOwner: LifecycleOwner) {
-            val dialogBuilder = AlertDialog.Builder(view.context)
+        fun showDialog(title: String, lifecycleOwner: LifecycleOwner) {
 
+            var contacts : List<ContactResult>
+
+            val dialogBuilder = AlertDialog.Builder(view.context)
             val layout = LinearLayout(view.context)
             layout.orientation = LinearLayout.VERTICAL
 
@@ -112,13 +111,26 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
             when (title) {
                 "Phone Contacts" -> {
 
-                    val adapter = MatchContactsAdapter(phoneContacts)
-                    adapter.lifecycleOwner = lifecycleOwner
+                    lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                        try {
+                            contacts = Blinkup.findContacts()
 
-                    recyclerView.adapter = adapter
-                    recyclerView.layoutManager = LinearLayoutManager(view.context)
+                            launch(Dispatchers.Main) {
+                                val adapter = MatchContactsAdapter(contacts)
+                                adapter.lifecycleOwner = lifecycleOwner
 
-                    layout.addView(recyclerView)
+                                recyclerView.adapter = adapter
+                                recyclerView.layoutManager = LinearLayoutManager(view.context)
+
+                                layout.addView(recyclerView)
+                            }
+                        }
+                        catch (e: BlinkupException){
+                            //TODO
+                        }
+                    }
+
+
 
                 }
                 "Pending Requests" -> {
@@ -157,7 +169,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
         } else {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.user_list_tail, parent, false)
-            TailViewHolder(view, phoneContacts, lifecycleOwner)
+            TailViewHolder(view, lifecycleOwner)
         }
     }
 
@@ -179,7 +191,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
                 }
             )
         } else if (holder is TailViewHolder) {
-            holder.bind(contacts)
+            holder.bind()
         }
     }
 
