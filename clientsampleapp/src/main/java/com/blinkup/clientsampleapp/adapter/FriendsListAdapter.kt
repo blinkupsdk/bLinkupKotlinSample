@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,6 +39,8 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
             field = value
             notifyDataSetChanged()
         }
+
+    lateinit var lifecycleOwner : LifecycleOwner
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val nameView: TextView = view.findViewById(R.id.name)
@@ -76,29 +79,29 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
         BOTTOM
     }
 
-    class TailViewHolder(val view: View, private val phoneContacts: List<ContactResult>) : RecyclerView.ViewHolder(view) {
+    class TailViewHolder(val view: View, private val phoneContacts: List<ContactResult>, val lifecycleOwner: LifecycleOwner) : RecyclerView.ViewHolder(view) {
 
         fun bind(contacts: List<ContactResult>) {
 
             matchPhoneContacts.setOnClickListener {
 
-                showDialog("Phone Contacts", contacts)
+                showDialog("Phone Contacts", contacts, lifecycleOwner)
 
             }
 
             pendingRequests.setOnClickListener {
 
-                showDialog("Pending Requests", contacts)
+                showDialog("Pending Requests", contacts, lifecycleOwner)
 
             }
             blockedUsers.setOnClickListener {
 
-                showDialog("Blocked Users", contacts)
+                showDialog("Blocked Users", contacts, lifecycleOwner)
 
             }
         }
 
-        fun showDialog(title: String, phoneContacts: List<ContactResult>) {
+        fun showDialog(title: String, phoneContacts: List<ContactResult>, lifecycleOwner: LifecycleOwner) {
             val dialogBuilder = AlertDialog.Builder(view.context)
 
             val layout = LinearLayout(view.context)
@@ -110,6 +113,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
                 "Phone Contacts" -> {
 
                     val adapter = MatchContactsAdapter(phoneContacts)
+                    adapter.lifecycleOwner = lifecycleOwner
 
                     recyclerView.adapter = adapter
                     recyclerView.layoutManager = LinearLayoutManager(view.context)
@@ -153,7 +157,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>, var contacts: List<Co
         } else {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.user_list_tail, parent, false)
-            TailViewHolder(view, phoneContacts)
+            TailViewHolder(view, phoneContacts, lifecycleOwner)
         }
     }
 
