@@ -24,6 +24,7 @@ import com.blinkup.clientsampleapp.base.BaseFragment
 import com.blinkup.clientsampleapp.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
+import com.blinkupapp.sdk.data.model.Connection
 import com.blinkupapp.sdk.data.model.ConnectionRequest
 import com.blinkupapp.sdk.data.model.ContactResult
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +39,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
         }
 
     lateinit var lifecycleOwner : LifecycleOwner
-    private lateinit var contactResult: ContactResult
+
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val nameView: TextView = view.findViewById(R.id.name)
@@ -103,6 +104,8 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
 
             var contacts : List<ContactResult>
             var requests : List<ConnectionRequest>
+            var blockedUsers: List<Connection>
+            var connectionList: List<Connection>
 
             val dialogBuilder = AlertDialog.Builder(view.context)
             val layout = LinearLayout(view.context)
@@ -157,11 +160,26 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
 
                 }
                 "Blocked Users" -> {
-                    //TODO add blocked users temp text call/list
-                    val textView = TextView(view.context)
-                    textView.text = "Feature Coming Soon"
+                    lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                        try {
 
-                    return layout.addView(textView)
+                            connectionList = Blinkup.getFriendList()
+                            blockedUsers = connectionList.filter { it.status.toString() == "blocked" }
+
+                            launch(Dispatchers.Main) {
+                                val adapter = BlockedListAdapter(blockedUsers)
+                                adapter.lifecycleOwner = lifecycleOwner
+
+                                recyclerView.adapter = adapter
+                                recyclerView.layoutManager = LinearLayoutManager(view.context)
+
+                                layout.addView(recyclerView)
+                            }
+                        }
+                        catch (e: BlinkupException){
+                            //TODO
+                        }
+                    }
                 }
             }
 
