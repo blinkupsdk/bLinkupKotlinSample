@@ -24,6 +24,7 @@ import com.blinkup.clientsampleapp.base.BaseFragment
 import com.blinkup.clientsampleapp.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
+import com.blinkupapp.sdk.data.model.ConnectionRequest
 import com.blinkupapp.sdk.data.model.ContactResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -101,6 +102,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
         fun showDialog(title: String, lifecycleOwner: LifecycleOwner) {
 
             var contacts : List<ContactResult>
+            var requests : List<ConnectionRequest>
 
             val dialogBuilder = AlertDialog.Builder(view.context)
             val layout = LinearLayout(view.context)
@@ -113,6 +115,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
 
                     lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                         try {
+
                             contacts = Blinkup.findContacts()
 
                             launch(Dispatchers.Main) {
@@ -130,11 +133,27 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
                         }
                     }
 
-
-
                 }
                 "Pending Requests" -> {
-                    //TODO add pending requests call/list logic
+
+                    lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                        try {
+                            requests = Blinkup.getFriendRequests()
+
+                            launch(Dispatchers.Main) {
+                                val adapter = PendingRequestAdapter(requests)
+                                adapter.lifecycleOwner = lifecycleOwner
+
+                                recyclerView.adapter = adapter
+                                recyclerView.layoutManager = LinearLayoutManager(view.context)
+
+                                layout.addView(recyclerView)
+                            }
+                        }
+                        catch (e: BlinkupException){
+                            //TODO
+                        }
+                    }
 
                 }
                 "Blocked Users" -> {
