@@ -56,5 +56,15 @@
         android:text="Deny"
         android:textSize="15sp" />
 
+    <Button
+        android:id="@+id/cancel_request_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="10dp"
+        android:backgroundTint="#008800"
+        android:text="Cancel"
+        android:textSize="15sp" />
+
 
 </LinearLayout>
