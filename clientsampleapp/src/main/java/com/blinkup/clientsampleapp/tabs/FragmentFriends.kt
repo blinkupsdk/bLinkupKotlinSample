@@ -1,13 +1,11 @@
 package com.blinkup.clientsampleapp.tabs
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,8 +15,6 @@ import com.blinkup.clientsampleapp.adapter.FriendsListAdapter
 import com.blinkup.clientsampleapp.base.BaseFragment
 import com.blinkup.clientsampleapp.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
-import com.blinkupapp.sdk.data.model.ContactResult
-import com.blinkupapp.sdk.data.model.User
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,7 +22,6 @@ import kotlinx.coroutines.launch
 class FragmentFriends() : BaseFragment() {
     private lateinit var searchView: SearchView
     private var friendsList: List<UserWithPresence> = emptyList()
-    private var phoneContacts: List<ContactResult> = emptyList()
     private lateinit var recyclerView: RecyclerView
     private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList())
 
@@ -76,7 +71,6 @@ class FragmentFriends() : BaseFragment() {
             }
         })
         getFriends()
-        matchContacts()
     }
 
     private fun tabSelected(position: Int) = lifecycleScope.launch(Dispatchers.Main) {
@@ -128,20 +122,6 @@ class FragmentFriends() : BaseFragment() {
 
     private fun getPresentFriends(): List<UserWithPresence> {
         return friendsList.filter { it.isPresent }
-    }
-
-    private fun matchContacts() = lifecycleScope.launch(Dispatchers.IO) {
-        try{
-            showLoading()
-            phoneContacts = Blinkup.findContacts()
-            tabSelected(0)
-        }
-        catch (e: Exception) {
-            showErrorMessage(e.message ?: "Unknown error")
-        }
-        finally {
-            hideLoading()
-        }
     }
 
 }

@@ -11,13 +11,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.clientsampleapp.R
 import com.blinkupapp.sdk.Blinkup
-import com.blinkupapp.sdk.Blinkup.Companion.sendFriendRequest
 import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.ConnectionRequest
-import com.blinkupapp.sdk.data.model.ContactResult
-import com.blinkupapp.sdk.data.model.User
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class PendingRequestAdapter(var data: List<ConnectionRequest>): RecyclerView.Adapter<PendingRequestAdapter.MyViewHolder>() {

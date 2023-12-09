@@ -6,9 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ListView
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -17,7 +14,6 @@ import com.blinkupapp.sdk.data.model.ContactResult
 import com.blinkup.clientsampleapp.R
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
-import com.blinkupapp.sdk.data.model.Contact
 import com.blinkupapp.sdk.data.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

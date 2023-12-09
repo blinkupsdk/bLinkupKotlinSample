@@ -1,26 +1,18 @@
 package com.blinkup.clientsampleapp.adapter
 
 import android.app.AlertDialog
-import android.content.Context
-import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ListView
 import android.widget.TextView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.blinkup.clientsampleapp.App
 import com.blinkup.clientsampleapp.R
-import com.blinkup.clientsampleapp.base.BaseFragment
 import com.blinkup.clientsampleapp.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
