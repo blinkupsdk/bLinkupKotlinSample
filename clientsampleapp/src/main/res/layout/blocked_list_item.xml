@@ -43,7 +43,7 @@
         android:layout_gravity="center"
         android:layout_marginHorizontal="10dp"
         android:backgroundTint="#008800"
-        android:text="@string/invite"
+        android:text="Unblock"
         android:textSize="15sp" />
 
 </LinearLayout>

@@ -157,7 +157,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
 
                             connectionList = Blinkup.getFriendList()
                             blockedUsers = connectionList.filter { it.status.toString() == "blocked" }
-
+                            Log.i("blocked users", "$blockedUsers")
                             launch(Dispatchers.Main) {
                                 val adapter = BlockedListAdapter(blockedUsers)
                                 adapter.lifecycleOwner = lifecycleOwner

@@ -37,7 +37,7 @@ class BlockedListAdapter(var data: List<Connection>) :
         init{
             contactName = view.findViewById(R.id.name)
             userId = view.findViewById(R.id.user_id)
-            unblockUser = view.findViewById(R.id.send_request_button)
+            unblockUser = view.findViewById(R.id.unblock_user_button)
         }
 
         fun bind(blockedUser: Connection) {
