@@ -28,14 +28,12 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): RecyclerView.Ada
     class MyViewHolder(view: View, val lifecycleOwner: LifecycleOwner): RecyclerView.ViewHolder(view) {
 
         private val contactName: TextView
-        private val userId: TextView
         val acceptRequest: Button
         val denyRequest: Button
         val cancelRequest: Button
 
         init{
             contactName = view.findViewById(R.id.name)
-            userId = view.findViewById(R.id.user_id)
             acceptRequest = view.findViewById(R.id.accept_request_button)
             denyRequest = view.findViewById(R.id.deny_request_button)
             cancelRequest = view.findViewById(R.id.cancel_request_button)
