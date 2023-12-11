@@ -8,10 +8,15 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.clientsampleapp.R
+import com.blinkupapp.sdk.Blinkup
+import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.Connection
 import com.blinkupapp.sdk.data.model.User
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class BlockedListAdapter(var data: List<Connection>) :
@@ -46,21 +51,18 @@ class BlockedListAdapter(var data: List<Connection>) :
             userId.text = blockedUser.targetUser?.name
 
             unblockUser.setOnClickListener {
-                Toast.makeText(view.context, "Feature coming soon!", Toast.LENGTH_LONG).show()
-//                lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-//                    try {
-//                        targetId.id = contact.userId
-//                        Blinkup.sendFriendRequest(targetId)
-//                        launch(Dispatchers.Main) {
-//                            Toast.makeText(view.context, "Request Sent", Toast.LENGTH_LONG).show()
-//                        }
-//                    }
-//                    catch (e: BlinkupException) {
-//
-//                    }
-//                }
-            }
+                lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        Blinkup.deleteConnection(blockedUser)
+                        launch(Dispatchers.Main) {
+                            Toast.makeText(view.context, "User unblocked", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                    catch (e: BlinkupException) {
 
+                    }
+                }
+            }
         }
     }
 
