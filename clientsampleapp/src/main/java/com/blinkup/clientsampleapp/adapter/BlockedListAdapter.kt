@@ -1,6 +1,5 @@
 package com.blinkup.clientsampleapp.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,7 @@ import kotlinx.coroutines.launch
 
 
 class BlockedListAdapter(var data: List<Connection>) :
-    RecyclerView.Adapter<BlockedListAdapter.MyViewHolder>() {
+    AbstractAdapter<BlockedListAdapter.MyViewHolder>() {
 
     private var blockedUsers = data
         set(value) {
@@ -28,18 +27,17 @@ class BlockedListAdapter(var data: List<Connection>) :
             notifyDataSetChanged()
         }
 
-    lateinit var lifecycleOwner: LifecycleOwner
-    class MyViewHolder(val view: View, val lifecycleOwner: LifecycleOwner): RecyclerView.ViewHolder(view) {
-
+    class MyViewHolder(val view: View, val lifecycleOwner: LifecycleOwner) :
+        RecyclerView.ViewHolder(view) {
 
 
         private val contactName: TextView
         private val userId: TextView
         private val unblockUser: Button
 
-        private var targetId : User = User()
+        private var targetId: User = User()
 
-        init{
+        init {
             contactName = view.findViewById(R.id.name)
             userId = view.findViewById(R.id.user_id)
             unblockUser = view.findViewById(R.id.unblock_user_button)
@@ -57,8 +55,7 @@ class BlockedListAdapter(var data: List<Connection>) :
                         launch(Dispatchers.Main) {
                             Toast.makeText(view.context, "User unblocked", Toast.LENGTH_LONG).show()
                         }
-                    }
-                    catch (e: BlinkupException) {
+                    } catch (e: BlinkupException) {
 
                     }
                 }
@@ -67,7 +64,8 @@ class BlockedListAdapter(var data: List<Connection>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.blocked_list_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.blocked_list_item, parent, false)
         return MyViewHolder(view, lifecycleOwner)
     }
 

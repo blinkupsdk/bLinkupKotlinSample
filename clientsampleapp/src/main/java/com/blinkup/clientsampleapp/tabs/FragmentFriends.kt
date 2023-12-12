@@ -1,7 +1,6 @@
 package com.blinkup.clientsampleapp.tabs
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,7 @@ class FragmentFriends() : BaseFragment() {
     private lateinit var searchView: SearchView
     private var friendsList: List<UserWithPresence> = emptyList()
     private lateinit var recyclerView: RecyclerView
-    private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList())
+    private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList(), ::showLoading, ::hideLoading)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

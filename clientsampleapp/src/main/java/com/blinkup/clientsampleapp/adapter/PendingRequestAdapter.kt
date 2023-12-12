@@ -16,15 +16,13 @@ import com.blinkupapp.sdk.data.model.ConnectionRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class PendingRequestAdapter(var data: List<ConnectionRequest>): RecyclerView.Adapter<PendingRequestAdapter.MyViewHolder>() {
+class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<PendingRequestAdapter.MyViewHolder>() {
 
     private var requests = data
         set(value) {
             field = value
             notifyDataSetChanged()
         }
-
-    lateinit var lifecycleOwner: LifecycleOwner
     class MyViewHolder(view: View, val lifecycleOwner: LifecycleOwner): RecyclerView.ViewHolder(view) {
 
         private val contactName: TextView

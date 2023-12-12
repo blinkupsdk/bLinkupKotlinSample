@@ -1,7 +1,6 @@
 package com.blinkup.clientsampleapp.adapter
 
 import android.app.AlertDialog
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +19,14 @@ import com.blinkupapp.sdk.data.model.Connection
 import com.blinkupapp.sdk.data.model.ConnectionRequest
 import com.blinkupapp.sdk.data.model.ContactResult
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class FriendsListAdapter(var data: List<UserWithPresence>) :
+class FriendsListAdapter(
+    var data: List<UserWithPresence>,
+    val showLoading: () -> Unit,
+    val hideLoading: () -> Unit
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var filteredItems = data
         set(value) {
@@ -30,7 +34,7 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
             notifyDataSetChanged()
         }
 
-    lateinit var lifecycleOwner : LifecycleOwner
+    lateinit var lifecycleOwner: LifecycleOwner
 
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -70,32 +74,31 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
         BOTTOM
     }
 
-    class TailViewHolder(val view: View, val lifecycleOwner: LifecycleOwner) : RecyclerView.ViewHolder(view) {
+    class TailViewHolder(
+        val view: View,
+        val lifecycleOwner: LifecycleOwner,
+        val showLoading: () -> Unit,
+        val hideLoading: () -> Unit
+    ) :
+        RecyclerView.ViewHolder(view) {
 
         fun bind() {
-
             matchPhoneContacts.setOnClickListener {
-
-                showDialog("Phone Contacts", lifecycleOwner)
-
+                showDialog(DialogType.PHONE_CONTACTS)
             }
-
             pendingRequests.setOnClickListener {
-
-                showDialog("Pending Requests", lifecycleOwner)
-
+                showDialog(DialogType.PENDING_REQUESTS)
             }
             blockedUsers.setOnClickListener {
-
-                showDialog("Blocked Users", lifecycleOwner)
-
+                showDialog(DialogType.BLOCKED_USERS)
             }
         }
 
-        fun showDialog(title: String, lifecycleOwner: LifecycleOwner) {
+        fun showDialog(type: DialogType) {
+            showLoading()
 
-            var contacts : List<ContactResult>
-            var requests : List<ConnectionRequest>
+            var contacts: List<ContactResult>
+            var requests: List<ConnectionRequest>
             var blockedUsers: List<Connection>
             var connectionList: List<Connection>
 
@@ -105,100 +108,91 @@ class FriendsListAdapter(var data: List<UserWithPresence>) :
 
             val recyclerView = RecyclerView(view.context)
 
-            when (title) {
-                "Phone Contacts" -> {
-
-                    lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            var adapter: AbstractAdapter<*>? = null
+            lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                delay(1000)
+                when (type) {
+                    DialogType.PHONE_CONTACTS -> {
                         try {
-
                             contacts = Blinkup.findContacts()
-
-                            launch(Dispatchers.Main) {
-                                val adapter = MatchContactsAdapter(contacts)
-                                adapter.lifecycleOwner = lifecycleOwner
-
-                                recyclerView.adapter = adapter
-                                recyclerView.layoutManager = LinearLayoutManager(view.context)
-
-                                layout.addView(recyclerView)
-                            }
-                        }
-                        catch (e: BlinkupException){
+                            adapter = MatchContactsAdapter(contacts)
+                        } catch (e: BlinkupException) {
                             //TODO
                         }
                     }
 
-                }
-                "Pending Requests" -> {
-
-                    lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    DialogType.PENDING_REQUESTS -> {
                         try {
                             requests = Blinkup.getFriendRequests()
-
-                            launch(Dispatchers.Main) {
-                                val adapter = PendingRequestAdapter(requests)
-                                adapter.lifecycleOwner = lifecycleOwner
-
-                                recyclerView.adapter = adapter
-                                recyclerView.layoutManager = LinearLayoutManager(view.context)
-
-                                layout.addView(recyclerView)
-                            }
-                        }
-                        catch (e: BlinkupException){
+                            adapter = PendingRequestAdapter(requests)
+                        } catch (e: BlinkupException) {
                             //TODO
                         }
                     }
 
-                }
-                "Blocked Users" -> {
-                    lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    DialogType.BLOCKED_USERS -> {
                         try {
-
                             connectionList = Blinkup.getFriendList()
-                            blockedUsers = connectionList.filter { it.status.toString() == "blocked" }
-                            Log.i("blocked users", "$blockedUsers")
-                            launch(Dispatchers.Main) {
-                                val adapter = BlockedListAdapter(blockedUsers)
-                                adapter.lifecycleOwner = lifecycleOwner
-
-                                recyclerView.adapter = adapter
-                                recyclerView.layoutManager = LinearLayoutManager(view.context)
-
-                                layout.addView(recyclerView)
-                            }
-                        }
-                        catch (e: BlinkupException){
+                            blockedUsers =
+                                connectionList.filter { it.status.toString() == "blocked" }
+                            adapter = BlockedListAdapter(blockedUsers)
+                        } catch (e: BlinkupException) {
                             //TODO
                         }
                     }
                 }
+
+
+                launch(Dispatchers.Main) {
+                    adapter?.lifecycleOwner = lifecycleOwner
+
+                    recyclerView.adapter = adapter
+                    recyclerView.layoutManager = LinearLayoutManager(view.context)
+
+                    layout.addView(recyclerView)
+
+                    dialogBuilder.setView(layout)
+                    dialogBuilder.setTitle(type.title)
+
+                    dialogBuilder.setNegativeButton("Close")
+                    { dialog, _ ->
+                        dialog.cancel()
+                    }
+
+                    dialogBuilder.create().show()
+                    hideLoading()
+                }
             }
-
-            dialogBuilder.setView(layout)
-            dialogBuilder.setTitle(title)
-
-            dialogBuilder.setNegativeButton("Close") { dialog, _ ->
-                dialog.cancel()
-            }
-
-            dialogBuilder.create().show()
         }
 
-        private val matchPhoneContacts: TextView = view.findViewById(R.id.matchPhoneContacts)
-        private val pendingRequests: TextView = view.findViewById(R.id.pendingRequests)
-        private val blockedUsers: TextView = view.findViewById(R.id.blockedUsers)
+        private val matchPhoneContacts
+                : TextView = view.findViewById(R.id.matchPhoneContacts)
+        private val pendingRequests
+                : TextView = view.findViewById(R.id.pendingRequests)
+        private val blockedUsers
+                : TextView = view.findViewById(R.id.blockedUsers)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    enum class DialogType(val title: String) {
+        PHONE_CONTACTS("Phone Contacts"),
+        PENDING_REQUESTS("Pending Requests"),
+        BLOCKED_USERS("Blocked Users");
+    }
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_ITEM) {
             val view =
-                LayoutInflater.from(parent.context).inflate(R.layout.user_list_item, parent, false)
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.user_list_item, parent, false)
             ViewHolder(view)
         } else {
             val view =
-                LayoutInflater.from(parent.context).inflate(R.layout.user_list_tail, parent, false)
-            TailViewHolder(view, lifecycleOwner)
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.user_list_tail, parent, false)
+            TailViewHolder(view, lifecycleOwner, showLoading, hideLoading)
         }
     }
 

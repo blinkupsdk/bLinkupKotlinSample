@@ -19,7 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter<MatchContactsAdapter.MyViewHolder>() {
+class MatchContactsAdapter(var data: List<ContactResult>) :AbstractAdapter<MatchContactsAdapter.MyViewHolder>() {
 
     private var phoneContacts = data
         set(value) {
@@ -27,7 +27,6 @@ class MatchContactsAdapter(var data: List<ContactResult>) : RecyclerView.Adapter
             notifyDataSetChanged()
         }
 
-    lateinit var lifecycleOwner: LifecycleOwner
     class MyViewHolder(val view: View, val lifecycleOwner: LifecycleOwner): RecyclerView.ViewHolder(view) {
 
 
