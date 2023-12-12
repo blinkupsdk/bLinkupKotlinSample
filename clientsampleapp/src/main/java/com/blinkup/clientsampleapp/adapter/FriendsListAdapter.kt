@@ -110,7 +110,6 @@ class FriendsListAdapter(
 
             var adapter: AbstractAdapter<*>? = null
             lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                delay(1000)
                 when (type) {
                     DialogType.PHONE_CONTACTS -> {
                         try {
