@@ -1,5 +1,7 @@
 package com.blinkup.clientsampleapp.adapter
 
+import android.content.Context
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
