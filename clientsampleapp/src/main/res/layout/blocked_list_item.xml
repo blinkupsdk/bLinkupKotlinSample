@@ -44,6 +44,6 @@
         android:layout_marginHorizontal="10dp"
         android:backgroundTint="#008800"
         android:text="Unblock"
-        android:textSize="15sp" />
+        android:textSize="10sp" />
 
 </LinearLayout>

@@ -17,6 +17,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_gravity="center"
         android:orientation="vertical"
         android:paddingStart="16dp">
 
@@ -26,13 +27,6 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/user_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -44,7 +38,7 @@
             android:layout_marginHorizontal="10dp"
             android:backgroundTint="#008800"
             android:text="@string/invite"
-            android:textSize="15sp" />
+            android:textSize="10sp" />
 
 
 </LinearLayout>

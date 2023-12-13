@@ -32,21 +32,18 @@ class MatchContactsAdapter(var data: List<ContactResult>) :AbstractAdapter<Match
 
 
         private val contactName: TextView
-        private val userId: TextView
         private val sendRequest: Button
 
         private var targetId : User = User()
 
         init{
             contactName = view.findViewById(R.id.name)
-            userId = view.findViewById(R.id.user_id)
             sendRequest = view.findViewById(R.id.send_request_button)
         }
 
         fun bind(contact: ContactResult) {
 
             contactName.text = contact.name
-            userId.text = contact.userId
 
             sendRequest.setOnClickListener {
                 lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
