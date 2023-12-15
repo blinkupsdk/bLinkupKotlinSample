@@ -11,12 +11,12 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : BaseActivity() {
     val adapter = ViewPagerAdapter(this)
-    lateinit var viewPager: ViewPager2
+    private lateinit var viewPager: ViewPager2
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val viewPager = findViewById<ViewPager2>(R.id.view_pager)
+        viewPager = findViewById<ViewPager2>(R.id.view_pager)
         viewPager.adapter = ViewPagerAdapter(this)
 
         val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
