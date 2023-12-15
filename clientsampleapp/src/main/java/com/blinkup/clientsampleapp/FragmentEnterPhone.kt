@@ -12,9 +12,7 @@ import com.blinkupapp.sdk.Blinkup
 import com.google.android.material.textfield.TextInputEditText
 import com.permissionx.guolindev.PermissionX
 import android.Manifest
-import android.app.AlertDialog
 import android.util.Log
-import android.widget.LinearLayout
 import android.widget.Toast
 import com.blinkupapp.sdk.data.exception.BlinkupException
 import kotlinx.coroutines.Dispatchers
