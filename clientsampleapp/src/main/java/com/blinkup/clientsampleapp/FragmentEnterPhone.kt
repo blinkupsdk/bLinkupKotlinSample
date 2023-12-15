@@ -10,6 +10,12 @@ import android.view.ViewGroup
 import com.blinkup.clientsampleapp.base.BaseFragment
 import com.blinkupapp.sdk.Blinkup
 import com.google.android.material.textfield.TextInputEditText
+import com.permissionx.guolindev.PermissionX
+import android.Manifest
+import android.util.Log
+import android.widget.Toast
+import com.blinkupapp.sdk.data.exception.BlinkupException
+import kotlinx.coroutines.Dispatchers
 
 class FragmentEnterPhone : BaseFragment() {
     override fun onCreateView(
@@ -22,6 +28,54 @@ class FragmentEnterPhone : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        PermissionX.init(this)
+            .permissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.READ_CONTACTS)
+            .onExplainRequestReason { scope , rationale ->
+                scope.showRequestReasonDialog(rationale, "Location permissions need to be set to Allow All The Time for Geofences to operate",
+                    "Ok", "Cancel")
+            }
+            .request { allGranted, grantedList, deniedList ->
+                if (allGranted) {
+                    Toast.makeText(view.context, "All permissions are granted", Toast.LENGTH_LONG).show()
+                    login(view)
+                } else {
+                    Toast.makeText(
+                        view.context,
+                        "These permissions are denied: $deniedList",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    login(view)
+                }
+            }
+
+    }
+
+    private fun openEnterCodeFragment() {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.container, FragmentEnterCode())
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun openMainActivity() {
+        activity?.let {
+            it.finish()
+            startActivity(Intent(it, MainActivity::class.java))
+        }
+    }
+
+    private fun login(view: View) {
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                Blinkup.getEvents()
+            } catch (e: BlinkupException) {
+                //TODO
+                Log.i("getEvents", "getEvents: ${e.message}")
+            }
+        }
 
         if (Blinkup.isLoginRequired()) {
             view.findViewById<View>(R.id.submit_button).setOnClickListener {
@@ -54,20 +108,6 @@ class FragmentEnterPhone : BaseFragment() {
                     hideLoading()
                 }
             }
-        }
-    }
-
-    private fun openEnterCodeFragment() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.container, FragmentEnterCode())
-            .addToBackStack(null)
-            .commit()
-    }
-
-    private fun openMainActivity() {
-        activity?.let {
-            it.finish()
-            startActivity(Intent(it, MainActivity::class.java))
         }
     }
 }
