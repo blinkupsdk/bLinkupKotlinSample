@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.clientsampleapp.App
 import com.blinkup.clientsampleapp.R
+import com.blinkup.clientsampleapp.adapter.AbstractAdapter
 import com.blinkup.clientsampleapp.adapter.EventsListAdapter
 import com.blinkup.clientsampleapp.base.BaseFragment
 import com.blinkupapp.sdk.Blinkup
@@ -20,7 +21,7 @@ import kotlinx.coroutines.launch
 class FragmentPresence : BaseFragment() {
     private var eventsList: List<Presence> = emptyList()
     private lateinit var recyclerView: RecyclerView
-    private val adapter: EventsListAdapter = EventsListAdapter(emptyList())
+    private var adapter: AbstractAdapter<*>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,13 +57,16 @@ class FragmentPresence : BaseFragment() {
     }
 
     private fun tabSelected(position: Int) = lifecycleScope.launch(Dispatchers.Main) {
+        var data = emptyList<Presence>()
         when (position) {
             0 -> {
-                adapter.data = getAllEvents()
+                data = getAllEvents()
+                adapter = EventsListAdapter(data, ::showLoading, ::hideLoading)
             }
 
             1 -> {
-                adapter.data = getPresentEvents()
+                data = getPresentEvents()
+                adapter = EventsListAdapter(data, ::showLoading, ::hideLoading)
             }
         }
     }
