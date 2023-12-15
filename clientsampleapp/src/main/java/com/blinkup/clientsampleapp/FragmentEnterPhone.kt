@@ -12,7 +12,9 @@ import com.blinkupapp.sdk.Blinkup
 import com.google.android.material.textfield.TextInputEditText
 import com.permissionx.guolindev.PermissionX
 import android.Manifest
+import android.app.AlertDialog
 import android.util.Log
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.blinkupapp.sdk.data.exception.BlinkupException
 import kotlinx.coroutines.Dispatchers
@@ -29,8 +31,13 @@ class FragmentEnterPhone : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         PermissionX.init(this)
-            .permissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_CONTACTS)
+            .permissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.READ_CONTACTS)
+            .onExplainRequestReason { scope , rationale ->
+                scope.showRequestReasonDialog(rationale, "Location permissions need to be set to Allow All The Time for Geofences to operate",
+                    "Ok", "Cancel")
+            }
             .request { allGranted, grantedList, deniedList ->
                 if (allGranted) {
                     Toast.makeText(view.context, "All permissions are granted", Toast.LENGTH_LONG).show()
@@ -44,7 +51,6 @@ class FragmentEnterPhone : BaseFragment() {
                     login(view)
                 }
             }
-
 
     }
 
