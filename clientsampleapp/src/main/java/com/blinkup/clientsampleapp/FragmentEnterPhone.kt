@@ -12,7 +12,10 @@ import com.blinkupapp.sdk.Blinkup
 import com.google.android.material.textfield.TextInputEditText
 import com.permissionx.guolindev.PermissionX
 import android.Manifest
+import android.util.Log
 import android.widget.Toast
+import com.blinkupapp.sdk.data.exception.BlinkupException
+import kotlinx.coroutines.Dispatchers
 
 class FragmentEnterPhone : BaseFragment() {
     override fun onCreateView(
@@ -60,6 +63,16 @@ class FragmentEnterPhone : BaseFragment() {
     }
 
     private fun login(view: View) {
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                Blinkup.getEvents()
+            } catch (e: BlinkupException) {
+                //TODO
+                Log.i("getEvents", "getEvents: ${e.message}")
+            }
+        }
+
         if (Blinkup.isLoginRequired()) {
             view.findViewById<View>(R.id.submit_button).setOnClickListener {
                 showLoading()
