@@ -1,33 +1,20 @@
 package com.blinkup.clientsampleapp.adapter
 
-import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.clientsampleapp.R
-import com.blinkupapp.sdk.Blinkup
-import com.blinkupapp.sdk.data.exception.BlinkupException
-import com.blinkupapp.sdk.data.model.Connection
-import com.blinkupapp.sdk.data.model.ConnectionRequest
-import com.blinkupapp.sdk.data.model.ContactResult
 import com.blinkupapp.sdk.data.model.Presence
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class EventsListAdapter(
     data: List<Presence>,
     val showLoading: () -> Unit,
     val hideLoading: () -> Unit
-) :
-    AbstractAdapter<EventsListAdapter.ViewHolder>() {
+) : AbstractAdapter<RecyclerView.ViewHolder>() {
 
     var data = data
         set(value) {
@@ -50,6 +37,7 @@ class EventsListAdapter(
             nameUnderlined.text = event.place?.name
             isHere.visibility = if (event.isPresent == true) View.VISIBLE else View.GONE
             nameUnderlined.visibility = if (event.isPresent == true) View.VISIBLE else View.GONE
+            nameView.visibility = if (event.isPresent == true) View.GONE else View.VISIBLE
             checkBox.isChecked = isChecked
 
             checkBox.setOnCheckedChangeListener { _, isBoxChecked ->
@@ -60,7 +48,6 @@ class EventsListAdapter(
 
     class TailViewHolder(
         val view: View,
-        val lifecycleOwner: LifecycleOwner,
         val showLoading: () -> Unit,
         val hideLoading: () -> Unit
     ) :
@@ -84,8 +71,8 @@ class EventsListAdapter(
         } else {
             val view =
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.user_list_tail, parent, false)
-            TailViewHolder(view, lifecycleOwner, showLoading, hideLoading)
+                    .inflate(R.layout.event_list_tail, parent, false)
+            TailViewHolder(view, showLoading, hideLoading)
         }
     }
 
@@ -97,10 +84,10 @@ class EventsListAdapter(
         return data.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ViewHolder) {
-            (holder as ViewHolder).bind(data[position], checkedStates[position], position)
-        }else if (holder is TailViewHolder){
+            holder.bind(data[position], checkedStates[position], position)
+        } else if (holder is TailViewHolder) {
             holder.bind()
         }
 

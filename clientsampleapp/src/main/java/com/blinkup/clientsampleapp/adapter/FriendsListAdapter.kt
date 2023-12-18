@@ -19,22 +19,18 @@ import com.blinkupapp.sdk.data.model.Connection
 import com.blinkupapp.sdk.data.model.ConnectionRequest
 import com.blinkupapp.sdk.data.model.ContactResult
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class FriendsListAdapter(
     var data: List<UserWithPresence>,
     val showLoading: () -> Unit,
     val hideLoading: () -> Unit
-) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : AbstractAdapter<RecyclerView.ViewHolder>() {
     private var filteredItems = data
         set(value) {
             field = value
             notifyDataSetChanged()
         }
-
-    lateinit var lifecycleOwner: LifecycleOwner
 
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
