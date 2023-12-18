@@ -8,9 +8,15 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.clientsampleapp.R
+import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.model.Presence
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class EventsListAdapter(
     data: List<Presence>,
@@ -78,12 +84,22 @@ class EventsListAdapter(
         private val checkOut: Button = view.findViewById(R.id.presence_check_out)
         private val devDetails: Button = view.findViewById(R.id.dev_details)
 
-        fun bind() {
+        fun bind(checkedState: MutableList<Boolean>, data: List<Presence>, lifecycleOwner: LifecycleOwner) {
             checkIn.setOnClickListener {
-                Log.i("test", "test")
+                var index = checkedState.indexOf(true)
+                if (index != -1) {
+                    lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
+                        Blinkup.setUserAtEvent(true, data[index].place!!)
+                    }
+                }
             }
             checkOut.setOnClickListener {
-                Log.i("test", "test")
+                var index = checkedState.indexOf(true)
+                if (index != -1) {
+                    lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
+                        Blinkup.setUserAtEvent(false, data[index].place!!)
+                    }
+                }
             }
             devDetails.setOnClickListener {
                 Log.i("test", "test")
@@ -95,7 +111,8 @@ class EventsListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_ITEM) {
             val view =
-                LayoutInflater.from(parent.context).inflate(R.layout.event_list_item, parent, false)
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.event_list_item, parent, false)
             ViewHolder(view) { isChecked, position ->
                 checkedStates.forEachIndexed { index, _ ->
                     checkedStates[index] = if (index == position) isChecked else false
@@ -110,7 +127,6 @@ class EventsListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        Log.i("viewtype", "viewtype: ${if (position == data.size) "Tail" else "Item"}")
         return if (position == data.size) VIEW_TYPE_TAIL else VIEW_TYPE_ITEM
     }
 
@@ -126,7 +142,7 @@ class EventsListAdapter(
                 else -> ViewType.MIDDLE
             })
         } else if (holder is TailViewHolder) {
-            holder.bind()
+            holder.bind(checkedStates, data, lifecycleOwner)
         }
 
     }
