@@ -2,54 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingVertical="8dp"
+    android:orientation="horizontal"
     android:background="@drawable/rounded_corners"
     android:layout_marginTop="20dp"
-    >
+    android:padding="16dp">
 
-    <TextView
-        android:id="@+id/matchPhoneContacts"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:layout_marginVertical="8dp"
-        android:text="@string/match_phone_contacts"
-        android:textColor="#0000EE"
-        android:textSize="16sp" />
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:gravity="center">
 
-    <View
-        android:id="@+id/line1"
-        android:layout_width="match_parent"
-        android:layout_height=".75dp"
-        android:background="#D3D3D3"
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:weightSum="2">
+            <Button
+                android:id="@+id/presence_check_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="20dp"
+                android:text="Check In"
+                />
+            <Button
+                android:id="@+id/presence_check_out"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="20dp"
+                android:text="Check Out"
+                />
 
-    <TextView
-        android:id="@+id/pendingRequests"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:layout_marginVertical="8dp"
-        android:text="@string/pending_requests"
-        android:textColor="#0000EE"
-        android:textSize="16sp" />
+        </LinearLayout>
 
-    <View
-        android:id="@+id/line2"
-        android:layout_width="match_parent"
-        android:layout_height=".75dp"
-        android:background="#D3D3D3"
-        />
-
-    <TextView
-        android:id="@+id/blockedUsers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:layout_marginVertical="8dp"
-        android:text="@string/blocked_users"
-        android:textColor="#0000EE"
-        android:textSize="16sp" />
+        <Button
+            android:id="@+id/dev_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dev Details"
+            />
+    </LinearLayout>
 
 </LinearLayout>

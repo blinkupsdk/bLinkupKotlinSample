@@ -1,8 +1,10 @@
 package com.blinkup.clientsampleapp.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
@@ -32,7 +34,7 @@ class EventsListAdapter(
         private val root = view
         private val checkBox: CheckBox = view.findViewById(R.id.checkbox)
 
-        fun bind(event: Presence, isChecked: Boolean, position: Int) {
+        fun bind(event: Presence, isChecked: Boolean, position: Int, viewType: ViewType) {
             nameView.text = event.place?.name
             nameUnderlined.text = event.place?.name
             isHere.visibility = if (event.isPresent == true) View.VISIBLE else View.GONE
@@ -43,7 +45,26 @@ class EventsListAdapter(
             checkBox.setOnCheckedChangeListener { _, isBoxChecked ->
                 onCheckChange(isBoxChecked, position)
             }
+            when (viewType) {
+                ViewType.TOP -> {
+                    root.setBackgroundResource(R.drawable.rounded_corners_top)
+                }
+
+                ViewType.MIDDLE -> {
+                    root.setBackgroundResource(R.drawable.bottom_border)
+                }
+
+                ViewType.BOTTOM -> {
+                    root.setBackgroundResource(R.drawable.rounded_corners_bottom)
+                }
+            }
         }
+    }
+
+    enum class ViewType {
+        TOP,
+        MIDDLE,
+        BOTTOM
     }
 
     class TailViewHolder(
@@ -53,8 +74,20 @@ class EventsListAdapter(
     ) :
         RecyclerView.ViewHolder(view) {
 
-        fun bind() {
+        private val checkIn: Button = view.findViewById(R.id.presence_check_in)
+        private val checkOut: Button = view.findViewById(R.id.presence_check_out)
+        private val devDetails: Button = view.findViewById(R.id.dev_details)
 
+        fun bind() {
+            checkIn.setOnClickListener {
+                Log.i("test", "test")
+            }
+            checkOut.setOnClickListener {
+                Log.i("test", "test")
+            }
+            devDetails.setOnClickListener {
+                Log.i("test", "test")
+            }
         }
 
     }
@@ -77,16 +110,21 @@ class EventsListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
+        Log.i("viewtype", "viewtype: ${if (position == data.size) "Tail" else "Item"}")
         return if (position == data.size) VIEW_TYPE_TAIL else VIEW_TYPE_ITEM
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return data.size + 1
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ViewHolder) {
-            holder.bind(data[position], checkedStates[position], position)
+            holder.bind(data[position], checkedStates[position], position, when (position) {
+                0 -> ViewType.TOP
+                data.size - 1 -> ViewType.BOTTOM
+                else -> ViewType.MIDDLE
+            })
         } else if (holder is TailViewHolder) {
             holder.bind()
         }
