@@ -84,12 +84,14 @@ class EventsListAdapter(
         private val checkOut: Button = view.findViewById(R.id.presence_check_out)
         private val devDetails: Button = view.findViewById(R.id.dev_details)
 
-        fun bind(checkedState: MutableList<Boolean>, data: List<Presence>, lifecycleOwner: LifecycleOwner) {
+        fun bind(checkedState: MutableList<Boolean>, data: List<Presence>, lifecycleOwner: LifecycleOwner, updateData: () -> Unit) {
+
             checkIn.setOnClickListener {
                 var index = checkedState.indexOf(true)
                 if (index != -1) {
                     lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
                         Blinkup.setUserAtEvent(true, data[index].place!!)
+                        updateData()
                     }
                 }
             }
@@ -98,6 +100,7 @@ class EventsListAdapter(
                 if (index != -1) {
                     lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
                         Blinkup.setUserAtEvent(false, data[index].place!!)
+                        updateData()
                     }
                 }
             }
@@ -142,7 +145,16 @@ class EventsListAdapter(
                 else -> ViewType.MIDDLE
             })
         } else if (holder is TailViewHolder) {
-            holder.bind(checkedStates, data, lifecycleOwner)
+            holder.bind(checkedStates, data, lifecycleOwner, ::updateData)
+        }
+
+    }
+
+    fun updateData() {
+        lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+            val newEventList = Blinkup.getEvents().map { Presence( place = it,
+                isPresent = Blinkup.isUserAtEvent(it)) }
+            data = newEventList
         }
 
     }
