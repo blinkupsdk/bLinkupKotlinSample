@@ -8,12 +8,14 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.clientsampleapp.R
 import com.blinkupapp.sdk.Blinkup
+import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.Presence
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -90,18 +92,35 @@ class EventsListAdapter(
                 var index = checkedState.indexOf(true)
                 if (index != -1) {
                     lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
-                        Blinkup.setUserAtEvent(true, data[index].place!!)
-                        updateData()
+                        try {
+                            Blinkup.setUserAtEvent(true, data[index].place!!)
+                            updateData()
+                        } catch (e: BlinkupException) {
+                            lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                                Toast.makeText(view.context, "An Error occured", Toast.LENGTH_LONG).show()
+                            }
+                        }
                     }
+                } else {
+                    Toast.makeText(view.context, "Please select a location first", Toast.LENGTH_LONG).show()
                 }
             }
             checkOut.setOnClickListener {
                 var index = checkedState.indexOf(true)
                 if (index != -1) {
                     lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
-                        Blinkup.setUserAtEvent(false, data[index].place!!)
-                        updateData()
+                        try {
+                            Blinkup.setUserAtEvent(false, data[index].place!!)
+                            updateData()
+                        } catch (e: BlinkupException) {
+                            lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                                Toast.makeText(view.context, "An Error occured", Toast.LENGTH_LONG).show()
+                            }
+                        }
                     }
+                }
+                else {
+                    Toast.makeText(view.context, "Please select a location first", Toast.LENGTH_LONG).show()
                 }
             }
             devDetails.setOnClickListener {
