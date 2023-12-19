@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
         <TextView
             android:id="@+id/event_name"
@@ -27,65 +26,67 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="29dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
                 android:text="Lat:" />
 
             <TextView
                 android:id="@+id/lat_coord"
-                android:layout_width="354dp"
-                android:layout_height="match_parent"
-                android:textColor="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="15dp"
+                android:textColor="@color/black"
                 android:textSize="14sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginTop="5dp"
-                android:layout_weight="0"
+                android:layout_marginLeft="5dp"
                 android:text="Long:" />
 
             <TextView
                 android:id="@+id/long_coord"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="14sp"
-                android:layout_weight="1"/>
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="15dp"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginTop="5dp"
-                android:layout_weight="0"
-                android:text="Long:" />
+                android:layout_marginLeft="5dp"
+                android:text="Radius:" />
 
             <TextView
                 android:id="@+id/radius"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="14sp"
-                android:layout_weight="1"/>
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="15dp"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
