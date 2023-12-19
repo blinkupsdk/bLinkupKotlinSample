@@ -30,8 +30,8 @@ class DevDetailsAdapter(var data: List<Place>) :AbstractAdapter<DevDetailsAdapte
 
         fun bind(event: Place) {
 
-            Log.i("events", "event date: $event")
-            eventName.text = "Hello"
+            Log.i("events", "event long: ${event.longitude}")
+            eventName.text = event.name
             eventLat.text = event.latitude.toString()
             eventLong.text = event.longitude.toString()
             eventRadius.text = event.radius.toString()
@@ -40,7 +40,6 @@ class DevDetailsAdapter(var data: List<Place>) :AbstractAdapter<DevDetailsAdapte
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        Log.i("events", "onCreateViewHolder is being called")
         val view = LayoutInflater.from(parent.context).inflate(R.layout.dev_list_item, parent, false)
         return MyViewHolder(view, lifecycleOwner)
     }
@@ -50,7 +49,6 @@ class DevDetailsAdapter(var data: List<Place>) :AbstractAdapter<DevDetailsAdapte
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        Log.i("events", "devdetailsadapter onbindviewholdeer events: $data")
         holder.bind(data[position])
     }
 
