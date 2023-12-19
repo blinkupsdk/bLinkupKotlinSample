@@ -1,18 +1,25 @@
 package com.blinkup.clientsampleapp.adapter
 
+import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
-import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.clientsampleapp.R
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
-import com.blinkupapp.sdk.data.model.Place
 import com.blinkupapp.sdk.data.model.Presence
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -141,36 +147,32 @@ class EventsListAdapter(
                 showLoading()
 
                 val dialogBuilder = AlertDialog.Builder(view.context)
+
                 val inflater = LayoutInflater.from(view.context)
                 val devLayout = inflater.inflate(R.layout.dev_details, null)
 
-//                val layout = LinearLayout(view.context)
-//                layout.orientation = LinearLayout.VERTICAL
-
-//                val recyclerView = RecyclerView(view.context)
                 val recyclerView = devLayout.findViewById<RecyclerView>(R.id.recycler_view)
                 recyclerView.layoutManager = LinearLayoutManager(view.context)
 
-//                val currentLat = devLayout.findViewById<EditText>(R.id.current_lat)
-//                val currentLong = devLayout.findViewById<EditText>(R.id.current_long)
+                val currentLat = devLayout.findViewById<TextView>(R.id.current_lat)
+                val currentLong = devLayout.findViewById<TextView>(R.id.current_long)
+
+                currentLat.text = "Temporary Lat Coord"
+                currentLong.text = "Temporary Long Coord"
 
                 lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
 
                         var eventList = Blinkup.getEvents()
 
-                        Log.i("events", "event list adapter events: $eventList")
                         val adapter = DevDetailsAdapter(eventList)
 
                         launch(Dispatchers.Main) {
 
-//                            adapter?.lifecycleOwner = lifecycleOwner
+                            adapter?.lifecycleOwner = lifecycleOwner
 
                             recyclerView.adapter = adapter
 
-//                            layout.addView(recyclerView)
-
-//                            dialogBuilder.setView(layout)
                             dialogBuilder.setView(devLayout)
 
                             dialogBuilder.setNegativeButton("Close") {
