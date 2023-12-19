@@ -90,39 +90,47 @@ class EventsListAdapter(
 
             checkIn.setOnClickListener {
                 var index = checkedState.indexOf(true)
-                if (index != -1) {
-                    lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
-                        try {
-                            Blinkup.setUserAtEvent(true, data[index].place!!)
-                            updateData()
-                        } catch (e: BlinkupException) {
-                            lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                                Toast.makeText(view.context, "An Error occured", Toast.LENGTH_LONG).show()
+
+                when (index) {
+                    -1 -> {
+                        Toast.makeText(view.context, "Please select a location first", Toast.LENGTH_LONG).show()
+                    }
+                    else -> {
+                        lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
+                            try {
+                                Blinkup.setUserAtEvent(true, data[index].place!!)
+                                updateData()
+                            } catch (e: BlinkupException) {
+                                lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                                    Toast.makeText(view.context, "An Error occured", Toast.LENGTH_LONG).show()
+                                }
                             }
                         }
                     }
-                } else {
-                    Toast.makeText(view.context, "Please select a location first", Toast.LENGTH_LONG).show()
                 }
             }
+
             checkOut.setOnClickListener {
                 var index = checkedState.indexOf(true)
-                if (index != -1) {
-                    lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
-                        try {
-                            Blinkup.setUserAtEvent(false, data[index].place!!)
-                            updateData()
-                        } catch (e: BlinkupException) {
-                            lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                                Toast.makeText(view.context, "An Error occured", Toast.LENGTH_LONG).show()
+                when (index) {
+                    -1 -> {
+                        Toast.makeText(view.context, "Please select a location first", Toast.LENGTH_LONG).show()
+                    }
+                    else -> {
+                        lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
+                            try {
+                                Blinkup.setUserAtEvent(false, data[index].place!!)
+                                updateData()
+                            } catch (e: BlinkupException) {
+                                lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                                    Toast.makeText(view.context, "An Error occured", Toast.LENGTH_LONG).show()
+                                }
                             }
                         }
                     }
                 }
-                else {
-                    Toast.makeText(view.context, "Please select a location first", Toast.LENGTH_LONG).show()
-                }
             }
+
             devDetails.setOnClickListener {
                 Log.i("test", "test")
             }
@@ -170,6 +178,7 @@ class EventsListAdapter(
     }
 
     fun updateData() {
+
         lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
             val newEventList = Blinkup.getEvents().map { Presence( place = it,
                 isPresent = Blinkup.isUserAtEvent(it)) }
