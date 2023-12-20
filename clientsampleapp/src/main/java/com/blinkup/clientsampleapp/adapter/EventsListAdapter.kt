@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,11 +31,13 @@ import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.Presence
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.birjuvachhani.locus.Locus
 
 class EventsListAdapter(
     data: List<Presence>,
     val showLoading: () -> Unit,
-    val hideLoading: () -> Unit
+    val hideLoading: () -> Unit,
+    val fragment: Fragment
 ) : AbstractAdapter<RecyclerView.ViewHolder>() {
 
     var data = data
@@ -89,7 +92,7 @@ class EventsListAdapter(
     class TailViewHolder(
         val view: View,
         val showLoading: () -> Unit,
-        val hideLoading: () -> Unit
+        val hideLoading: () -> Unit,
     ) :
         RecyclerView.ViewHolder(view) {
 
@@ -97,7 +100,7 @@ class EventsListAdapter(
         private val checkOut: Button = view.findViewById(R.id.presence_check_out)
         private val devDetails: Button = view.findViewById(R.id.dev_details)
 
-        fun bind(checkedState: MutableList<Boolean>, data: List<Presence>, lifecycleOwner: LifecycleOwner, updateData: () -> Unit) {
+        fun bind(checkedState: MutableList<Boolean>, data: List<Presence>, lifecycleOwner: LifecycleOwner, updateData: () -> Unit, fragment: Fragment) {
 
             checkIn.setOnClickListener {
                 var index = checkedState.indexOf(true)
@@ -157,8 +160,16 @@ class EventsListAdapter(
                 val currentLat = devLayout.findViewById<TextView>(R.id.current_lat)
                 val currentLong = devLayout.findViewById<TextView>(R.id.current_long)
 
-                currentLat.text = "Temporary Lat Coord"
-                currentLong.text = "Temporary Long Coord"
+//                currentLat.text = "Temporary Lat Coord"
+//                currentLong.text = "Temporary Long Coord"
+
+                Locus.startLocationUpdates(fragment) {result ->
+                    result.location?.let {
+                        currentLat.text = it.latitude.toString()
+                        currentLong.text = it.longitude.toString()
+                    }
+                }
+
 
                 lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
@@ -229,7 +240,7 @@ class EventsListAdapter(
                 else -> ViewType.MIDDLE
             })
         } else if (holder is TailViewHolder) {
-            holder.bind(checkedStates, data, lifecycleOwner, ::updateData)
+            holder.bind(checkedStates, data, lifecycleOwner, ::updateData, fragment)
         }
 
     }

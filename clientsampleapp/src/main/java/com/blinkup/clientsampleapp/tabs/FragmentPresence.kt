@@ -20,7 +20,7 @@ class FragmentPresence : BaseFragment() {
     private var eventsList: List<Presence> = emptyList()
     private lateinit var recyclerView: RecyclerView
     private var adapter: EventsListAdapter =
-        EventsListAdapter(emptyList(), ::showLoading, ::hideLoading)
+        EventsListAdapter(emptyList(), ::showLoading, ::hideLoading, this)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
