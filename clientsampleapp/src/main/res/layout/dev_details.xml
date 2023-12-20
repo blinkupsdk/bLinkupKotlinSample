@@ -22,16 +22,18 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
             android:text="Lat:" />
 
         <TextView
             android:id="@+id/current_lat"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
+            android:layout_gravity="center"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
@@ -40,20 +42,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
             android:text="Long:" />
 
         <TextView
             android:id="@+id/current_long"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="15dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_gravity="center"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
@@ -66,7 +71,7 @@
         android:textSize="20dp"
         android:textColor="@color/black"
         android:text="Location Info"
-        android:background="@drawable/top_and_bottom_border"/>
+        android:background="@drawable/bottom_border"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
