@@ -65,13 +65,13 @@
         android:gravity="center"
         android:textSize="20dp"
         android:textColor="@color/black"
-        android:text="Location Info" />
+        android:text="Location Info"
+        android:background="@drawable/top_and_bottom_border"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="555dp"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
         tools:listitem="@layout/dev_list_item" />
 

@@ -28,15 +28,30 @@ class DevDetailsAdapter(var data: List<Place>) :AbstractAdapter<DevDetailsAdapte
             eventRadius = view.findViewById(R.id.radius)
         }
 
-        fun bind(event: Place) {
+        fun bind(event: Place, viewType: ViewType) {
 
             Log.i("events", "event long: ${event.longitude}")
             eventName.text = event.name
             eventLat.text = event.latitude.toString()
             eventLong.text = event.longitude.toString()
             eventRadius.text = event.radius.toString()
+            val root = view
+
+
+            when (viewType) {
+                ViewType.TOP -> {
+
+                } else -> {
+                root.setBackgroundResource(R.drawable.top_border)
+                }
+            }
 
         }
+    }
+
+    enum class ViewType {
+        TOP,
+        OTHER
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -49,7 +64,9 @@ class DevDetailsAdapter(var data: List<Place>) :AbstractAdapter<DevDetailsAdapte
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(data[position])
+        holder.bind(data[position], when (position) {
+            0 -> ViewType.TOP
+            else -> {ViewType.OTHER}
+        })
     }
-
 }
