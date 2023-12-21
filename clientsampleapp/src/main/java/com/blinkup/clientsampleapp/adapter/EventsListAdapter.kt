@@ -64,6 +64,7 @@ class EventsListAdapter(
             checkBox.setOnCheckedChangeListener { _, isBoxChecked ->
                 onCheckChange(isBoxChecked, position)
             }
+
             when (viewType) {
                 ViewType.TOP -> {
                     root.setBackgroundResource(R.drawable.rounded_corners_top)
@@ -169,7 +170,7 @@ class EventsListAdapter(
 
                         var eventList = Blinkup.getEvents()
 
-                        val adapter = DevDetailsAdapter(eventList)
+                        val adapter = DevDetailsAdapter(eventList, data)
 
                         launch(Dispatchers.Main) {
 
