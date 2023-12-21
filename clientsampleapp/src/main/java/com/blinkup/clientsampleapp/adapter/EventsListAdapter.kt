@@ -192,6 +192,9 @@ class EventsListAdapter(
                             dialogBuilder.setNegativeButton("Close") {
                                 dialog, _ ->
                                 dialog.cancel()
+                                devLayout.parent?.let {
+                                    (it as ViewGroup).removeView(devLayout)
+                                }
                             }
 
                             dialogBuilder.create().show()
@@ -217,7 +220,7 @@ class EventsListAdapter(
                     currentLat.text = lastKnownLocation.latitude.toString()
                     currentLong.text = lastKnownLocation.longitude.toString()
                 }
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5, 5f, this)
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
             }
 
         }
