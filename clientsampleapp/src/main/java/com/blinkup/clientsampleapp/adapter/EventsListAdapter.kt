@@ -110,6 +110,8 @@ class EventsListAdapter(
 
             checkIn.setOnClickListener {
 
+
+
                 var index = checkedState.indexOf(true)
 
                 when (index) {
@@ -118,6 +120,7 @@ class EventsListAdapter(
                     }
                     else -> {
                         lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
+                            showLoading()
                             try {
                                 Blinkup.setUserAtEvent(true, data[index].place!!)
                                 updateData()
@@ -141,6 +144,7 @@ class EventsListAdapter(
                     }
                     else -> {
                         lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
+                            showLoading()
                             try {
                                 Blinkup.setUserAtEvent(false, data[index].place!!)
                                 updateData()
@@ -152,6 +156,7 @@ class EventsListAdapter(
                         }
                     }
                 }
+
             }
 
             devDetails.setOnClickListener {
@@ -279,6 +284,8 @@ class EventsListAdapter(
             val newEventList = Blinkup.getEvents().map { Presence( place = it,
                 isPresent = Blinkup.isUserAtEvent(it)) }
             data = newEventList
+
+            hideLoading()
         }
 
     }
