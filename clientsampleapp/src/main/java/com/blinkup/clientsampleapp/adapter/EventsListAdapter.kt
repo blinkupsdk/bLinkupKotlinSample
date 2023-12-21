@@ -109,9 +109,16 @@ class EventsListAdapter(
         private val devDetails: Button = view.findViewById(R.id.dev_details)
         private lateinit var locationManager: LocationManager
 
+        val inflater = LayoutInflater.from(view.context)
+        val devLayout = inflater.inflate(R.layout.dev_details, null)
+
+        val currentLat = devLayout.findViewById<TextView>(R.id.current_lat)
+        val currentLong = devLayout.findViewById<TextView>(R.id.current_long)
+
         fun bind(checkedState: MutableList<Boolean>, data: List<Presence>, lifecycleOwner: LifecycleOwner, updateData: () -> Unit) {
 
             checkIn.setOnClickListener {
+
                 var index = checkedState.indexOf(true)
 
                 when (index) {
@@ -134,7 +141,9 @@ class EventsListAdapter(
             }
 
             checkOut.setOnClickListener {
+
                 var index = checkedState.indexOf(true)
+
                 when (index) {
                     -1 -> {
                         Toast.makeText(view.context, "Please select a location first", Toast.LENGTH_LONG).show()
@@ -162,14 +171,8 @@ class EventsListAdapter(
 
                 val dialogBuilder = AlertDialog.Builder(view.context)
 
-                val inflater = LayoutInflater.from(view.context)
-                val devLayout = inflater.inflate(R.layout.dev_details, null)
-
                 val recyclerView = devLayout.findViewById<RecyclerView>(R.id.recycler_view)
                 recyclerView.layoutManager = LinearLayoutManager(view.context)
-
-                val currentLat = devLayout.findViewById<TextView>(R.id.current_lat)
-                val currentLong = devLayout.findViewById<TextView>(R.id.current_long)
 
                 lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
@@ -181,9 +184,6 @@ class EventsListAdapter(
                         launch(Dispatchers.Main) {
 
                             adapter?.lifecycleOwner = lifecycleOwner
-
-                            currentLat.text = locationData.latitude
-                            currentLong.text = locationData.longitude
 
                             recyclerView.adapter = adapter
 
@@ -214,8 +214,8 @@ class EventsListAdapter(
                 val lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
                 if(lastKnownLocation != null) {
-                    locationData.latitude = lastKnownLocation.latitude.toString()
-                    locationData.longitude = lastKnownLocation.longitude.toString()
+                    currentLat.text = lastKnownLocation.latitude.toString()
+                    currentLong.text = lastKnownLocation.longitude.toString()
                 }
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5, 5f, this)
             }
@@ -223,10 +223,10 @@ class EventsListAdapter(
         }
 
         override fun onLocationChanged(location: Location) {
-            locationData.latitude = location.latitude.toString()
-            locationData.longitude = location.longitude.toString()
-            Log.i("location", "locationData during onLocation lat: ${locationData.latitude}")
-            Log.i("location", "locationData during onLocation long: ${locationData.longitude}")
+
+            currentLat.text = location.latitude.toString()
+            currentLong.text = location.longitude.toString()
+
         }
 
     }
