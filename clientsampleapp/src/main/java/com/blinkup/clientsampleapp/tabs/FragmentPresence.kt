@@ -20,18 +20,20 @@ class FragmentPresence : BaseFragment() {
     private var eventsList: List<Presence> = emptyList()
     private lateinit var recyclerView: RecyclerView
     private var adapter: EventsListAdapter =
-        EventsListAdapter(emptyList(), ::showLoading, ::hideLoading, this)
+        EventsListAdapter(emptyList(), ::showLoading, ::hideLoading)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return inflater.inflate(R.layout.fragment_presence, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        adapter.setAdapterContext(requireContext())
         adapter.lifecycleOwner = requireActivity()
 
         recyclerView = view.findViewById(R.id.recycler_view)
