@@ -16,12 +16,10 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,13 +29,12 @@ import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.Presence
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import com.birjuvachhani.locus.Locus
+
 
 class EventsListAdapter(
     data: List<Presence>,
     val showLoading: () -> Unit,
-    val hideLoading: () -> Unit,
-    val fragment: Fragment
+    val hideLoading: () -> Unit
 ) : AbstractAdapter<RecyclerView.ViewHolder>() {
 
     var data = data
@@ -47,6 +44,15 @@ class EventsListAdapter(
             notifyDataSetChanged()
         }
     var checkedStates = data.map { false }.toMutableList()
+
+    lateinit var context: Context
+
+    data class LocationData(
+        var latitude: String,
+        var longitude: String,
+    )
+
+    var locationData = LocationData("","")
 
     class ViewHolder(view: View, private val onCheckChange: (Boolean, Int) -> Unit) :
         RecyclerView.ViewHolder(view) {
@@ -93,14 +99,17 @@ class EventsListAdapter(
         val view: View,
         val showLoading: () -> Unit,
         val hideLoading: () -> Unit,
+        val locationData: LocationData,
+        val context: Context
     ) :
-        RecyclerView.ViewHolder(view) {
+        RecyclerView.ViewHolder(view), LocationListener {
 
         private val checkIn: Button = view.findViewById(R.id.presence_check_in)
         private val checkOut: Button = view.findViewById(R.id.presence_check_out)
         private val devDetails: Button = view.findViewById(R.id.dev_details)
+        private lateinit var locationManager: LocationManager
 
-        fun bind(checkedState: MutableList<Boolean>, data: List<Presence>, lifecycleOwner: LifecycleOwner, updateData: () -> Unit, fragment: Fragment) {
+        fun bind(checkedState: MutableList<Boolean>, data: List<Presence>, lifecycleOwner: LifecycleOwner, updateData: () -> Unit) {
 
             checkIn.setOnClickListener {
                 var index = checkedState.indexOf(true)
@@ -149,6 +158,8 @@ class EventsListAdapter(
 
                 showLoading()
 
+                getLocation()
+
                 val dialogBuilder = AlertDialog.Builder(view.context)
 
                 val inflater = LayoutInflater.from(view.context)
@@ -160,17 +171,6 @@ class EventsListAdapter(
                 val currentLat = devLayout.findViewById<TextView>(R.id.current_lat)
                 val currentLong = devLayout.findViewById<TextView>(R.id.current_long)
 
-//                currentLat.text = "Temporary Lat Coord"
-//                currentLong.text = "Temporary Long Coord"
-
-                Locus.startLocationUpdates(fragment) {result ->
-                    result.location?.let {
-                        currentLat.text = it.latitude.toString()
-                        currentLong.text = it.longitude.toString()
-                    }
-                }
-
-
                 lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
 
@@ -181,6 +181,9 @@ class EventsListAdapter(
                         launch(Dispatchers.Main) {
 
                             adapter?.lifecycleOwner = lifecycleOwner
+
+                            currentLat.text = locationData.latitude
+                            currentLong.text = locationData.longitude
 
                             recyclerView.adapter = adapter
 
@@ -204,9 +207,37 @@ class EventsListAdapter(
             }
         }
 
+        private fun getLocation() {
+            locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            if ((ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+
+                val lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+                if(lastKnownLocation != null) {
+                    locationData.latitude = lastKnownLocation.latitude.toString()
+                    locationData.longitude = lastKnownLocation.longitude.toString()
+                }
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5, 5f, this)
+            }
+
+        }
+
+        override fun onLocationChanged(location: Location) {
+            locationData.latitude = location.latitude.toString()
+            locationData.longitude = location.longitude.toString()
+            Log.i("location", "locationData during onLocation lat: ${locationData.latitude}")
+            Log.i("location", "locationData during onLocation long: ${locationData.longitude}")
+        }
+
+    }
+
+    fun setAdapterContext(context: Context) {
+        this.context = context
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+
+        context = parent.context
         return if (viewType == VIEW_TYPE_ITEM) {
             val view =
                 LayoutInflater.from(parent.context)
@@ -220,7 +251,7 @@ class EventsListAdapter(
             val view =
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.event_list_tail, parent, false)
-            TailViewHolder(view, showLoading, hideLoading)
+            TailViewHolder(view, showLoading, hideLoading, locationData, context)
         }
     }
 
@@ -240,7 +271,7 @@ class EventsListAdapter(
                 else -> ViewType.MIDDLE
             })
         } else if (holder is TailViewHolder) {
-            holder.bind(checkedStates, data, lifecycleOwner, ::updateData, fragment)
+            holder.bind(checkedStates, data, lifecycleOwner, ::updateData)
         }
 
     }
