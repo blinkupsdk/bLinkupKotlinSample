@@ -18,8 +18,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -46,13 +44,6 @@ class EventsListAdapter(
     var checkedStates = data.map { false }.toMutableList()
 
     lateinit var context: Context
-
-    data class LocationData(
-        var latitude: String,
-        var longitude: String,
-    )
-
-    var locationData = LocationData("","")
 
     class ViewHolder(view: View, private val onCheckChange: (Boolean, Int) -> Unit) :
         RecyclerView.ViewHolder(view) {
@@ -99,7 +90,6 @@ class EventsListAdapter(
         val view: View,
         val showLoading: () -> Unit,
         val hideLoading: () -> Unit,
-        val locationData: LocationData,
         val context: Context
     ) :
         RecyclerView.ViewHolder(view), LocationListener {
@@ -220,7 +210,7 @@ class EventsListAdapter(
                     currentLat.text = lastKnownLocation.latitude.toString()
                     currentLong.text = lastKnownLocation.longitude.toString()
                 }
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1f, this)
             }
 
         }
@@ -229,6 +219,9 @@ class EventsListAdapter(
 
             currentLat.text = location.latitude.toString()
             currentLong.text = location.longitude.toString()
+
+            Log.i("location", "onLocationChanged Lat: ${location.latitude}")
+            Log.i("location", "onLocationChanged Long: ${location.longitude}")
 
         }
 
@@ -254,7 +247,7 @@ class EventsListAdapter(
             val view =
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.event_list_tail, parent, false)
-            TailViewHolder(view, showLoading, hideLoading, locationData, context)
+            TailViewHolder(view, showLoading, hideLoading, context)
         }
     }
 
