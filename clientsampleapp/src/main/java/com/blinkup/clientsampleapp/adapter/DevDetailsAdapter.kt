@@ -6,17 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.clientsampleapp.R
 import com.blinkupapp.sdk.data.model.Place
 import com.blinkupapp.sdk.data.model.Presence
 
-class DevDetailsAdapter(var data: List<Place>, var event: List<Presence>) :AbstractAdapter<DevDetailsAdapter.MyViewHolder>() {
+class DevDetailsAdapter(var data: List<Place>, var presence: List<Presence>) :AbstractAdapter<DevDetailsAdapter.MyViewHolder>() {
 
-//    private val presence = data.map { Presence(place = it, isPresent = Blinkup.isUserAtEvent(it)) }
-
-    class MyViewHolder(val view: View, val lifecycleOwner: LifecycleOwner): RecyclerView.ViewHolder(view) {
+    class MyViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
         private val eventName: TextView= view.findViewById(R.id.event_name)
         private val eventLat: TextView= view.findViewById(R.id.lat_coord)
@@ -60,7 +57,7 @@ class DevDetailsAdapter(var data: List<Place>, var event: List<Presence>) :Abstr
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.dev_list_item, parent, false)
-        return MyViewHolder(view, lifecycleOwner)
+        return MyViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -68,7 +65,7 @@ class DevDetailsAdapter(var data: List<Place>, var event: List<Presence>) :Abstr
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(data[position], event[position], when (position) {
+        holder.bind(data[position], presence[position], when (position) {
             0 -> ViewType.TOP
             else -> {ViewType.OTHER}
         })
