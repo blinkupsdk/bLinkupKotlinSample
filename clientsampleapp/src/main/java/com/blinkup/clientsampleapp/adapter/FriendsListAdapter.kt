@@ -1,11 +1,14 @@
 package com.blinkup.clientsampleapp.adapter
 
 import android.app.AlertDialog
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -33,12 +36,13 @@ class FriendsListAdapter(
         }
 
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(val view: View, val lifecycleOwner: LifecycleOwner) : RecyclerView.ViewHolder(view) {
         private val nameView: TextView = view.findViewById(R.id.name)
         private val userIdView: TextView = view.findViewById(R.id.user_id)
         private val userNameUnderlined: TextView = view.findViewById(R.id.nameUnderlined)
         private val isHere: ImageView = view.findViewById(R.id.isHere)
         private val root = view
+        private val openMenu: ImageButton = view.findViewById(R.id.optionsMenu)
 
         fun bind(user: UserWithPresence, viewType: ViewType) {
             nameView.text = user.user?.name
@@ -61,6 +65,39 @@ class FriendsListAdapter(
                     root.setBackgroundResource(R.drawable.rounded_corners_bottom)
                 }
             }
+
+            openMenu.setOnClickListener {
+                showOptions(user)
+            }
+
+        }
+
+        fun showOptions(userWithPresence: UserWithPresence) {
+            val optionMenu = PopupMenu(view.context, view, Gravity.END)
+            optionMenu.inflate(R.menu.menu_items)
+            lifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
+                optionMenu.setOnMenuItemClickListener { item ->
+
+                    when (item.itemId) {
+
+                        R.id.unfriend -> {
+                            try {
+//                                Blinkup.deleteConnection(userWithPresence)
+                            } catch (e: BlinkupException){
+
+                            }
+                            true
+                        }
+                        R.id.block -> {
+//                            Blinkup.getFriendList()
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            }
+
+            optionMenu.show()
         }
     }
 
@@ -182,7 +219,7 @@ class FriendsListAdapter(
             val view =
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.user_list_item, parent, false)
-            ViewHolder(view)
+            ViewHolder(view, lifecycleOwner)
         } else {
             val view =
                 LayoutInflater.from(parent.context)
