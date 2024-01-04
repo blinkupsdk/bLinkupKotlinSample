@@ -97,7 +97,6 @@ class FragmentFriends() : BaseFragment() {
             val friendsAtEvent = currentEvent?.let {
                 Blinkup.getUsersAtEvent(it)
             } ?: emptyList()
-            Log.i("eventfriends", "$friendsAtEvent")
             friendsList = friends.map { connection ->
                 val user = if (connection.targetUser?.id == App.user?.id) {
                     connection.sourceUser
@@ -106,7 +105,8 @@ class FragmentFriends() : BaseFragment() {
                 }
                 UserWithPresence(
                     user,
-                    friendsAtEvent.find { it.user?.id == user?.id }?.isPresent ?: false
+                    friendsAtEvent.find { it.user?.id == user?.id }?.isPresent ?: false,
+                    connection
                 )
             }
             tabSelected(0)
@@ -122,7 +122,6 @@ class FragmentFriends() : BaseFragment() {
     }
 
     private fun getPresentFriends(): List<UserWithPresence> {
-        Log.i("listcheck", "$friendsList")
         return friendsList.filter { it.isPresent }
     }
 
