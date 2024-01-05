@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
@@ -32,7 +33,7 @@ class MatchContactsAdapter(var data: List<ContactResult>) :AbstractAdapter<Match
 
 
         private val contactName: TextView
-        private val sendRequest: Button
+        private val sendRequest: ImageButton
 
         private var targetId : User = User()
 

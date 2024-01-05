@@ -48,7 +48,11 @@ class MainActivity : BaseActivity() {
     override fun onBackPressed() {
         val fragment = viewPager.findCurrentFragment(fragmentManager = supportFragmentManager)
         if ((fragment as BaseFragment?)?.onBackPressed() != true) {
-            super.onBackPressed()
+            if (viewPager.currentItem != 0) {
+                viewPager.currentItem = 0
+            } else {
+                super.onBackPressed()
+            }
         }
     }
 }

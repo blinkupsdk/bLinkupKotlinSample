@@ -30,15 +30,13 @@
 
     </LinearLayout>
 
-        <Button
+        <ImageButton
             android:id="@+id/send_request_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginHorizontal="10dp"
-            android:backgroundTint="#008800"
-            android:text="@string/invite"
-            android:textSize="10sp" />
+            android:background="@drawable/add_friend" />
 
 
 </LinearLayout>
