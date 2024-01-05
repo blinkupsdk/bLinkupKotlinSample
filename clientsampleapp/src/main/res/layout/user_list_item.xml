@@ -55,4 +55,13 @@
         android:visibility="gone"
         app:tint="#0000EE" />
 
+    <ImageButton
+        android:id="@+id/optionsMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="5dp"
+        android:background="@drawable/options_menu_icon" />
+
 </LinearLayout>

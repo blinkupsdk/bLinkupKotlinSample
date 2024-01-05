@@ -1,12 +1,16 @@
 package com.blinkup.clientsampleapp.adapter
 
 import android.app.AlertDialog
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +19,7 @@ import com.blinkup.clientsampleapp.R
 import com.blinkup.clientsampleapp.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
+import com.blinkupapp.sdk.data.model.Block
 import com.blinkupapp.sdk.data.model.Connection
 import com.blinkupapp.sdk.data.model.ConnectionRequest
 import com.blinkupapp.sdk.data.model.ContactResult
@@ -33,12 +38,13 @@ class FriendsListAdapter(
         }
 
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(val view: View, val lifecycleOwner: LifecycleOwner) : RecyclerView.ViewHolder(view) {
         private val nameView: TextView = view.findViewById(R.id.name)
         private val userIdView: TextView = view.findViewById(R.id.user_id)
         private val userNameUnderlined: TextView = view.findViewById(R.id.nameUnderlined)
         private val isHere: ImageView = view.findViewById(R.id.isHere)
         private val root = view
+        private val openMenu: ImageButton = view.findViewById(R.id.optionsMenu)
 
         fun bind(user: UserWithPresence, viewType: ViewType) {
             nameView.text = user.user?.name
@@ -61,6 +67,50 @@ class FriendsListAdapter(
                     root.setBackgroundResource(R.drawable.rounded_corners_bottom)
                 }
             }
+
+            openMenu.setOnClickListener {
+                showOptions(user)
+            }
+
+        }
+
+        fun showOptions(userWithPresence: UserWithPresence) {
+            val optionMenu = PopupMenu(view.context, view, Gravity.END)
+            optionMenu.inflate(R.menu.menu_items)
+                optionMenu.setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+
+                        R.id.unfriend -> {
+                            lifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
+                                try {
+                                    Blinkup.deleteConnection(userWithPresence.connection)
+                                    launch(Dispatchers.Main) {
+                                        Toast.makeText(view.context, "User unfriended", Toast.LENGTH_LONG).show()
+                                    }
+                                } catch (e: BlinkupException){
+
+                                }
+                            }
+                            true
+                        }
+                        R.id.block -> {
+                            lifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
+                                try {
+                                    Blinkup.blockUser(userWithPresence.user!!)
+                                    launch(Dispatchers.Main) {
+                                        Toast.makeText(view.context, "User blocked", Toast.LENGTH_LONG).show()
+                                    }
+                                } catch (e: BlinkupException){
+
+                                }
+                            }
+                            true
+                        }
+                        else -> false
+                    }
+                }
+
+            optionMenu.show()
         }
     }
 
@@ -95,7 +145,7 @@ class FriendsListAdapter(
 
             var contacts: List<ContactResult>
             var requests: List<ConnectionRequest>
-            var blockedUsers: List<Connection>
+            var blockedUsers: List<Block>
             var connectionList: List<Connection>
 
             val dialogBuilder = AlertDialog.Builder(view.context)
@@ -127,9 +177,7 @@ class FriendsListAdapter(
 
                     DialogType.BLOCKED_USERS -> {
                         try {
-                            connectionList = Blinkup.getFriendList()
-                            blockedUsers =
-                                connectionList.filter { it.status.toString() == "blocked" }
+                            blockedUsers = Blinkup.getBlocks()
                             adapter = BlockedListAdapter(blockedUsers)
                         } catch (e: BlinkupException) {
                             //TODO
@@ -182,7 +230,7 @@ class FriendsListAdapter(
             val view =
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.user_list_item, parent, false)
-            ViewHolder(view)
+            ViewHolder(view, lifecycleOwner)
         } else {
             val view =
                 LayoutInflater.from(parent.context)

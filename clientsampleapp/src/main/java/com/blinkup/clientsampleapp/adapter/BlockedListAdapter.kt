@@ -12,13 +12,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.clientsampleapp.R
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
+import com.blinkupapp.sdk.data.model.Block
 import com.blinkupapp.sdk.data.model.Connection
 import com.blinkupapp.sdk.data.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class BlockedListAdapter(var data: List<Connection>) :
+class BlockedListAdapter(var data: List<Block>) :
     AbstractAdapter<BlockedListAdapter.MyViewHolder>() {
 
     private var blockedUsers = data
@@ -43,15 +44,15 @@ class BlockedListAdapter(var data: List<Connection>) :
             unblockUser = view.findViewById(R.id.unblock_user_button)
         }
 
-        fun bind(blockedUser: Connection) {
+        fun bind(blockedUser: Block) {
 
-            contactName.text = blockedUser.targetUser?.name
-            userId.text = blockedUser.targetUser?.name
+            contactName.text = blockedUser.blockee?.name
+            userId.text = blockedUser.blockee?.name
 
             unblockUser.setOnClickListener {
                 lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
-                        Blinkup.deleteConnection(blockedUser)
+                        Blinkup.unblockUser(blockedUser)
                         launch(Dispatchers.Main) {
                             Toast.makeText(view.context, "User unblocked", Toast.LENGTH_LONG).show()
                         }
