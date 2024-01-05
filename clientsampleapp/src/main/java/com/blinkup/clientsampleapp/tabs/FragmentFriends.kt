@@ -1,20 +1,27 @@
 package com.blinkup.clientsampleapp.tabs
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.clientsampleapp.App
 import com.blinkup.clientsampleapp.R
+import com.blinkup.clientsampleapp.adapter.AbstractAdapter
 import com.blinkup.clientsampleapp.adapter.FriendsListAdapter
+import com.blinkup.clientsampleapp.adapter.SearchUsersAdapter
 import com.blinkup.clientsampleapp.base.BaseFragment
 import com.blinkup.clientsampleapp.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
+import com.blinkupapp.sdk.data.model.ContactResult
+import com.blinkupapp.sdk.data.model.User
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,7 +68,9 @@ class FragmentFriends() : BaseFragment() {
         searchView.setOnQueryTextListener(object :
             SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                // do nothing
+
+                searchUsers(query, view, requireActivity())
+
                 return false
             }
 
@@ -128,6 +137,44 @@ class FragmentFriends() : BaseFragment() {
 
     private fun getPresentFriends(): List<UserWithPresence> {
         return friendsList.filter { it.isPresent }
+    }
+
+    private fun searchUsers(query: String?, view: View, lifecycleOwner: LifecycleOwner) {
+
+        var users: List<User>
+
+        val dialogBuilder = AlertDialog.Builder(view.context)
+        val layout = LinearLayout(view.context)
+        layout.orientation = LinearLayout.VERTICAL
+
+        val searchRecyclerView = RecyclerView(view.context)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+
+            users = Blinkup.findUsers(query)
+            val searchAdapter = SearchUsersAdapter(users, ::showLoading, ::hideLoading)
+
+            launch(Dispatchers.Main) {
+
+                searchAdapter?.lifecycleOwner = lifecycleOwner
+
+                searchRecyclerView.adapter = searchAdapter
+                searchRecyclerView.layoutManager = LinearLayoutManager(view.context)
+
+                layout.addView(searchRecyclerView)
+
+                dialogBuilder.setView(layout)
+                dialogBuilder.setTitle("Searched Users")
+
+                dialogBuilder.setNegativeButton("Close")
+                { dialog, _ ->
+                    dialog.cancel()
+                }
+
+                dialogBuilder.create().show()
+            }
+
+        }
     }
 
 }
