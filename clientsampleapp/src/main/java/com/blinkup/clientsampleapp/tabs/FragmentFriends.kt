@@ -97,7 +97,13 @@ class FragmentFriends() : BaseFragment() {
             val friendsAtEvent = currentEvent?.let {
                 Blinkup.getUsersAtEvent(it)
             } ?: emptyList()
-            friendsList = friends.map { connection ->
+            friendsList = friends
+                //This filter will remove results with phone numbers matching the value in the filter statement
+                //once backend can set numbers to null, can be used to remove deleted users from search results and friends list
+//                .filterNot {
+//                connection -> (connection.targetUser?.phoneNumber == NULL || connection.sourceUser?.phoneNumber == NULL)
+//            }
+                .map { connection ->
                 val user = if (connection.targetUser?.id == App.user?.id) {
                     connection.sourceUser
                 } else {
@@ -107,8 +113,7 @@ class FragmentFriends() : BaseFragment() {
                     user,
                     friendsAtEvent.find { it.user?.id == user?.id }?.isPresent ?: false,
                     connection
-                )
-            }
+                ) }
             tabSelected(0)
         } catch (e: Exception) {
             showErrorMessage(e.message ?: "Unknown error")
