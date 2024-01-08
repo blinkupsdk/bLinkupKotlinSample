@@ -1,5 +1,9 @@
 package com.blinkup.clientsampleapp
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
 import com.blinkup.clientsampleapp.adapter.ViewPagerAdapter
@@ -12,9 +16,20 @@ import com.google.android.material.tabs.TabLayoutMediator
 class MainActivity : BaseActivity() {
     val adapter = ViewPagerAdapter(this)
     private lateinit var viewPager: ViewPager2
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel("channelId", "Notification test", NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = "Blinkup"
+            }
+            val nManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            nManager.createNotificationChannel(notificationChannel)
+        }
+//        createNotificationChannel(notificationChannel)
 
         viewPager = findViewById<ViewPager2>(R.id.view_pager)
         viewPager.adapter = ViewPagerAdapter(this)
@@ -55,4 +70,22 @@ class MainActivity : BaseActivity() {
             }
         }
     }
+
+//    private fun createNotificationChannel(notificationChannel: NotificationChannel) {
+//        // Create the NotificationChannel, but only on API 26+ because
+//        // the NotificationChannel class is not in the Support Library.
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            val name = getString(R.string.channel_name)
+//            val descriptionText = getString(R.string.channel_description)
+//            val importance = NotificationManager.IMPORTANCE_DEFAULT
+//            val channel = NotificationChannel("channelId", name, importance).apply {
+//                description = descriptionText
+//            }
+//            // Register the channel with the system.
+//            val notificationManager: NotificationManager =
+//                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//            notificationManager.createNotificationChannel(channel)
+//
+//        }
+//    }
 }

@@ -23,4 +23,6 @@
     <string name="manually_set_presence">Manually set presence</string>
     <string name="map">Map</string>
     <string name="invite">Invite</string>
+    <string name="channel_name">channel name</string>
+    <string name="channel_description">channel description</string>
 </resources>

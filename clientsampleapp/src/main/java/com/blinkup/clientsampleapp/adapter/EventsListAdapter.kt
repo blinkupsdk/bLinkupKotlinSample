@@ -1,6 +1,7 @@
 package com.blinkup.clientsampleapp.adapter
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
@@ -16,6 +17,8 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -106,7 +109,7 @@ class EventsListAdapter(
         val currentLat = devLayout.findViewById<TextView>(R.id.current_lat)
         val currentLong = devLayout.findViewById<TextView>(R.id.current_long)
 
-        fun bind(checkedState: MutableList<Boolean>, data: List<Presence>, lifecycleOwner: LifecycleOwner, updateData: () -> Unit) {
+        fun bind(checkedState: MutableList<Boolean>, data: List<Presence>, lifecycleOwner: LifecycleOwner, updateData: () -> Unit, pushNotification: (presence: Presence, view: View) -> Unit) {
 
             checkIn.setOnClickListener {
 
@@ -123,6 +126,7 @@ class EventsListAdapter(
                             showLoading()
                             try {
                                 Blinkup.setUserAtEvent(true, data[index].place!!)
+                                pushNotification(data[index], view)
                                 updateData()
                             } catch (e: BlinkupException) {
                                 lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
@@ -273,7 +277,7 @@ class EventsListAdapter(
                 else -> ViewType.MIDDLE
             })
         } else if (holder is TailViewHolder) {
-            holder.bind(checkedStates, data, lifecycleOwner, ::updateData)
+            holder.bind(checkedStates, data, lifecycleOwner, ::updateData, ::pushNotification)
         }
 
     }
@@ -288,6 +292,19 @@ class EventsListAdapter(
             hideLoading()
         }
 
+    }
+
+    @SuppressLint("MissingPermission")
+    fun pushNotification(presence: Presence, view: View) {
+        Log.i("callCheck", "call is true")
+        var builder = NotificationCompat.Builder(view.context, "channelId")
+            .setSmallIcon(R.drawable.person)
+            .setContentTitle("BlinkUp")
+            .setContentText("Welcome to ${presence.place?.name}")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+        val notificationManager = NotificationManagerCompat.from(view.context)
+        notificationManager.notify(1, builder)
     }
 
     companion object {
