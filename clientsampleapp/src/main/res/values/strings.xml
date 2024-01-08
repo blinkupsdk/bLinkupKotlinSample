@@ -12,4 +12,17 @@
     <string name="edit_icon">Edit Icon</string>
     <string name="_1234657890">1234657890</string>
     <string name="sample_name">Sample Name</string>
+    <string name="friends">Friends</string>
+    <string name="presence">Presence</string>
+    <string name="match_phone_contacts">Match Phone Contacts</string>
+    <string name="pending_requests">Pending Requests</string>
+    <string name="blocked_users">Blocked Users</string>
+    <string name="enter_sms_code">Enter SMS code</string>
+    <string name="submit">Submit</string>
+    <string name="enter_phone_number">Enter phone number</string>
+    <string name="manually_set_presence">Manually set presence</string>
+    <string name="map">Map</string>
+    <string name="invite">Invite</string>
+    <string name="channel_name">channel name</string>
+    <string name="channel_description">channel description</string>
 </resources>
