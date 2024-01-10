@@ -32,7 +32,8 @@ import kotlinx.coroutines.launch
 class EventsListAdapter(
     data: List<Presence>,
     val showLoading: () -> Unit,
-    val hideLoading: () -> Unit
+    val hideLoading: () -> Unit,
+    val presenceChanged: () -> Unit
 ) : AbstractAdapter<RecyclerView.ViewHolder>() {
 
     var data = data
@@ -109,9 +110,6 @@ class EventsListAdapter(
         fun bind(checkedState: MutableList<Boolean>, data: List<Presence>, lifecycleOwner: LifecycleOwner, updateData: () -> Unit) {
 
             checkIn.setOnClickListener {
-
-
-
                 var index = checkedState.indexOf(true)
 
                 when (index) {
@@ -287,6 +285,8 @@ class EventsListAdapter(
 
             hideLoading()
         }
+
+        presenceChanged()
 
     }
 

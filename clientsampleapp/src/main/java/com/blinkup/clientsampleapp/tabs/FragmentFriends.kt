@@ -177,4 +177,8 @@ class FragmentFriends() : BaseFragment() {
         }
     }
 
+    fun updatePresence() {
+        getFriends()
+    }
+
 }

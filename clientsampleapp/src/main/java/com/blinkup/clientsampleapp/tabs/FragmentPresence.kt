@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.blinkup.clientsampleapp.MainActivity
+import com.blinkup.clientsampleapp.OnPresenceUpdated
 import com.blinkup.clientsampleapp.R
 import com.blinkup.clientsampleapp.adapter.EventsListAdapter
 import com.blinkup.clientsampleapp.base.BaseFragment
@@ -20,13 +22,16 @@ class FragmentPresence : BaseFragment() {
     private var eventsList: List<Presence> = emptyList()
     private lateinit var recyclerView: RecyclerView
     private var adapter: EventsListAdapter =
-        EventsListAdapter(emptyList(), ::showLoading, ::hideLoading)
+        EventsListAdapter(emptyList(), ::showLoading, ::hideLoading, ::presenceChanged)
+
+    private fun presenceChanged() {
+        (activity as? OnPresenceUpdated)?.onPresenceUpdated()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         return inflater.inflate(R.layout.fragment_presence, container, false)
     }
 
