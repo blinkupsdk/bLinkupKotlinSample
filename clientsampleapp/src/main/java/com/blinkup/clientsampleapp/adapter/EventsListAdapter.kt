@@ -107,54 +107,59 @@ class EventsListAdapter(
         val currentLat = devLayout.findViewById<TextView>(R.id.current_lat)
         val currentLong = devLayout.findViewById<TextView>(R.id.current_long)
 
-        fun bind(checkedState: MutableList<Boolean>, data: List<Presence>, lifecycleOwner: LifecycleOwner, updateData: () -> Unit) {
+        fun bind(
+            checkedState: MutableList<Boolean>,
+            data: List<Presence>,
+            lifecycleOwner: LifecycleOwner,
+            updateData: () -> Unit
+        ) {
 
             checkIn.setOnClickListener {
-                var index = checkedState.indexOf(true)
-
-                when (index) {
-                    -1 -> {
-                        Toast.makeText(view.context, "Please select a location first", Toast.LENGTH_LONG).show()
-                    }
-                    else -> {
-                        lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
-                            showLoading()
+                showLoading()
+                lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    checkedState.forEachIndexed { index, checked ->
+                        if (checked) {
                             try {
                                 Blinkup.setUserAtEvent(true, data[index].place!!)
-                                updateData()
                             } catch (e: BlinkupException) {
+
                                 lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                                    Toast.makeText(view.context, "An Error occured", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(
+                                        view.context,
+                                        "An Error occurred",
+                                        Toast.LENGTH_LONG
+                                    ).show()
                                 }
                             }
                         }
                     }
                 }
+                updateData()
+                hideLoading()
             }
 
             checkOut.setOnClickListener {
 
-                var index = checkedState.indexOf(true)
-
-                when (index) {
-                    -1 -> {
-                        Toast.makeText(view.context, "Please select a location first", Toast.LENGTH_LONG).show()
-                    }
-                    else -> {
-                        lifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
-                            showLoading()
+                showLoading()
+                lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    checkedState.forEachIndexed { index, checked ->
+                        if (checked) {
                             try {
                                 Blinkup.setUserAtEvent(false, data[index].place!!)
-                                updateData()
                             } catch (e: BlinkupException) {
                                 lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                                    Toast.makeText(view.context, "An Error occured", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(
+                                        view.context,
+                                        "An Error occurred",
+                                        Toast.LENGTH_LONG
+                                    ).show()
                                 }
                             }
                         }
                     }
                 }
-
+                updateData()
+                hideLoading()
             }
 
             devDetails.setOnClickListener {
@@ -183,8 +188,7 @@ class EventsListAdapter(
 
                             dialogBuilder.setView(devLayout)
 
-                            dialogBuilder.setNegativeButton("Close") {
-                                dialog, _ ->
+                            dialogBuilder.setNegativeButton("Close") { dialog, _ ->
                                 dialog.cancel()
                                 devLayout.parent?.let {
                                     (it as ViewGroup).removeView(devLayout)
@@ -196,7 +200,7 @@ class EventsListAdapter(
                             hideLoading()
 
                         }
-                    } catch (e: BlinkupException){
+                    } catch (e: BlinkupException) {
                         //TODO
                     }
                 }
@@ -206,11 +210,16 @@ class EventsListAdapter(
 
         private fun getLocation() {
             locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            if ((ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+            if ((ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED)
+            ) {
 
-                val lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                val lastKnownLocation =
+                    locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
-                if(lastKnownLocation != null) {
+                if (lastKnownLocation != null) {
                     currentLat.text = lastKnownLocation.latitude.toString()
                     currentLong.text = lastKnownLocation.longitude.toString()
                 }
@@ -244,7 +253,7 @@ class EventsListAdapter(
                     .inflate(R.layout.event_list_item, parent, false)
             ViewHolder(view) { isChecked, position ->
                 checkedStates.forEachIndexed { index, _ ->
-                    checkedStates[index] = if (index == position) isChecked else false
+                    checkedStates[index] = if (index == position) isChecked else checkedStates[index]
                 }
             }
         } else {
@@ -265,11 +274,13 @@ class EventsListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ViewHolder) {
-            holder.bind(data[position], checkedStates[position], position, when (position) {
-                0 -> ViewType.TOP
-                data.size - 1 -> ViewType.BOTTOM
-                else -> ViewType.MIDDLE
-            })
+            holder.bind(
+                data[position], checkedStates[position], position, when (position) {
+                    0 -> ViewType.TOP
+                    data.size - 1 -> ViewType.BOTTOM
+                    else -> ViewType.MIDDLE
+                }
+            )
         } else if (holder is TailViewHolder) {
             holder.bind(checkedStates, data, lifecycleOwner, ::updateData)
         }
@@ -279,8 +290,12 @@ class EventsListAdapter(
     fun updateData() {
 
         lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-            val newEventList = Blinkup.getEvents().map { Presence( place = it,
-                isPresent = Blinkup.isUserAtEvent(it)) }
+            val newEventList = Blinkup.getEvents().map {
+                Presence(
+                    place = it,
+                    isPresent = Blinkup.isUserAtEvent(it)
+                )
+            }
             data = newEventList
 
             hideLoading()
