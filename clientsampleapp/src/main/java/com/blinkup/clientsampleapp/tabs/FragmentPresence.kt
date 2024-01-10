@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.blinkup.clientsampleapp.MainActivity
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.blinkup.clientsampleapp.OnPresenceUpdated
 import com.blinkup.clientsampleapp.R
 import com.blinkup.clientsampleapp.adapter.EventsListAdapter
@@ -19,6 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FragmentPresence : BaseFragment() {
+    private lateinit var tabLayout: TabLayout
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var eventsList: List<Presence> = emptyList()
     private lateinit var recyclerView: RecyclerView
     private var adapter: EventsListAdapter =
@@ -38,6 +40,11 @@ class FragmentPresence : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        swipeRefreshLayout.setOnRefreshListener {
+            getEvents()
+        }
+
         adapter.setAdapterContext(requireContext())
         adapter.lifecycleOwner = requireActivity()
 
@@ -45,7 +52,7 @@ class FragmentPresence : BaseFragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
-        val tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
+        tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
         tabLayout.addTab(tabLayout.newTab().setText("All"))
         tabLayout.addTab(tabLayout.newTab().setText("Present"))
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -89,11 +96,12 @@ class FragmentPresence : BaseFragment() {
                     isPresent = Blinkup.isUserAtEvent(it),
                 )
             }
-            tabSelected(0)
+            tabSelected(tabLayout.selectedTabPosition)
         } catch (e: Exception) {
             showErrorMessage(e.message ?: "Unknown error")
         } finally {
             hideLoading()
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 

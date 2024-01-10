@@ -12,6 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.blinkup.clientsampleapp.App
 import com.blinkup.clientsampleapp.R
 import com.blinkup.clientsampleapp.adapter.AbstractAdapter
@@ -27,6 +28,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FragmentFriends() : BaseFragment() {
+    private lateinit var tabLayout: TabLayout
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var searchView: SearchView
     private var friendsList: List<UserWithPresence> = emptyList()
     private lateinit var recyclerView: RecyclerView
@@ -42,13 +45,19 @@ class FragmentFriends() : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        swipeRefreshLayout.setOnRefreshListener {
+            getFriends()
+        }
+
         adapter.lifecycleOwner = requireActivity()
 
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
-        val tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
+
+        tabLayout = view.findViewById(R.id.tab_layout)
         tabLayout.addTab(tabLayout.newTab().setText("All"))
         tabLayout.addTab(tabLayout.newTab().setText("Present"))
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -123,11 +132,12 @@ class FragmentFriends() : BaseFragment() {
                     friendsAtEvent.find { it.user?.id == user?.id }?.isPresent ?: false,
                     connection
                 ) }
-            tabSelected(0)
+            tabSelected(tabLayout.selectedTabPosition)
         } catch (e: Exception) {
             showErrorMessage(e.message ?: "Unknown error")
         } finally {
             hideLoading()
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 
@@ -156,7 +166,7 @@ class FragmentFriends() : BaseFragment() {
 
             launch(Dispatchers.Main) {
 
-                searchAdapter?.lifecycleOwner = lifecycleOwner
+                searchAdapter.lifecycleOwner = lifecycleOwner
 
                 searchRecyclerView.adapter = searchAdapter
                 searchRecyclerView.layoutManager = LinearLayoutManager(view.context)
