@@ -23,7 +23,11 @@ class SearchUsersAdapter(
     val hideLoading: () -> Unit):
     AbstractAdapter<SearchUsersAdapter.MyViewHolder>() {
 
-    private var users = data
+    private var users = data.filterNot {
+        //this temporary filter will prevent users with deleted accounts from appearing
+        //on a list
+        it.name == null
+    }
         set(value) {
             field = value
             notifyDataSetChanged()

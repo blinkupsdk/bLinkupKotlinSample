@@ -19,7 +19,9 @@ import kotlinx.coroutines.launch
 
 class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<PendingRequestAdapter.MyViewHolder>() {
 
-    private var requests = data
+    private var requests = data.filterNot {
+        it.targetUser?.name == null || it.sourceUser?.name == null
+    }
         set(value) {
             field = value
             notifyDataSetChanged()

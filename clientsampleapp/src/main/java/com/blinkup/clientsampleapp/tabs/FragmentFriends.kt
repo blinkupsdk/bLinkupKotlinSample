@@ -109,7 +109,9 @@ class FragmentFriends() : BaseFragment() {
     private fun getFriends() = lifecycleScope.launch(Dispatchers.IO) {
         try {
             showLoading()
-            val friends = Blinkup.getFriendList()
+            val friends = Blinkup.getFriendList().filterNot {
+                it.targetUser?.name == null || it.sourceUser?.name == null
+            }
             val events = Blinkup.getEvents()
             val currentEvent = events.find { Blinkup.isUserAtEvent(it) }
             val friendsAtEvent = currentEvent?.let {

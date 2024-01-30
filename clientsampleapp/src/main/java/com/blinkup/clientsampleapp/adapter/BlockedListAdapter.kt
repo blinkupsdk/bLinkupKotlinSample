@@ -22,7 +22,11 @@ import kotlinx.coroutines.launch
 class BlockedListAdapter(var data: List<Block>) :
     AbstractAdapter<BlockedListAdapter.MyViewHolder>() {
 
-    private var blockedUsers = data
+    private var blockedUsers = data.filterNot {
+        //this temporary filter will prevent users with deleted accounts from appearing
+        //on a list
+        it.blockee.name == null
+    }
         set(value) {
             field = value
             notifyDataSetChanged()

@@ -22,7 +22,9 @@ import kotlinx.coroutines.launch
 
 class MatchContactsAdapter(var data: List<ContactResult>) :AbstractAdapter<MatchContactsAdapter.MyViewHolder>() {
 
-    private var phoneContacts = data
+    private var phoneContacts = data.filterNot {
+        it.name == null
+    }
         set(value) {
             field = value
             notifyDataSetChanged()

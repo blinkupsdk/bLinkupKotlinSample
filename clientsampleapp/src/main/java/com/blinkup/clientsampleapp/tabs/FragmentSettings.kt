@@ -77,6 +77,32 @@ class FragmentSettings : BaseFragment() {
             startActivity(intent)
         }
 
+        view.findViewById<TextView>(R.id.delete_account).setOnClickListener { _ ->
+            val dialogBuilder = AlertDialog.Builder(context)
+            val layout = LinearLayout(context)
+            layout.orientation = LinearLayout.VERTICAL
+
+            dialogBuilder.setView(layout)
+            dialogBuilder.setTitle("Do you want to delete your account?")
+
+            dialogBuilder.setPositiveButton("OK") { _, _ ->
+                lifecycleScope.launch {
+                    //TODO remember to change this function name to whatever function deletes an account
+                    Blinkup.deleteUser()
+                    withContext(Dispatchers.Main) {
+                        val intent = Intent(context, LoginActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+            }
+
+            dialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+
+            dialogBuilder.create().show()
+        }
+
         view.findViewById<TextView>(R.id.log_out).setOnClickListener { _ ->
             val dialogBuilder = AlertDialog.Builder(context)
             val layout = LinearLayout(context)
