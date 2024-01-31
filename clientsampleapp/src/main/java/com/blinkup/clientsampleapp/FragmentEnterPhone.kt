@@ -85,11 +85,12 @@ class FragmentEnterPhone : BaseFragment() {
                         lifecycleScope.launch {
                             try {
                                 Blinkup.requestCode(phone)
-                                showMessage("Code sent")
                                 openEnterCodeFragment()
 
                             } catch (e: Exception) {
-                                showErrorMessage(e.message ?: "Something went wrong")
+                                launch(Dispatchers.Main) {
+                                    Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                                }
                             } finally {
                                 hideLoading()
                             }

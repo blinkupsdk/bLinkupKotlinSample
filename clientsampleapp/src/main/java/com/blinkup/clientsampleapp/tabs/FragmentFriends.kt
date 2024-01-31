@@ -21,6 +21,7 @@ import com.blinkup.clientsampleapp.adapter.SearchUsersAdapter
 import com.blinkup.clientsampleapp.base.BaseFragment
 import com.blinkup.clientsampleapp.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
+import com.blinkupapp.sdk.data.model.ConnectionStatus
 import com.blinkupapp.sdk.data.model.ContactResult
 import com.blinkupapp.sdk.data.model.User
 import com.google.android.material.tabs.TabLayout
@@ -110,7 +111,7 @@ class FragmentFriends() : BaseFragment() {
         try {
             showLoading()
             val friends = Blinkup.getFriendList().filterNot {
-                it.targetUser?.name == null || it.sourceUser?.name == null
+                it.targetUser?.name == null || it.sourceUser?.name == null || it.status == ConnectionStatus.BLOCKED
             }
             val events = Blinkup.getEvents()
             val currentEvent = events.find { Blinkup.isUserAtEvent(it) }

@@ -58,7 +58,9 @@ class MatchContactsAdapter(var data: List<ContactResult>) :AbstractAdapter<Match
                         }
                     }
                     catch (e: BlinkupException) {
-
+                        launch(Dispatchers.Main) {
+                            Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
             }

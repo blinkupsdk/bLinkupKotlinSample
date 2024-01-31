@@ -22,6 +22,7 @@ import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.Block
 import com.blinkupapp.sdk.data.model.Connection
 import com.blinkupapp.sdk.data.model.ConnectionRequest
+import com.blinkupapp.sdk.data.model.ConnectionStatus
 import com.blinkupapp.sdk.data.model.ContactResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -88,7 +89,9 @@ class FriendsListAdapter(
                                         Toast.makeText(view.context, "User unfriended", Toast.LENGTH_LONG).show()
                                     }
                                 } catch (e: BlinkupException){
-
+                                    launch(Dispatchers.Main) {
+                                        Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                                    }
                                 }
                             }
                             true
@@ -97,11 +100,14 @@ class FriendsListAdapter(
                             lifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
                                 try {
                                     Blinkup.blockUser(userWithPresence.user!!)
+                                    Blinkup.updateConnection(userWithPresence.connection, ConnectionStatus.BLOCKED)
                                     launch(Dispatchers.Main) {
                                         Toast.makeText(view.context, "User blocked", Toast.LENGTH_LONG).show()
                                     }
                                 } catch (e: BlinkupException){
-
+                                    launch(Dispatchers.Main) {
+                                        Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                                    }
                                 }
                             }
                             true
@@ -162,7 +168,9 @@ class FriendsListAdapter(
                             contacts = Blinkup.findContacts()
                             adapter = MatchContactsAdapter(contacts)
                         } catch (e: BlinkupException) {
-                            //TODO
+                            launch(Dispatchers.Main) {
+                                Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                            }
                         }
                     }
 
@@ -171,7 +179,9 @@ class FriendsListAdapter(
                             requests = Blinkup.getFriendRequests()
                             adapter = PendingRequestAdapter(requests)
                         } catch (e: BlinkupException) {
-                            //TODO
+                            launch(Dispatchers.Main) {
+                                Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                            }
                         }
                     }
 
@@ -180,7 +190,9 @@ class FriendsListAdapter(
                             blockedUsers = Blinkup.getBlocks()
                             adapter = BlockedListAdapter(blockedUsers)
                         } catch (e: BlinkupException) {
-                            //TODO
+                            launch(Dispatchers.Main) {
+                                Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                            }
                         }
                     }
                 }

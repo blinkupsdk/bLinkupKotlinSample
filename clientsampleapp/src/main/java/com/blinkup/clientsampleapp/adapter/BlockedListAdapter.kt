@@ -14,6 +14,7 @@ import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.Block
 import com.blinkupapp.sdk.data.model.Connection
+import com.blinkupapp.sdk.data.model.ConnectionStatus
 import com.blinkupapp.sdk.data.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -57,11 +58,18 @@ class BlockedListAdapter(var data: List<Block>) :
                 lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
                         Blinkup.unblockUser(blockedUser)
+                        val user = Blinkup.checkSessionAndLogin()
+                        val connection = Blinkup.getFriendList().filter {
+                             user.id !== blockedUser.id
+                        }
+                        Blinkup.updateConnection(connection[0], ConnectionStatus.CONNECTED)
                         launch(Dispatchers.Main) {
                             Toast.makeText(view.context, "User unblocked", Toast.LENGTH_LONG).show()
                         }
                     } catch (e: BlinkupException) {
-
+                        launch(Dispatchers.Main) {
+                            Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
             }

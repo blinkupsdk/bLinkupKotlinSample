@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +27,7 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
             field = value
             notifyDataSetChanged()
         }
-    class MyViewHolder(view: View, val lifecycleOwner: LifecycleOwner): RecyclerView.ViewHolder(view) {
+    class MyViewHolder(val view: View, val lifecycleOwner: LifecycleOwner): RecyclerView.ViewHolder(view) {
 
         private val contactName: TextView
         val acceptRequest: ImageButton
@@ -65,8 +66,14 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
                         lifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
                             try {
                                 Blinkup.acceptFriendRequest(request)
+                                Blinkup.denyFriendRequest(request)
+                                launch(Dispatchers.Main) {
+                                    Toast.makeText(view.context, "Friend Request accepted", Toast.LENGTH_LONG).show()
+                                }
                             } catch (e: BlinkupException) {
-                                //TODO
+                                launch(Dispatchers.Main) {
+                                    Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                                }
                             }
                         }
                     }
@@ -75,8 +82,13 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
                         lifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
                             try {
                                 Blinkup.denyFriendRequest(request)
+                                launch(Dispatchers.Main) {
+                                    Toast.makeText(view.context, "Friend Request denied", Toast.LENGTH_LONG).show()
+                                }
                             } catch (e: BlinkupException) {
-                                //TODO
+                                launch(Dispatchers.Main) {
+                                    Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                                }
                             }
                         }
                     }
@@ -85,8 +97,13 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
                         lifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
                             try {
                                 Blinkup.denyFriendRequest(request)
+                                launch(Dispatchers.Main) {
+                                    Toast.makeText(view.context, "Friend Request cancelled", Toast.LENGTH_LONG).show()
+                                }
                             } catch (e: BlinkupException) {
-                                //TODO
+                                launch(Dispatchers.Main) {
+                                    Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                                }
                             }
                         }
                     }

@@ -59,7 +59,9 @@ class SearchUsersAdapter(
                         }
                     }
                     catch (e: BlinkupException) {
-
+                        launch(Dispatchers.Main) {
+                            Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
             }
