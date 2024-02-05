@@ -15,6 +15,7 @@ import com.blinkupapp.sdk.data.model.ContactResult
 import com.blinkup.clientsampleapp.R
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
+import com.blinkupapp.sdk.data.model.ConnectionRequest
 import com.blinkupapp.sdk.data.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,7 +31,9 @@ class MatchContactsAdapter(var data: List<ContactResult>) :AbstractAdapter<Match
             notifyDataSetChanged()
         }
 
-    class MyViewHolder(val view: View, val lifecycleOwner: LifecycleOwner): RecyclerView.ViewHolder(view) {
+    class MyViewHolder(val view: View,
+                       val lifecycleOwner: LifecycleOwner,
+                       var onSentRequest: (contact: ContactResult) -> Unit): RecyclerView.ViewHolder(view) {
 
 
 
@@ -54,6 +57,7 @@ class MatchContactsAdapter(var data: List<ContactResult>) :AbstractAdapter<Match
                         targetId.id = contact.userId
                         Blinkup.sendFriendRequest(targetId)
                         launch(Dispatchers.Main) {
+                            onSentRequest(contact)
                             Toast.makeText(view.context, "Request Sent", Toast.LENGTH_LONG).show()
                         }
                     }
@@ -70,7 +74,11 @@ class MatchContactsAdapter(var data: List<ContactResult>) :AbstractAdapter<Match
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.contact_list_item, parent, false)
-        return MyViewHolder(view, lifecycleOwner)
+        return MyViewHolder(view, lifecycleOwner, ::onSentRequest)
+    }
+
+    private fun onSentRequest(contact: ContactResult) {
+        phoneContacts = phoneContacts.filterNot {it == contact}
     }
 
     override fun getItemCount(): Int {

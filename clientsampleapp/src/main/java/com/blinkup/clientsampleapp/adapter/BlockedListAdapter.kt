@@ -33,7 +33,9 @@ class BlockedListAdapter(var data: List<Block>) :
             notifyDataSetChanged()
         }
 
-    class MyViewHolder(val view: View, val lifecycleOwner: LifecycleOwner) :
+    class MyViewHolder(val view: View,
+                       val lifecycleOwner: LifecycleOwner,
+                       var onUserBlocked: (user: Block) -> Unit) :
         RecyclerView.ViewHolder(view) {
 
 
@@ -50,7 +52,6 @@ class BlockedListAdapter(var data: List<Block>) :
         }
 
         fun bind(blockedUser: Block) {
-
             contactName.text = blockedUser.blockee?.name
             userId.text = blockedUser.blockee?.name
 
@@ -65,6 +66,8 @@ class BlockedListAdapter(var data: List<Block>) :
                         Blinkup.updateConnection(connection[0], ConnectionStatus.CONNECTED)
                         launch(Dispatchers.Main) {
                             Toast.makeText(view.context, "User unblocked", Toast.LENGTH_LONG).show()
+                            view.visibility = View.GONE
+                            onUserBlocked(blockedUser)
                         }
                     } catch (e: BlinkupException) {
                         launch(Dispatchers.Main) {
@@ -77,9 +80,13 @@ class BlockedListAdapter(var data: List<Block>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view =
+        var view =
             LayoutInflater.from(parent.context).inflate(R.layout.blocked_list_item, parent, false)
-        return MyViewHolder(view, lifecycleOwner)
+        return MyViewHolder(view, lifecycleOwner, ::onUserBlocked)
+    }
+
+    private fun onUserBlocked(block: Block) {
+        blockedUsers = blockedUsers.filterNot{it == block}
     }
 
     override fun getItemCount(): Int {

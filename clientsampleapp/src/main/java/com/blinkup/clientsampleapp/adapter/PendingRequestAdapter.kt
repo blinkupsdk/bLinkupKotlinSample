@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -19,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<PendingRequestAdapter.MyViewHolder>() {
-
     private var requests = data.filterNot {
         it.targetUser?.name == null || it.sourceUser?.name == null
     }
@@ -27,7 +25,10 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
             field = value
             notifyDataSetChanged()
         }
-    class MyViewHolder(val view: View, val lifecycleOwner: LifecycleOwner): RecyclerView.ViewHolder(view) {
+    class MyViewHolder(val view: View,
+                       val lifecycleOwner: LifecycleOwner,
+                        var onRequestResponded: (request: ConnectionRequest) -> Unit):
+        RecyclerView.ViewHolder(view) {
 
         private val contactName: TextView
         val acceptRequest: ImageButton
@@ -45,21 +46,21 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
 
             lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    val sourceUser = Blinkup.checkSessionAndLogin()
+                    val currentUser = Blinkup.checkSessionAndLogin()
 
                     launch(Dispatchers.Main) {
                         contactName.text =
-                            if(request.sourceUser?.id == sourceUser.id)
+                            if(request.sourceUser?.id == currentUser.id)
                                 request.targetUser?.name else request.sourceUser?.name
 
-                        Log.i("buttons", "source user id: ${request.sourceUser?.id}, match userId: ${(request.sourceUser?.id == sourceUser.id)}")
+                        Log.i("buttons", "source user id: ${request.sourceUser?.id}, match userId: ${(request.sourceUser?.id == currentUser.id)}")
 
                         acceptRequest.visibility =
-                            if(request.sourceUser?.id == sourceUser.id) View.GONE else View.VISIBLE
+                            if(request.sourceUser?.id == currentUser.id) View.GONE else View.VISIBLE
                         denyRequest.visibility =
-                            if(request.sourceUser?.id == sourceUser.id) View.GONE else View.VISIBLE
+                            if(request.sourceUser?.id == currentUser.id) View.GONE else View.VISIBLE
                         cancelRequest.visibility =
-                            if(request.sourceUser?.id == sourceUser.id) View.VISIBLE else View.GONE
+                            if(request.sourceUser?.id == currentUser.id) View.VISIBLE else View.GONE
                     }
 
                     acceptRequest.setOnClickListener {
@@ -69,6 +70,7 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
                                 Blinkup.denyFriendRequest(request)
                                 launch(Dispatchers.Main) {
                                     Toast.makeText(view.context, "Friend Request accepted", Toast.LENGTH_LONG).show()
+                                    onRequestResponded(request)
                                 }
                             } catch (e: BlinkupException) {
                                 launch(Dispatchers.Main) {
@@ -84,6 +86,7 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
                                 Blinkup.denyFriendRequest(request)
                                 launch(Dispatchers.Main) {
                                     Toast.makeText(view.context, "Friend Request denied", Toast.LENGTH_LONG).show()
+                                    onRequestResponded(request)
                                 }
                             } catch (e: BlinkupException) {
                                 launch(Dispatchers.Main) {
@@ -98,6 +101,7 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
                             try {
                                 Blinkup.denyFriendRequest(request)
                                 launch(Dispatchers.Main) {
+                                    onRequestResponded(request)
                                     Toast.makeText(view.context, "Friend Request cancelled", Toast.LENGTH_LONG).show()
                                 }
                             } catch (e: BlinkupException) {
@@ -110,7 +114,9 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
 
 
                 } catch (e: BlinkupException){
-                    //TODO
+                    launch(Dispatchers.Main) {
+                        Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                    }
                 }
 
             }
@@ -120,7 +126,11 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.pending_request_item, parent, false)
-        return MyViewHolder(view, lifecycleOwner)
+        return MyViewHolder(view, lifecycleOwner, ::onRequestAccepted)
+    }
+
+    private fun onRequestAccepted(request: ConnectionRequest) {
+        requests = requests.filterNot {it == request}
     }
 
     override fun getItemCount(): Int {

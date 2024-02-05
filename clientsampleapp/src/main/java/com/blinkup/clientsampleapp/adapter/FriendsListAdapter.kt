@@ -39,7 +39,10 @@ class FriendsListAdapter(
         }
 
 
-    class ViewHolder(val view: View, val lifecycleOwner: LifecycleOwner) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(val view: View,
+                     val lifecycleOwner: LifecycleOwner,
+                     val onDeleteOrBlock: (user: UserWithPresence) -> Unit):
+                     RecyclerView.ViewHolder(view) {
         private val nameView: TextView = view.findViewById(R.id.name)
         private val userIdView: TextView = view.findViewById(R.id.user_id)
         private val userNameUnderlined: TextView = view.findViewById(R.id.nameUnderlined)
@@ -91,6 +94,7 @@ class FriendsListAdapter(
                                 } catch (e: BlinkupException){
                                     launch(Dispatchers.Main) {
                                         Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                                        onDeleteOrBlock(userWithPresence)
                                     }
                                 }
                             }
@@ -103,6 +107,7 @@ class FriendsListAdapter(
                                     Blinkup.updateConnection(userWithPresence.connection, ConnectionStatus.BLOCKED)
                                     launch(Dispatchers.Main) {
                                         Toast.makeText(view.context, "User blocked", Toast.LENGTH_LONG).show()
+                                        onDeleteOrBlock(userWithPresence)
                                     }
                                 } catch (e: BlinkupException){
                                     launch(Dispatchers.Main) {
@@ -242,13 +247,17 @@ class FriendsListAdapter(
             val view =
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.user_list_item, parent, false)
-            ViewHolder(view, lifecycleOwner)
+            ViewHolder(view, lifecycleOwner, ::onDeleteOrBlock)
         } else {
             val view =
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.user_list_tail, parent, false)
             TailViewHolder(view, lifecycleOwner, showLoading, hideLoading)
         }
+    }
+
+    private fun onDeleteOrBlock(userWithPresence: UserWithPresence) {
+        filteredItems = filteredItems.filterNot {it == userWithPresence}
     }
 
     override fun getItemViewType(position: Int): Int {
