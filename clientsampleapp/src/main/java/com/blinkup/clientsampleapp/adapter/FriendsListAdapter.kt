@@ -90,6 +90,7 @@ class FriendsListAdapter(
                                     Blinkup.deleteConnection(userWithPresence.connection)
                                     launch(Dispatchers.Main) {
                                         Toast.makeText(view.context, "User unfriended", Toast.LENGTH_LONG).show()
+                                        onDeleteOrBlock(userWithPresence)
                                     }
                                 } catch (e: BlinkupException){
                                     launch(Dispatchers.Main) {
@@ -255,12 +256,6 @@ class FriendsListAdapter(
             TailViewHolder(view, lifecycleOwner, showLoading, hideLoading, getFriends)
         }
     }
-
-//    private fun updateFriendList(request: ConnectionRequest) {
-//        val targetUser = filteredItems.filter { it.user == request.sourceUser }
-//        filteredItems = filteredItems.filterNot { it.user == request.sourceUser }
-//        filteredItems = filteredItems.plus(targetUser[0])
-//    }
 
     private fun onDeleteOrBlock(userWithPresence: UserWithPresence) {
         filteredItems = filteredItems.filterNot {it == userWithPresence}
