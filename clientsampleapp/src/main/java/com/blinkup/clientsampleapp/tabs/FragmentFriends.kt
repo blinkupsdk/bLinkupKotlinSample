@@ -34,7 +34,7 @@ class FragmentFriends() : BaseFragment() {
     private lateinit var searchView: SearchView
     private var friendsList: List<UserWithPresence> = emptyList()
     private lateinit var recyclerView: RecyclerView
-    private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList(), ::showLoading, ::hideLoading)
+    private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList(), ::showLoading, ::hideLoading, ::getFriends)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -119,11 +119,6 @@ class FragmentFriends() : BaseFragment() {
                 Blinkup.getUsersAtEvent(it)
             } ?: emptyList()
             friendsList = friends
-                //This filter will remove results with phone numbers matching the value in the filter statement
-                //once backend can set numbers to null, can be used to remove deleted users from search results and friends list
-//                .filterNot {
-//                connection -> (connection.targetUser?.phoneNumber == NULL || connection.sourceUser?.phoneNumber == NULL)
-//            }
                 .map { connection ->
                 val user = if (connection.targetUser?.id == App.user?.id) {
                     connection.sourceUser

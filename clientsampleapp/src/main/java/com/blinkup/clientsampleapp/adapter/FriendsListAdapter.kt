@@ -20,7 +20,6 @@ import com.blinkup.clientsampleapp.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.Block
-import com.blinkupapp.sdk.data.model.Connection
 import com.blinkupapp.sdk.data.model.ConnectionRequest
 import com.blinkupapp.sdk.data.model.ConnectionStatus
 import com.blinkupapp.sdk.data.model.ContactResult
@@ -30,9 +29,10 @@ import kotlinx.coroutines.launch
 class FriendsListAdapter(
     var data: List<UserWithPresence>,
     val showLoading: () -> Unit,
-    val hideLoading: () -> Unit
+    val hideLoading: () -> Unit,
+    val getFriends: () -> Unit
 ) : AbstractAdapter<RecyclerView.ViewHolder>() {
-    private var filteredItems = data
+    var filteredItems = data
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -135,7 +135,8 @@ class FriendsListAdapter(
         val view: View,
         val lifecycleOwner: LifecycleOwner,
         val showLoading: () -> Unit,
-        val hideLoading: () -> Unit
+        val hideLoading: () -> Unit,
+        val getFriends: () -> Unit
     ) :
         RecyclerView.ViewHolder(view) {
 
@@ -157,7 +158,6 @@ class FriendsListAdapter(
             var contacts: List<ContactResult>
             var requests: List<ConnectionRequest>
             var blockedUsers: List<Block>
-            var connectionList: List<Connection>
 
             val dialogBuilder = AlertDialog.Builder(view.context)
             val layout = LinearLayout(view.context)
@@ -182,7 +182,7 @@ class FriendsListAdapter(
                     DialogType.PENDING_REQUESTS -> {
                         try {
                             requests = Blinkup.getFriendRequests()
-                            adapter = PendingRequestAdapter(requests)
+                            adapter = PendingRequestAdapter(requests, getFriends)
                         } catch (e: BlinkupException) {
                             launch(Dispatchers.Main) {
                                 Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
@@ -252,9 +252,15 @@ class FriendsListAdapter(
             val view =
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.user_list_tail, parent, false)
-            TailViewHolder(view, lifecycleOwner, showLoading, hideLoading)
+            TailViewHolder(view, lifecycleOwner, showLoading, hideLoading, getFriends)
         }
     }
+
+//    private fun updateFriendList(request: ConnectionRequest) {
+//        val targetUser = filteredItems.filter { it.user == request.sourceUser }
+//        filteredItems = filteredItems.filterNot { it.user == request.sourceUser }
+//        filteredItems = filteredItems.plus(targetUser[0])
+//    }
 
     private fun onDeleteOrBlock(userWithPresence: UserWithPresence) {
         filteredItems = filteredItems.filterNot {it == userWithPresence}

@@ -1,10 +1,8 @@
 package com.blinkup.clientsampleapp.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -13,12 +11,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkupapp.sdk.data.model.ContactResult
 import com.blinkup.clientsampleapp.R
+import com.blinkup.clientsampleapp.tabs.FragmentFriends
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
-import com.blinkupapp.sdk.data.model.ConnectionRequest
 import com.blinkupapp.sdk.data.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.reflect.KFunction1
+import kotlin.reflect.KProperty0
 
 
 class MatchContactsAdapter(var data: List<ContactResult>) :AbstractAdapter<MatchContactsAdapter.MyViewHolder>() {
@@ -31,11 +31,11 @@ class MatchContactsAdapter(var data: List<ContactResult>) :AbstractAdapter<Match
             notifyDataSetChanged()
         }
 
-    class MyViewHolder(val view: View,
-                       val lifecycleOwner: LifecycleOwner,
-                       var onSentRequest: (contact: ContactResult) -> Unit): RecyclerView.ViewHolder(view) {
-
-
+    class MyViewHolder(
+        val view: View,
+        val lifecycleOwner: LifecycleOwner,
+        var onSentRequest: (contact: ContactResult) -> Unit):
+        RecyclerView.ViewHolder(view) {
 
         private val contactName: TextView
         private val sendRequest: ImageButton
@@ -55,9 +55,11 @@ class MatchContactsAdapter(var data: List<ContactResult>) :AbstractAdapter<Match
                 lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
                         targetId.id = contact.userId
+                        targetId.phoneNumber = contact.phoneNumber
                         Blinkup.sendFriendRequest(targetId)
                         launch(Dispatchers.Main) {
                             onSentRequest(contact)
+                            getFriends()
                             Toast.makeText(view.context, "Request Sent", Toast.LENGTH_LONG).show()
                         }
                     }
@@ -69,6 +71,10 @@ class MatchContactsAdapter(var data: List<ContactResult>) :AbstractAdapter<Match
                 }
             }
 
+        }
+
+        private fun getFriends() {
+            getFriends()
         }
     }
 

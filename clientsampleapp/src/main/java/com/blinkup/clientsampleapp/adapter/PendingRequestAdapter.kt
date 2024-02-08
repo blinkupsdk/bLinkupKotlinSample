@@ -16,8 +16,9 @@ import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.ConnectionRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.reflect.KProperty0
 
-class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<PendingRequestAdapter.MyViewHolder>() {
+class PendingRequestAdapter(var data: List<ConnectionRequest>, val getFriends: () -> Unit): AbstractAdapter<PendingRequestAdapter.MyViewHolder>() {
     private var requests = data.filterNot {
         it.targetUser?.name == null || it.sourceUser?.name == null
     }
@@ -25,9 +26,12 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
             field = value
             notifyDataSetChanged()
         }
-    class MyViewHolder(val view: View,
-                       val lifecycleOwner: LifecycleOwner,
-                        var onRequestResponded: (request: ConnectionRequest) -> Unit):
+    class MyViewHolder(
+        val view: View,
+        val lifecycleOwner: LifecycleOwner,
+        var onRequestResponded: (request: ConnectionRequest) -> Unit,
+        var getFriends: () -> Unit
+    ):
         RecyclerView.ViewHolder(view) {
 
         private val contactName: TextView
@@ -71,6 +75,7 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
                                 launch(Dispatchers.Main) {
                                     Toast.makeText(view.context, "Friend Request accepted", Toast.LENGTH_LONG).show()
                                     onRequestResponded(request)
+                                    getFriends()
                                 }
                             } catch (e: BlinkupException) {
                                 launch(Dispatchers.Main) {
@@ -126,7 +131,7 @@ class PendingRequestAdapter(var data: List<ConnectionRequest>): AbstractAdapter<
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.pending_request_item, parent, false)
-        return MyViewHolder(view, lifecycleOwner, ::onRequestAccepted)
+        return MyViewHolder(view, lifecycleOwner, ::onRequestAccepted, getFriends)
     }
 
     private fun onRequestAccepted(request: ConnectionRequest) {
