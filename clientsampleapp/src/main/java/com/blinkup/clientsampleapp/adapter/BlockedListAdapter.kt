@@ -20,7 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class BlockedListAdapter(var data: List<Block>) :
+class BlockedListAdapter(var data: List<Block>, val getFriends: () -> Unit) :
     AbstractAdapter<BlockedListAdapter.MyViewHolder>() {
 
     private var blockedUsers = data.filterNot {
@@ -35,7 +35,8 @@ class BlockedListAdapter(var data: List<Block>) :
 
     class MyViewHolder(val view: View,
                        val lifecycleOwner: LifecycleOwner,
-                       var onUserBlocked: (user: Block) -> Unit) :
+                       var onUserBlocked: (user: Block) -> Unit,
+                       var getFriends: () -> Unit) :
         RecyclerView.ViewHolder(view) {
 
 
@@ -68,6 +69,7 @@ class BlockedListAdapter(var data: List<Block>) :
                             Toast.makeText(view.context, "User unblocked", Toast.LENGTH_LONG).show()
                             view.visibility = View.GONE
                             onUserBlocked(blockedUser)
+                            getFriends()
                         }
                     } catch (e: BlinkupException) {
                         launch(Dispatchers.Main) {
@@ -82,7 +84,7 @@ class BlockedListAdapter(var data: List<Block>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         var view =
             LayoutInflater.from(parent.context).inflate(R.layout.blocked_list_item, parent, false)
-        return MyViewHolder(view, lifecycleOwner, ::onUserBlocked)
+        return MyViewHolder(view, lifecycleOwner, ::onUserBlocked, getFriends)
     }
 
     private fun onUserBlocked(block: Block) {
