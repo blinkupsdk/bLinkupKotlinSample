@@ -7,9 +7,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.blinkup.clientsampleapp.base.BaseFragment
 import com.blinkupapp.sdk.Blinkup
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.Dispatchers
 
 class FragmentEnterCode : BaseFragment() {
     override fun onCreateView(
@@ -29,11 +31,13 @@ class FragmentEnterCode : BaseFragment() {
                 lifecycleScope.launch {
                     try {
                         val user = Blinkup.confirmCode(smsCode)
-                        showMessage("Code accepted")
+                        App.user = user
                         openMainActivity()
 
                     } catch (e: Exception) {
-                        showErrorMessage(e.message ?: "Something went wrong")
+                        launch(Dispatchers.Main) {
+                            Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                        }
                     } finally {
                         hideLoading()
                     }
