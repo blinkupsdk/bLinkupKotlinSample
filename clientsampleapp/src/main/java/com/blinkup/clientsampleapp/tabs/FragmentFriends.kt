@@ -21,6 +21,7 @@ import com.blinkup.clientsampleapp.adapter.SearchUsersAdapter
 import com.blinkup.clientsampleapp.base.BaseFragment
 import com.blinkup.clientsampleapp.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
+import com.blinkupapp.sdk.data.model.ConnectionStatus
 import com.blinkupapp.sdk.data.model.ContactResult
 import com.blinkupapp.sdk.data.model.User
 import com.google.android.material.tabs.TabLayout
@@ -33,7 +34,7 @@ class FragmentFriends() : BaseFragment() {
     private lateinit var searchView: SearchView
     private var friendsList: List<UserWithPresence> = emptyList()
     private lateinit var recyclerView: RecyclerView
-    private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList(), ::showLoading, ::hideLoading)
+    private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList(), ::showLoading, ::hideLoading, ::getFriends)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -109,18 +110,15 @@ class FragmentFriends() : BaseFragment() {
     private fun getFriends() = lifecycleScope.launch(Dispatchers.IO) {
         try {
             showLoading()
-            val friends = Blinkup.getFriendList()
+            val friends = Blinkup.getFriendList().filterNot {
+                it.targetUser?.name == null || it.sourceUser?.name == null || it.status == ConnectionStatus.BLOCKED
+            }
             val events = Blinkup.getEvents()
             val currentEvent = events.find { Blinkup.isUserAtEvent(it) }
             val friendsAtEvent = currentEvent?.let {
                 Blinkup.getUsersAtEvent(it)
             } ?: emptyList()
             friendsList = friends
-                //This filter will remove results with phone numbers matching the value in the filter statement
-                //once backend can set numbers to null, can be used to remove deleted users from search results and friends list
-//                .filterNot {
-//                connection -> (connection.targetUser?.phoneNumber == NULL || connection.sourceUser?.phoneNumber == NULL)
-//            }
                 .map { connection ->
                 val user = if (connection.targetUser?.id == App.user?.id) {
                     connection.sourceUser

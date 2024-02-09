@@ -20,8 +20,8 @@ import com.blinkup.clientsampleapp.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.Block
-import com.blinkupapp.sdk.data.model.Connection
 import com.blinkupapp.sdk.data.model.ConnectionRequest
+import com.blinkupapp.sdk.data.model.ConnectionStatus
 import com.blinkupapp.sdk.data.model.ContactResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,16 +29,20 @@ import kotlinx.coroutines.launch
 class FriendsListAdapter(
     var data: List<UserWithPresence>,
     val showLoading: () -> Unit,
-    val hideLoading: () -> Unit
+    val hideLoading: () -> Unit,
+    val getFriends: () -> Unit
 ) : AbstractAdapter<RecyclerView.ViewHolder>() {
-    private var filteredItems = data
+    var filteredItems = data
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
 
-    class ViewHolder(val view: View, val lifecycleOwner: LifecycleOwner) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(val view: View,
+                     val lifecycleOwner: LifecycleOwner,
+                     val onDeleteOrBlock: (user: UserWithPresence) -> Unit):
+                     RecyclerView.ViewHolder(view) {
         private val nameView: TextView = view.findViewById(R.id.name)
         private val userIdView: TextView = view.findViewById(R.id.user_id)
         private val userNameUnderlined: TextView = view.findViewById(R.id.nameUnderlined)
@@ -86,9 +90,13 @@ class FriendsListAdapter(
                                     Blinkup.deleteConnection(userWithPresence.connection)
                                     launch(Dispatchers.Main) {
                                         Toast.makeText(view.context, "User unfriended", Toast.LENGTH_LONG).show()
+                                        onDeleteOrBlock(userWithPresence)
                                     }
                                 } catch (e: BlinkupException){
-
+                                    launch(Dispatchers.Main) {
+                                        Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                                        onDeleteOrBlock(userWithPresence)
+                                    }
                                 }
                             }
                             true
@@ -97,11 +105,15 @@ class FriendsListAdapter(
                             lifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
                                 try {
                                     Blinkup.blockUser(userWithPresence.user!!)
+                                    Blinkup.updateConnection(userWithPresence.connection, ConnectionStatus.BLOCKED)
                                     launch(Dispatchers.Main) {
                                         Toast.makeText(view.context, "User blocked", Toast.LENGTH_LONG).show()
+                                        onDeleteOrBlock(userWithPresence)
                                     }
                                 } catch (e: BlinkupException){
-
+                                    launch(Dispatchers.Main) {
+                                        Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                                    }
                                 }
                             }
                             true
@@ -124,7 +136,8 @@ class FriendsListAdapter(
         val view: View,
         val lifecycleOwner: LifecycleOwner,
         val showLoading: () -> Unit,
-        val hideLoading: () -> Unit
+        val hideLoading: () -> Unit,
+        val getFriends: () -> Unit
     ) :
         RecyclerView.ViewHolder(view) {
 
@@ -146,7 +159,6 @@ class FriendsListAdapter(
             var contacts: List<ContactResult>
             var requests: List<ConnectionRequest>
             var blockedUsers: List<Block>
-            var connectionList: List<Connection>
 
             val dialogBuilder = AlertDialog.Builder(view.context)
             val layout = LinearLayout(view.context)
@@ -162,25 +174,31 @@ class FriendsListAdapter(
                             contacts = Blinkup.findContacts()
                             adapter = MatchContactsAdapter(contacts)
                         } catch (e: BlinkupException) {
-                            //TODO
+                            launch(Dispatchers.Main) {
+                                Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                            }
                         }
                     }
 
                     DialogType.PENDING_REQUESTS -> {
                         try {
                             requests = Blinkup.getFriendRequests()
-                            adapter = PendingRequestAdapter(requests)
+                            adapter = PendingRequestAdapter(requests, getFriends)
                         } catch (e: BlinkupException) {
-                            //TODO
+                            launch(Dispatchers.Main) {
+                                Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                            }
                         }
                     }
 
                     DialogType.BLOCKED_USERS -> {
                         try {
                             blockedUsers = Blinkup.getBlocks()
-                            adapter = BlockedListAdapter(blockedUsers)
+                            adapter = BlockedListAdapter(blockedUsers, getFriends)
                         } catch (e: BlinkupException) {
-                            //TODO
+                            launch(Dispatchers.Main) {
+                                Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                            }
                         }
                     }
                 }
@@ -230,13 +248,17 @@ class FriendsListAdapter(
             val view =
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.user_list_item, parent, false)
-            ViewHolder(view, lifecycleOwner)
+            ViewHolder(view, lifecycleOwner, ::onDeleteOrBlock)
         } else {
             val view =
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.user_list_tail, parent, false)
-            TailViewHolder(view, lifecycleOwner, showLoading, hideLoading)
+            TailViewHolder(view, lifecycleOwner, showLoading, hideLoading, getFriends)
         }
+    }
+
+    private fun onDeleteOrBlock(userWithPresence: UserWithPresence) {
+        filteredItems = filteredItems.filterNot {it == userWithPresence}
     }
 
     override fun getItemViewType(position: Int): Int {

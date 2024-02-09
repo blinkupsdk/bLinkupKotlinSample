@@ -14,21 +14,29 @@ import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.exception.BlinkupException
 import com.blinkupapp.sdk.data.model.Block
 import com.blinkupapp.sdk.data.model.Connection
+import com.blinkupapp.sdk.data.model.ConnectionStatus
 import com.blinkupapp.sdk.data.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class BlockedListAdapter(var data: List<Block>) :
+class BlockedListAdapter(var data: List<Block>, val getFriends: () -> Unit) :
     AbstractAdapter<BlockedListAdapter.MyViewHolder>() {
 
-    private var blockedUsers = data
+    private var blockedUsers = data.filterNot {
+        //this temporary filter will prevent users with deleted accounts from appearing
+        //on a list
+        it.blockee.name == null
+    }
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
-    class MyViewHolder(val view: View, val lifecycleOwner: LifecycleOwner) :
+    class MyViewHolder(val view: View,
+                       val lifecycleOwner: LifecycleOwner,
+                       var onUserBlocked: (user: Block) -> Unit,
+                       var getFriends: () -> Unit) :
         RecyclerView.ViewHolder(view) {
 
 
@@ -45,7 +53,6 @@ class BlockedListAdapter(var data: List<Block>) :
         }
 
         fun bind(blockedUser: Block) {
-
             contactName.text = blockedUser.blockee?.name
             userId.text = blockedUser.blockee?.name
 
@@ -53,11 +60,21 @@ class BlockedListAdapter(var data: List<Block>) :
                 lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
                         Blinkup.unblockUser(blockedUser)
+                        val user = Blinkup.checkSessionAndLogin()
+                        val connection = Blinkup.getFriendList().filter {
+                             user.id !== blockedUser.id
+                        }
+                        Blinkup.updateConnection(connection[0], ConnectionStatus.CONNECTED)
                         launch(Dispatchers.Main) {
                             Toast.makeText(view.context, "User unblocked", Toast.LENGTH_LONG).show()
+                            view.visibility = View.GONE
+                            onUserBlocked(blockedUser)
+                            getFriends()
                         }
                     } catch (e: BlinkupException) {
-
+                        launch(Dispatchers.Main) {
+                            Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
             }
@@ -65,9 +82,13 @@ class BlockedListAdapter(var data: List<Block>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view =
+        var view =
             LayoutInflater.from(parent.context).inflate(R.layout.blocked_list_item, parent, false)
-        return MyViewHolder(view, lifecycleOwner)
+        return MyViewHolder(view, lifecycleOwner, ::onUserBlocked, getFriends)
+    }
+
+    private fun onUserBlocked(block: Block) {
+        blockedUsers = blockedUsers.filterNot{it == block}
     }
 
     override fun getItemCount(): Int {
