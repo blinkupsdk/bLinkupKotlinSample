@@ -13,38 +13,49 @@
         app:layout_constraintGuide_percent="0.4" />
 
     <ImageView
-        android:paddingHorizontal="32dp"
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="32dp"
         android:src="@drawable/blinkup_logo"
         app:layout_constraintBottom_toTopOf="@id/phone_number_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Spinner
+        android:id="@+id/clientIdSpinner"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/center_guideline" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/phone_number_layout"
         android:layout_width="200dp"
+        android:layout_marginTop="5dp"
         android:layout_height="wrap_content"
         android:hint="@string/enter_phone_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/center_guideline">
+        app:layout_constraintTop_toBottomOf="@id/clientIdSpinner">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/phone_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:inputType="phone" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:layout_marginTop="16dp"
         android:id="@+id/submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:enabled="false"
         android:text="@string/submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
