@@ -1,4 +1,4 @@
-package com.blinkup.clientsampleapp.model
+package com.blinkup.uisdk.model
 
 data class ClientId(val name: String, val id: String)
 
