@@ -1,5 +1,6 @@
 package com.blinkup.uisdk
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -22,8 +23,14 @@ class LoginActivity : BaseActivity() {
     }
 
     companion object {
-        const val CLIENT_ID = "CLIENT_ID"
-        var user: User? = null
-        var clientId: String? = null
+        fun createIntent(context: Context, clientId: String): Intent {
+            return Intent(context, LoginActivity::class.java).apply {
+                putExtra(CLIENT_ID, clientId)
+            }
+        }
+
+        private const val CLIENT_ID = "CLIENT_ID"
+        internal var user: User? = null
+        internal var clientId: String? = null
     }
 }
