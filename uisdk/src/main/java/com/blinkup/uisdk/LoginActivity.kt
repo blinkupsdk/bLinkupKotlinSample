@@ -11,11 +11,14 @@ import com.blinkupapp.sdk.data.model.User
 class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_basic)
-        Blinkup.init(applicationContext)
         intent.getStringExtra(CLIENT_ID)?.let {
             clientId = it
         }
+        setTheme(intent.getIntExtra(THEME, R.style.DefaultTheme))
+
+        setContentView(R.layout.activity_basic)
+        Blinkup.init(applicationContext)
+
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, FragmentEnterPhone())
@@ -23,13 +26,16 @@ class LoginActivity : BaseActivity() {
     }
 
     companion object {
-        fun createIntent(context: Context, clientId: String): Intent {
+        fun createIntent(context: Context, clientId: String, theme: Int = R.style.DefaultTheme): Intent {
             return Intent(context, LoginActivity::class.java).apply {
                 putExtra(CLIENT_ID, clientId)
+                putExtra(THEME, theme)
             }
         }
 
+
         private const val CLIENT_ID = "CLIENT_ID"
+        private const val THEME = "THEME"
         internal var user: User? = null
         internal var clientId: String? = null
     }

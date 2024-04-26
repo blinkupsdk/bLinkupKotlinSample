@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:text="@string/what_is_your_phone_number"
+        android:textColor="?attr/textColorPrimary"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -20,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:text="@string/phone_number_is_used"
+        android:textColor="?attr/textColorPrimary"
         android:textSize="12sp" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -27,38 +29,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:hint="@string/enter_your_phone_number_here"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="165dp">
+
+        android:hint="@string/enter_your_phone_number_here">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/phone_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
-            android:inputType="phone" />
+            android:enabled="true"
+            android:inputType="phone"
+            android:textColor="?attr/textColorPrimary"
+            android:textColorHint="?attr/colorDisabledDark"
+            tools:text="555-555-1234" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/submit_button"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
         android:enabled="false"
-        android:text="@string/submit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/phone_number_layout" />
+        android:textColor="@color/positive_button_text_color"
+        android:background="@drawable/positive_button_background_selector"
+        android:text="@string/submit" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/cancel_button"
         android:layout_width="180dp"
+        android:textColor="@color/negative_button_text_color"
+        android:background="@drawable/negative_button_background_selector"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:text="@string/cancel"
+        android:text="@string/cancel" />
 
 </LinearLayout>

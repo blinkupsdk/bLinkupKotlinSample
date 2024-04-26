@@ -13,4 +13,16 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <declare-styleable name="customColors">
+        <attr name="colorDisabledDark" format="reference" />
+        <attr name="textColorPrimary" format="reference" />
+    </declare-styleable>
+
+    <style name="DefaultTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorDisabledDark">@color/disabledDark</item>
+        <item name="textColorPrimary">@color/black</item>
+    </style>
 </resources>

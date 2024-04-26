@@ -6,4 +6,11 @@
     </style>
 
     <style name="Theme.SampleApp" parent="Base.Theme.SampleApp" />
+
+    <style name="DarkRedTheme" parent="DefaultTheme">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/darkRed</item>
+        <item name="colorDisabledDark">@color/darkRedDisabled</item>
+        <item name="textColorPrimary">@color/darkRedText</item>
+    </style>
 </resources>

@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/clientsampleapp" />
             <option value="$PROJECT_DIR$/uisdk" />
+            <option value="$PROJECT_DIR$/uisdklauncher" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

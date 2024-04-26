@@ -5,10 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
     <Button
-        android:id="@+id/launch_ui_sdk_button"
+        android:id="@+id/launch_default_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Launch UI SDK"/>
+        android:text="Launch With Default (Dark Blue) Theme"/>
+
+    <Button
+        android:id="@+id/launch_dark_red_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Launch With Dark Red Theme"/>
 </LinearLayout>

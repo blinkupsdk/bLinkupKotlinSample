@@ -19,8 +19,11 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        findViewById<Button>(R.id.launch_ui_sdk_button).setOnClickListener {
+        findViewById<Button>(R.id.launch_default_button).setOnClickListener {
             BlinkupUISDK.launch(this, "Ph1bFOq1moKmm0in2lxsfZ5v-No-Og6wWxEKM-6F1OM=")
+        }
+        findViewById<Button>(R.id.launch_dark_red_button).setOnClickListener {
+            BlinkupUISDK.launch(this, "Ph1bFOq1moKmm0in2lxsfZ5v-No-Og6wWxEKM-6F1OM=", R.style.DarkRedTheme)
         }
     }
 }
