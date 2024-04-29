@@ -14,4 +14,12 @@
         <item name="textColorPrimary">@color/darkRedText</item>
         <item name="colorDisabledSecondary">@color/darkRedDisabledSecondary</item>
     </style>
+
+    <style name="DarkGreenTheme" parent="DefaultTheme">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/darkGreen</item>
+        <item name="colorDisabledDark">@color/darkGreenDisabled</item>
+        <item name="textColorPrimary">@color/darkGreenText</item>
+        <item name="colorDisabledSecondary">@color/darkGreenDisabledSecondary</item>
+    </style>
 </resources>

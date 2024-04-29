@@ -33,4 +33,6 @@
     <string name="connect_to_your_phone_contacts">Connect to your phone contacts</string>
     <string name="contacts_are_used">Contacts are used to quickly find your friends by their phone number.</string>
     <string name="allow_access_to_contacts">Allow Access To Contacts</string>
+    <string name="one_time_code_sent_to">One Time Code sent to %s</string>
+    <string name="enter_the_code_here_to_login">Enter the code here to login.</string>
 </resources>

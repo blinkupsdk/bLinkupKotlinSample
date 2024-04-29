@@ -12,16 +12,9 @@ import com.blinkupapp.sdk.Blinkup
 import com.google.android.material.textfield.TextInputEditText
 import com.permissionx.guolindev.PermissionX
 import android.Manifest
-import android.content.Context
-import android.util.Log
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
-import com.blinkup.uisdk.model.ClientId
-import com.blinkup.uisdk.model.DemoClientIds
-import com.blinkupapp.sdk.data.exception.BlinkupException
 import kotlinx.coroutines.Dispatchers
 
 class FragmentEnterPhone : BaseFragment() {
@@ -36,7 +29,7 @@ class FragmentEnterPhone : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        view.findViewById<ImageView>(R.id.logo).setImageResource(LoginActivity.logoId)
 
         PermissionX.init(this)
             .permissions(
@@ -68,9 +61,15 @@ class FragmentEnterPhone : BaseFragment() {
 
     }
 
-    private fun openEnterCodeFragment() {
+    private fun openEnterCodeFragment(phone: String) {
         parentFragmentManager.beginTransaction()
-            .replace(R.id.container, FragmentEnterCode())
+            .replace(R.id.container, with(FragmentEnterCode()){
+                arguments = Bundle().apply {
+                    putString(FragmentEnterCode.PHONE, phone)
+                }
+                this
+
+            })
             .addToBackStack(null)
             .commit()
     }
@@ -92,7 +91,7 @@ class FragmentEnterPhone : BaseFragment() {
                             try {
                                 LoginActivity.clientId?.let { clientId ->
                                     Blinkup.requestCode(clientId, phone)
-                                    openEnterCodeFragment()
+                                    openEnterCodeFragment(phone)
                                 }
                             } catch (e: Exception) {
                                 launch(Dispatchers.Main) {

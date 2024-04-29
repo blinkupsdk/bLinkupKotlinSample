@@ -7,4 +7,9 @@
     <color name="darkRedDisabled">#C19393</color>
     <color name="darkRedText">#470000</color>
     <color name="darkRedDisabledSecondary">#C39A9A</color>
+
+    <color name="darkGreen">#00471B</color>
+    <color name="darkGreenDisabled">#8DB89D</color>
+    <color name="darkGreenText">#00230D</color>
+    <color name="darkGreenDisabledSecondary">#ADCCB9</color>
 </resources>

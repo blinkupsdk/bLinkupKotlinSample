@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import com.blinkup.uisdk.base.BaseFragment
@@ -26,6 +28,7 @@ class FragmentEnterCode : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.findViewById<ImageView>(R.id.logo).setImageResource(LoginActivity.logoId)
 
         view.findViewById<View>(R.id.submit_button).setOnClickListener {
             showLoading()
@@ -62,6 +65,12 @@ class FragmentEnterCode : BaseFragment() {
         view.findViewById<View>(R.id.cancel_button).setOnClickListener {
             onBackPressed()
         }
+
+        arguments?.getString(PHONE)?.let {
+            view.findViewById<TextView>(R.id.code_sent_to).text =
+                String.format(getString(R.string.one_time_code_sent_to), it)
+        }
+
     }
 
     private fun openNewUserFragment() {
@@ -76,5 +85,9 @@ class FragmentEnterCode : BaseFragment() {
             it.finish()
             startActivity(Intent(it, MainActivity::class.java))
         }
+    }
+
+    companion object {
+        const val PHONE: String = "PHONE"
     }
 }

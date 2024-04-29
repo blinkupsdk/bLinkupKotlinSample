@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp">
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:paddingHorizontal="32dp"
+        tools:src="@drawable/blinkup_logo" />
 
     <TextView
         android:layout_width="wrap_content"
