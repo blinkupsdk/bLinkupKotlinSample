@@ -12,5 +12,6 @@
         <item name="colorPrimaryDark">@color/darkRed</item>
         <item name="colorDisabledDark">@color/darkRedDisabled</item>
         <item name="textColorPrimary">@color/darkRedText</item>
+        <item name="colorDisabledSecondary">@color/darkRedDisabledSecondary</item>
     </style>
 </resources>

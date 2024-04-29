@@ -6,4 +6,5 @@
     <color name="darkRed">#8B0000</color>
     <color name="darkRedDisabled">#C19393</color>
     <color name="darkRedText">#470000</color>
+    <color name="darkRedDisabledSecondary">#C39A9A</color>
 </resources>

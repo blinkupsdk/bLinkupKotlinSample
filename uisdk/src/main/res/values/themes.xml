@@ -17,6 +17,7 @@
     <declare-styleable name="customColors">
         <attr name="colorDisabledDark" format="reference" />
         <attr name="textColorPrimary" format="reference" />
+        <attr name="colorDisabledSecondary" format="reference" />
     </declare-styleable>
 
     <style name="DefaultTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -24,5 +25,8 @@
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorDisabledDark">@color/disabledDark</item>
         <item name="textColorPrimary">@color/black</item>
+        <item name="colorDisabledSecondary">@color/disabledSecondary</item>
     </style>
+
+
 </resources>

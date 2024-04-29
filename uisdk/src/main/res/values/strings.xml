@@ -26,4 +26,11 @@
     <string name="what_is_your_phone_number">What is your phone number?</string>
     <string name="phone_number_is_used">Phone number is used to login and to make it easy for your contacts to find you. Message and date rates may apply.</string>
     <string name="enter_your_phone_number_here">Enter your phone number here</string>
+    <string name="new_user_sign_up">New user sign up</string>
+    <string name="choose_a_username_and_enter_your_name">Choose a username and enter your name so your friends can find you and connect when you are both at the Fiserv Forum.</string>
+    <string name="username">Username</string>
+    <string name="name">Name</string>
+    <string name="connect_to_your_phone_contacts">Connect to your phone contacts</string>
+    <string name="contacts_are_used">Contacts are used to quickly find your friends by their phone number.</string>
+    <string name="allow_access_to_contacts">Allow Access To Contacts</string>
 </resources>

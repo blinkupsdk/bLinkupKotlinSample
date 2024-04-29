@@ -18,18 +18,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import com.blinkup.uisdk.model.ClientId
 import com.blinkup.uisdk.model.DemoClientIds
 import com.blinkupapp.sdk.data.exception.BlinkupException
 import kotlinx.coroutines.Dispatchers
 
 class FragmentEnterPhone : BaseFragment() {
-    private var selectedClientId: String? = null
-        set(value) {
-            field = value
-            view?.findViewById<TextInputEditText>(R.id.phone_number)?.isEnabled = value != null
-            view?.findViewById<View>(R.id.submit_button)?.isEnabled = value != null
-        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,8 +41,7 @@ class FragmentEnterPhone : BaseFragment() {
         PermissionX.init(this)
             .permissions(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                Manifest.permission.READ_CONTACTS
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
             )
             .onExplainRequestReason { scope, rationale ->
                 scope.showRequestReasonDialog(
@@ -114,8 +108,13 @@ class FragmentEnterPhone : BaseFragment() {
                         }
                     }
             }
+            view.findViewById<View>(R.id.cancel_button).setOnClickListener {
+                onBackPressed()
+            }
 
-
+            view.findViewById<TextInputEditText>(R.id.phone_number).addTextChangedListener { text ->
+                view.findViewById<View>(R.id.submit_button).isEnabled = text.toString().isNotEmpty()
+            }
         } else {
             showLoading()
             lifecycleScope.launch {

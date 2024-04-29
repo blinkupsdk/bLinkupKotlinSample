@@ -26,20 +26,23 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/phone_number_layout"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-
-        android:hint="@string/enter_your_phone_number_here">
+        android:hint="@string/enter_your_phone_number_here"
+        app:cursorColor="?attr/textColorPrimary"
+        android:textColorHint="?attr/colorDisabledDark"
+        app:hintTextColor="?attr/colorDisabledDark">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/phone_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="true"
             android:inputType="phone"
+            android:background="@drawable/secondary_disabled_border"
             android:textColor="?attr/textColorPrimary"
-            android:textColorHint="?attr/colorDisabledDark"
             tools:text="555-555-1234" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -50,19 +53,19 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        android:enabled="false"
-        android:textColor="@color/positive_button_text_color"
         android:background="@drawable/positive_button_background_selector"
-        android:text="@string/submit" />
+        android:enabled="false"
+        android:text="@string/submit"
+        android:textColor="@color/positive_button_text_color" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/cancel_button"
         android:layout_width="180dp"
-        android:textColor="@color/negative_button_text_color"
-        android:background="@drawable/negative_button_background_selector"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:text="@string/cancel" />
+        android:background="@drawable/negative_button_background_selector"
+        android:text="@string/cancel"
+        android:textColor="@color/negative_button_text_color" />
 
 </LinearLayout>
