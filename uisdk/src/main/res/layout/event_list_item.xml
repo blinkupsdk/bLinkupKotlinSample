@@ -28,7 +28,7 @@
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 
-        <com.blinkup.clientsampleapp.views.UnderlinedTextView
+        <com.blinkup.uisdk.views.UnderlinedTextView
             android:id="@+id/nameUnderlined"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

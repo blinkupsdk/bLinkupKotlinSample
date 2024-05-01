@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,6 +65,10 @@ class FragmentFriends() : BaseFragment() {
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tabSelected(tab.position)
+
+                val customView = LinearLayout(requireContext())
+                customView.background = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corners)
+                tab.customView = customView
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {

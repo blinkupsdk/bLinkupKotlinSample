@@ -18,10 +18,12 @@
         <attr name="colorDisabledDark" format="reference" />
         <attr name="textColorPrimary" format="reference" />
         <attr name="colorDisabledSecondary" format="reference" />
+        <attr name="colorBackground" format="reference" />
     </declare-styleable>
 
-    <style name="DefaultTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">@color/white</item>
+    <style name="DefaultTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/primaryDark</item>
+        <item name="colorBackground">@color/white</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorDisabledDark">@color/disabledDark</item>
         <item name="textColorPrimary">@color/black</item>

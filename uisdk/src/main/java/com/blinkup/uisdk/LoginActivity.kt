@@ -3,6 +3,9 @@ package com.blinkup.uisdk
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.app.ActionBar
 import com.blinkup.uisdk.base.BaseActivity
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.model.User
@@ -13,17 +16,35 @@ class LoginActivity : BaseActivity() {
         intent.getStringExtra(CLIENT_ID)?.let {
             clientId = it
         }
-        setTheme(intent.getIntExtra(THEME, R.style.DefaultTheme))
+        LoginActivity.theme = intent.getIntExtra(THEME, R.style.DefaultTheme)
+        setTheme(LoginActivity.theme)
         logoId = intent.getIntExtra(LOGO_ID, 0)
 
         setContentView(R.layout.activity_basic)
         Blinkup.init(applicationContext)
+        clientId?.let { Blinkup.setClientId(it) }
 
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container, FragmentEnterPhone())
-            .commit()
+        val actionBar: ActionBar? = supportActionBar
+        actionBar?.title = "Connect" // Set the title of the ActionBar
+
+        if (Blinkup.isLoginRequired()) {
+
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, FragmentEnterPhone())
+                .commit()
+        } else {
+            openMainActivity()
+        }
     }
+
+    private fun openMainActivity() {
+
+        startActivity(MainActivity.createIntent(this, LoginActivity.theme))
+        finish()
+    }
+
 
     companion object {
         fun createIntent(
@@ -46,5 +67,6 @@ class LoginActivity : BaseActivity() {
         internal var user: User? = null
         internal var clientId: String? = null
         internal var logoId: Int = 0
+        internal var theme: Int = R.style.DefaultTheme
     }
 }

@@ -1,5 +1,7 @@
 package com.blinkup.uisdk
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
 import com.blinkup.uisdk.adapter.ViewPagerAdapter
@@ -14,7 +16,8 @@ class MainActivity : BaseActivity(), OnPresenceUpdated {
     private lateinit var viewPager: ViewPager2
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setTheme(intent.getIntExtra(THEME, R.style.DefaultTheme))
+        setContentView(R.layout.activity_sdk_ui_main)
 
         viewPager = findViewById(R.id.view_pager)
         viewPager.offscreenPageLimit = 1
@@ -60,6 +63,17 @@ class MainActivity : BaseActivity(), OnPresenceUpdated {
     override fun onPresenceUpdated() {
         supportFragmentManager.fragments.find { it is FragmentFriends }?.let {
             (it as FragmentFriends).updatePresence()
+        }
+    }
+
+    companion object {
+        private const val THEME: String = "THEME"
+
+        fun createIntent(context: Context, theme: Int): Intent {
+            return Intent(context, MainActivity::class.java).apply {
+                putExtra(THEME, theme)
+            }
+
         }
     }
 }

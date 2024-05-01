@@ -82,8 +82,8 @@ class FragmentEnterCode : BaseFragment() {
 
     private fun openMainActivity() {
         activity?.let {
-            it.finish()
             startActivity(Intent(it, MainActivity::class.java))
+            it.finish()
         }
     }
 
