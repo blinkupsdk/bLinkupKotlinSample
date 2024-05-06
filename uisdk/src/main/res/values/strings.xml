@@ -35,4 +35,13 @@
     <string name="allow_access_to_contacts">Allow Access To Contacts</string>
     <string name="one_time_code_sent_to">One Time Code sent to %s</string>
     <string name="enter_the_code_here_to_login">Enter the code here to login.</string>
+    <string name="change_map">Change Map</string>
+    <string name="back">Back</string>
+    <string name="ok">OK</string>
+    <string name="choose_a_map">Choose a Map</string>
+    <string name="connect_with_your_contacts">Connect with your Contacts</string>
+    <string name="send">Send</string>
+    <string name="send_friend_request">Send Friend Request</string>
+    <string name="do_you_want_to_send_a_friend_request_to">Do you want to send a friend request to %1$s?</string>
+    <string name="request_sent">Request Sent</string>
 </resources>

@@ -22,15 +22,12 @@ class LoginActivity : BaseActivity() {
 
         setContentView(R.layout.activity_basic)
         Blinkup.init(applicationContext)
-        clientId?.let { Blinkup.setClientId(it) }
 
 
         val actionBar: ActionBar? = supportActionBar
         actionBar?.title = "Connect" // Set the title of the ActionBar
 
         if (Blinkup.isLoginRequired()) {
-
-
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, FragmentEnterPhone())
                 .commit()

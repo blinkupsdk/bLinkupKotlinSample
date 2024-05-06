@@ -39,10 +39,12 @@ class FriendsListAdapter(
         }
 
 
-    class ViewHolder(val view: View,
-                     val lifecycleOwner: LifecycleOwner,
-                     val onDeleteOrBlock: (user: UserWithPresence) -> Unit):
-                     RecyclerView.ViewHolder(view) {
+    class ViewHolder(
+        val view: View,
+        val lifecycleOwner: LifecycleOwner,
+        val onDeleteOrBlock: (user: UserWithPresence) -> Unit
+    ) :
+        RecyclerView.ViewHolder(view) {
         private val nameView: TextView = view.findViewById(R.id.name)
         private val userIdView: TextView = view.findViewById(R.id.user_id)
         private val userNameUnderlined: TextView = view.findViewById(R.id.nameUnderlined)
@@ -81,46 +83,66 @@ class FriendsListAdapter(
         fun showOptions(userWithPresence: UserWithPresence) {
             val optionMenu = PopupMenu(view.context, view, Gravity.END)
             optionMenu.inflate(R.menu.menu_items)
-                optionMenu.setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
+            optionMenu.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
 
-                        R.id.unfriend -> {
-                            lifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
-                                try {
-                                    Blinkup.deleteConnection(userWithPresence.connection)
-                                    launch(Dispatchers.Main) {
-                                        Toast.makeText(view.context, "User unfriended", Toast.LENGTH_LONG).show()
-                                        onDeleteOrBlock(userWithPresence)
-                                    }
-                                } catch (e: BlinkupException){
-                                    launch(Dispatchers.Main) {
-                                        Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
-                                        onDeleteOrBlock(userWithPresence)
-                                    }
+                    R.id.unfriend -> {
+                        userWithPresence.connection ?: return@setOnMenuItemClickListener true
+                        lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                            try {
+                                Blinkup.deleteConnection(userWithPresence.connection)
+                                launch(Dispatchers.Main) {
+                                    Toast.makeText(
+                                        view.context,
+                                        "User unfriended",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    onDeleteOrBlock(userWithPresence)
+                                }
+                            } catch (e: BlinkupException) {
+                                launch(Dispatchers.Main) {
+                                    Toast.makeText(
+                                        view.context,
+                                        "Oops! Something went wrong",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    onDeleteOrBlock(userWithPresence)
                                 }
                             }
-                            true
                         }
-                        R.id.block -> {
-                            lifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
-                                try {
-                                    Blinkup.blockUser(userWithPresence.user!!)
-                                    Blinkup.updateConnection(userWithPresence.connection, ConnectionStatus.BLOCKED)
-                                    launch(Dispatchers.Main) {
-                                        Toast.makeText(view.context, "User blocked", Toast.LENGTH_LONG).show()
-                                        onDeleteOrBlock(userWithPresence)
-                                    }
-                                } catch (e: BlinkupException){
-                                    launch(Dispatchers.Main) {
-                                        Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
-                                    }
-                                }
-                            }
-                            true
-                        }
-                        else -> false
+                        true
                     }
+
+                    R.id.block -> {
+                        userWithPresence.connection ?: return@setOnMenuItemClickListener true
+                        lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                            try {
+                                Blinkup.blockUser(userWithPresence.user!!)
+                                Blinkup.updateConnection(
+                                    userWithPresence.connection,
+                                    ConnectionStatus.BLOCKED
+                                )
+                                launch(Dispatchers.Main) {
+                                    Toast.makeText(view.context, "User blocked", Toast.LENGTH_LONG)
+                                        .show()
+                                    onDeleteOrBlock(userWithPresence)
+                                }
+                            } catch (e: BlinkupException) {
+                                launch(Dispatchers.Main) {
+                                    Toast.makeText(
+                                        view.context,
+                                        "Oops! Something went wrong",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+                        }
+                        true
+                    }
+
+                    else -> false
                 }
+            }
 
             optionMenu.show()
         }
@@ -175,7 +197,11 @@ class FriendsListAdapter(
                             adapter = MatchContactsAdapter(contacts)
                         } catch (e: BlinkupException) {
                             launch(Dispatchers.Main) {
-                                Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    view.context,
+                                    "Oops! Something went wrong",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                         }
                     }
@@ -186,7 +212,11 @@ class FriendsListAdapter(
                             adapter = PendingRequestAdapter(requests, getFriends)
                         } catch (e: BlinkupException) {
                             launch(Dispatchers.Main) {
-                                Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    view.context,
+                                    "Oops! Something went wrong",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                         }
                     }
@@ -197,7 +227,11 @@ class FriendsListAdapter(
                             adapter = BlockedListAdapter(blockedUsers, getFriends)
                         } catch (e: BlinkupException) {
                             launch(Dispatchers.Main) {
-                                Toast.makeText(view.context, "Oops! Something went wrong", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    view.context,
+                                    "Oops! Something went wrong",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                         }
                     }
@@ -258,7 +292,7 @@ class FriendsListAdapter(
     }
 
     private fun onDeleteOrBlock(userWithPresence: UserWithPresence) {
-        filteredItems = filteredItems.filterNot {it == userWithPresence}
+        filteredItems = filteredItems.filterNot { it == userWithPresence }
     }
 
     override fun getItemViewType(position: Int): Int {

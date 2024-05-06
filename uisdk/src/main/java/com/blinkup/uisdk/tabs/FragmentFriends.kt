@@ -14,6 +14,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.blinkup.uisdk.FragmentContacts
+import com.blinkup.uisdk.FragmentMapNew
 import com.blinkup.uisdk.LoginActivity
 import com.blinkup.uisdk.R
 import com.blinkup.uisdk.adapter.AbstractAdapter
@@ -35,7 +37,8 @@ class FragmentFriends() : BaseFragment() {
     private lateinit var searchView: SearchView
     private var friendsList: List<UserWithPresence> = emptyList()
     private lateinit var recyclerView: RecyclerView
-    private val adapter: FriendsListAdapter = FriendsListAdapter(emptyList(), ::showLoading, ::hideLoading, ::getFriends)
+    private val adapter: FriendsListAdapter =
+        FriendsListAdapter(emptyList(), ::showLoading, ::hideLoading, ::getFriends)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,15 +63,12 @@ class FragmentFriends() : BaseFragment() {
 
 
         tabLayout = view.findViewById(R.id.tab_layout)
-        tabLayout.addTab(tabLayout.newTab().setText("All"))
-        tabLayout.addTab(tabLayout.newTab().setText("Present"))
+        tabLayout.addTab(tabLayout.newTab().setText("Friends Here"))
+        tabLayout.addTab(tabLayout.newTab().setText("All Friends"))
+        tabLayout.addTab(tabLayout.newTab().setText("Requests"))
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tabSelected(tab.position)
-
-                val customView = LinearLayout(requireContext())
-                customView.background = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corners)
-                tab.customView = customView
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -94,19 +94,47 @@ class FragmentFriends() : BaseFragment() {
                 return false
             }
         })
+
+        searchView.setOnSearchClickListener {
+            tabLayout.visibility = View.GONE
+            searchUsers(null, view, requireActivity())
+
+        }
+        searchView.setOnCloseListener {
+            tabLayout.visibility = View.VISIBLE
+            false
+        }
+
+        view.findViewById<View>(R.id.map_button).setOnClickListener {
+            val fragment = FragmentMapNew()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
+        view.findViewById<View>(R.id.contacts_button).setOnClickListener {
+            val fragment = FragmentContacts()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
         getFriends()
     }
 
     private fun tabSelected(position: Int) = lifecycleScope.launch(Dispatchers.Main) {
         when (position) {
             0 -> {
-                adapter.data = getAllFriends()
-                adapter.filter(searchView.query.toString())
+                adapter.data = getPresentFriends()
             }
 
             1 -> {
-                adapter.data = getPresentFriends()
-                adapter.filter(searchView.query.toString())
+                adapter.data = getAllFriends()
+            }
+
+            2 -> {
+                adapter.data =
+                    friendsList.filter { it.connection?.status == ConnectionStatus.PENDING }
             }
         }
         adapter.notifyDataSetChanged()
@@ -125,16 +153,17 @@ class FragmentFriends() : BaseFragment() {
             } ?: emptyList()
             friendsList = friends
                 .map { connection ->
-                val user = if (connection.targetUser?.id == LoginActivity.user?.id) {
-                    connection.sourceUser
-                } else {
-                    connection.targetUser
+                    val user = if (connection.targetUser?.id == LoginActivity.user?.id) {
+                        connection.sourceUser
+                    } else {
+                        connection.targetUser
+                    }
+                    UserWithPresence(
+                        user,
+                        friendsAtEvent.find { it.user?.id == user?.id }?.isPresent ?: false,
+                        connection
+                    )
                 }
-                UserWithPresence(
-                    user,
-                    friendsAtEvent.find { it.user?.id == user?.id }?.isPresent ?: false,
-                    connection
-                ) }
             tabSelected(tabLayout.selectedTabPosition)
         } catch (e: Exception) {
             showErrorMessage(e.message ?: "Unknown error")
@@ -156,35 +185,33 @@ class FragmentFriends() : BaseFragment() {
 
         var users: List<User>
 
-        val dialogBuilder = AlertDialog.Builder(view.context)
-        val layout = LinearLayout(view.context)
-        layout.orientation = LinearLayout.VERTICAL
-
         val searchRecyclerView = RecyclerView(view.context)
 
         lifecycleScope.launch(Dispatchers.IO) {
 
-            users = Blinkup.findUsers(query)
-            val searchAdapter = SearchUsersAdapter(users, ::showLoading, ::hideLoading)
+            users = query?.let { Blinkup.findUsers(query) } ?: emptyList()
+//            val searchAdapter = SearchUsersAdapter(users, ::showLoading, ::hideLoading)
 
             launch(Dispatchers.Main) {
 
-                searchAdapter.lifecycleOwner = lifecycleOwner
-
-                searchRecyclerView.adapter = searchAdapter
-                searchRecyclerView.layoutManager = LinearLayoutManager(view.context)
-
-                layout.addView(searchRecyclerView)
-
-                dialogBuilder.setView(layout)
-                dialogBuilder.setTitle("Searched Users")
-
-                dialogBuilder.setNegativeButton("Close")
-                { dialog, _ ->
-                    dialog.cancel()
-                }
-
-                dialogBuilder.create().show()
+                adapter.data = users.map { UserWithPresence(it, false, null) }
+                adapter.notifyDataSetChanged()
+//                searchAdapter.lifecycleOwner = lifecycleOwner
+//
+//                searchRecyclerView.adapter = searchAdapter
+//                searchRecyclerView.layoutManager = LinearLayoutManager(view.context)
+//
+//                layout.addView(searchRecyclerView)
+//
+//                dialogBuilder.setView(layout)
+//                dialogBuilder.setTitle("Searched Users")
+//
+//                dialogBuilder.setNegativeButton("Close")
+//                { dialog, _ ->
+//                    dialog.cancel()
+//                }
+//
+//                dialogBuilder.create().show()
             }
 
         }

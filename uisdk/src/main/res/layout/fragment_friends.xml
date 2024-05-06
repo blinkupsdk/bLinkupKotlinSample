@@ -17,6 +17,7 @@
 
 
         <LinearLayout
+            android:id="@+id/map_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -42,6 +43,7 @@
 
 
         <LinearLayout
+            android:id="@+id/contacts_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
@@ -91,20 +93,13 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/search_bar"
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:background="@drawable/tab_button_bg" />
-
-    </LinearLayout>
+        android:layout_height="36dp"
+        android:layout_marginVertical="10dp"
+        android:background="@drawable/tab_button_bg" />
 
     <FrameLayout
         android:id="@+id/tab_layout_container"
@@ -115,13 +110,14 @@
         android:paddingVertical="3dp">
 
         <com.google.android.material.tabs.TabLayout
-            android:background="@drawable/tab_button_bg"
             android:id="@+id/tab_layout"
             style="@style/MyCustomTabLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
+            android:layout_height="28dp"
+            android:background="@drawable/tab_button_bg"
+            app:tabBackground="@drawable/tab_background_selector"
             app:tabGravity="fill"
+            app:tabIndicator="@null"
             app:tabMode="fixed" />
     </FrameLayout>
 

@@ -30,7 +30,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun showSnackbar(message: String, color: Int) =
         lifecycleScope.launch(Dispatchers.Main) {
-            findViewById<View>(R.id.container)?.let {
+            findViewById<View>(R.id.root)?.let {
                 val snackbar = Snackbar.make(it, message, Snackbar.LENGTH_SHORT)
                 snackbar.view.setBackgroundColor(color)
                 snackbar.show()
