@@ -1,14 +1,10 @@
 package com.blinkup.uisdk.tabs
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,14 +14,11 @@ import com.blinkup.uisdk.FragmentContacts
 import com.blinkup.uisdk.FragmentMapNew
 import com.blinkup.uisdk.LoginActivity
 import com.blinkup.uisdk.R
-import com.blinkup.uisdk.adapter.AbstractAdapter
 import com.blinkup.uisdk.adapter.FriendsListAdapter
-import com.blinkup.uisdk.adapter.SearchUsersAdapter
 import com.blinkup.uisdk.base.BaseFragment
 import com.blinkup.uisdk.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.model.ConnectionStatus
-import com.blinkupapp.sdk.data.model.ContactResult
 import com.blinkupapp.sdk.data.model.User
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Dispatchers
@@ -37,8 +30,9 @@ class FragmentFriends() : BaseFragment() {
     private lateinit var searchView: SearchView
     private var friendsList: List<UserWithPresence> = emptyList()
     private lateinit var recyclerView: RecyclerView
-    private val adapter: FriendsListAdapter =
+    private val friendsAdapter: FriendsListAdapter =
         FriendsListAdapter(emptyList(), ::showLoading, ::hideLoading, ::getFriends)
+    private val requestsAdapter: RequestsListAdapter = RequestsListAdapter(emptyList(), ::showLoading, ::hideLoading, ::getFriends)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,11 +49,11 @@ class FragmentFriends() : BaseFragment() {
             getFriends()
         }
 
-        adapter.lifecycleOwner = requireActivity()
+        friendsAdapter.lifecycleOwner = requireActivity()
 
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = adapter
+        recyclerView.adapter = friendsAdapter
 
 
         tabLayout = view.findViewById(R.id.tab_layout)
@@ -90,7 +84,7 @@ class FragmentFriends() : BaseFragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter(newText)
+                friendsAdapter.filter(newText)
                 return false
             }
         })
@@ -125,19 +119,21 @@ class FragmentFriends() : BaseFragment() {
     private fun tabSelected(position: Int) = lifecycleScope.launch(Dispatchers.Main) {
         when (position) {
             0 -> {
-                adapter.data = getPresentFriends()
+                friendsAdapter.data = getPresentFriends()
+                friendsAdapter.notifyDataSetChanged()
             }
 
             1 -> {
-                adapter.data = getAllFriends()
+                friendsAdapter.data = getAllFriends()
+                friendsAdapter.notifyDataSetChanged()
             }
 
             2 -> {
-                adapter.data =
+                friendsAdapter.data =
                     friendsList.filter { it.connection?.status == ConnectionStatus.PENDING }
             }
         }
-        adapter.notifyDataSetChanged()
+
     }
 
     private fun getFriends() = lifecycleScope.launch(Dispatchers.IO) {
@@ -194,8 +190,8 @@ class FragmentFriends() : BaseFragment() {
 
             launch(Dispatchers.Main) {
 
-                adapter.data = users.map { UserWithPresence(it, false, null) }
-                adapter.notifyDataSetChanged()
+                friendsAdapter.data = users.map { UserWithPresence(it, false, null) }
+                friendsAdapter.notifyDataSetChanged()
 //                searchAdapter.lifecycleOwner = lifecycleOwner
 //
 //                searchRecyclerView.adapter = searchAdapter
