@@ -15,9 +15,11 @@ import com.blinkup.uisdk.FragmentMapNew
 import com.blinkup.uisdk.LoginActivity
 import com.blinkup.uisdk.R
 import com.blinkup.uisdk.adapter.FriendsListAdapter
+import com.blinkup.uisdk.adapter.RequestsListAdapter
 import com.blinkup.uisdk.base.BaseFragment
 import com.blinkup.uisdk.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
+import com.blinkupapp.sdk.data.model.ConnectionRequest
 import com.blinkupapp.sdk.data.model.ConnectionStatus
 import com.blinkupapp.sdk.data.model.User
 import com.google.android.material.tabs.TabLayout
@@ -25,14 +27,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FragmentFriends() : BaseFragment() {
+
     private lateinit var tabLayout: TabLayout
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var searchView: SearchView
     private var friendsList: List<UserWithPresence> = emptyList()
+    private var sentRequests: List<ConnectionRequest> = emptyList()
+    private var pendingRequests: List<ConnectionRequest> = emptyList()
     private lateinit var recyclerView: RecyclerView
     private val friendsAdapter: FriendsListAdapter =
-        FriendsListAdapter(emptyList(), ::showLoading, ::hideLoading, ::getFriends)
-    private val requestsAdapter: RequestsListAdapter = RequestsListAdapter(emptyList(), ::showLoading, ::hideLoading, ::getFriends)
+        FriendsListAdapter(emptyList(), ::showLoading, ::hideLoading)
+    private val requestsAdapter: RequestsListAdapter =
+        RequestsListAdapter(emptyList(), emptyList(), ::showLoading, ::hideLoading)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +53,7 @@ class FragmentFriends() : BaseFragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         swipeRefreshLayout.setOnRefreshListener {
             getFriends()
+            loadRequests()
         }
 
         friendsAdapter.lifecycleOwner = requireActivity()
@@ -114,27 +121,47 @@ class FragmentFriends() : BaseFragment() {
                 .commit()
         }
         getFriends()
+        loadRequests()
     }
 
     private fun tabSelected(position: Int) = lifecycleScope.launch(Dispatchers.Main) {
         when (position) {
             0 -> {
+                recyclerView.adapter = friendsAdapter
                 friendsAdapter.data = getPresentFriends()
                 friendsAdapter.notifyDataSetChanged()
             }
 
             1 -> {
+                recyclerView.adapter = friendsAdapter
                 friendsAdapter.data = getAllFriends()
                 friendsAdapter.notifyDataSetChanged()
             }
 
             2 -> {
-                friendsAdapter.data =
-                    friendsList.filter { it.connection?.status == ConnectionStatus.PENDING }
+                recyclerView.adapter = requestsAdapter
+                requestsAdapter.sentRequests = sentRequests
+                requestsAdapter.incomingRequests = pendingRequests
+                requestsAdapter.notifyDataSetChanged()
             }
         }
 
     }
+
+    private fun loadRequests() = lifecycleScope.launch {
+        try {
+            showLoading()
+            val allRequests = Blinkup.getFriendRequests()
+            sentRequests = allRequests.filter { it.sourceUser?.id == LoginActivity.user?.id }
+            pendingRequests = allRequests.filter { it.targetUser?.id == LoginActivity.user?.id }
+        } catch (e: Exception) {
+            showErrorMessage(e.message ?: "Unknown error")
+
+        } finally {
+            hideLoading()
+        }
+    }
+
 
     private fun getFriends() = lifecycleScope.launch(Dispatchers.IO) {
         try {
