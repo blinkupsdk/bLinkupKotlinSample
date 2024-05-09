@@ -16,12 +16,12 @@ import com.blinkup.uisdk.LoginActivity
 import com.blinkup.uisdk.R
 import com.blinkup.uisdk.adapter.FriendsListAdapter
 import com.blinkup.uisdk.adapter.RequestsListAdapter
+import com.blinkup.uisdk.adapter.SearchUsersAdapter2
 import com.blinkup.uisdk.base.BaseFragment
 import com.blinkup.uisdk.data.UserWithPresence
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.model.ConnectionRequest
 import com.blinkupapp.sdk.data.model.ConnectionStatus
-import com.blinkupapp.sdk.data.model.User
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,7 +38,9 @@ class FragmentFriends() : BaseFragment() {
     private val friendsAdapter: FriendsListAdapter =
         FriendsListAdapter(emptyList(), ::showLoading, ::hideLoading)
     private val requestsAdapter: RequestsListAdapter =
-        RequestsListAdapter(emptyList(), emptyList(), ::showLoading, ::hideLoading)
+        RequestsListAdapter(emptyList(), emptyList(), ::showLoading, ::hideLoading, ::reloadData)
+    private val searchAdapter =
+        SearchUsersAdapter2(emptyList(), emptyList(), ::showLoading, ::hideLoading)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,11 +54,12 @@ class FragmentFriends() : BaseFragment() {
 
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         swipeRefreshLayout.setOnRefreshListener {
-            getFriends()
-            loadRequests()
+            reloadData()
         }
 
         friendsAdapter.lifecycleOwner = requireActivity()
+        requestsAdapter.lifecycleOwner = requireActivity()
+        searchAdapter.lifecycleOwner = requireActivity()
 
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -84,25 +87,24 @@ class FragmentFriends() : BaseFragment() {
         searchView.setOnQueryTextListener(object :
             SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-
                 searchUsers(query, view, requireActivity())
 
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                friendsAdapter.filter(newText)
                 return false
             }
         })
 
         searchView.setOnSearchClickListener {
             tabLayout.visibility = View.GONE
-            searchUsers(null, view, requireActivity())
+            searchUsers(searchView.query?.toString(), view, requireActivity())
 
         }
         searchView.setOnCloseListener {
             tabLayout.visibility = View.VISIBLE
+            tabSelected(tabLayout.selectedTabPosition)
             false
         }
 
@@ -120,6 +122,10 @@ class FragmentFriends() : BaseFragment() {
                 .addToBackStack(null)
                 .commit()
         }
+        reloadData()
+    }
+
+    private fun reloadData() {
         getFriends()
         loadRequests()
     }
@@ -152,6 +158,7 @@ class FragmentFriends() : BaseFragment() {
         try {
             showLoading()
             val allRequests = Blinkup.getFriendRequests()
+            val sent = Blinkup.getFriendList()
             sentRequests = allRequests.filter { it.sourceUser?.id == LoginActivity.user?.id }
             pendingRequests = allRequests.filter { it.targetUser?.id == LoginActivity.user?.id }
         } catch (e: Exception) {
@@ -205,43 +212,31 @@ class FragmentFriends() : BaseFragment() {
     }
 
     private fun searchUsers(query: String?, view: View, lifecycleOwner: LifecycleOwner) {
-
-        var users: List<User>
-
-        val searchRecyclerView = RecyclerView(view.context)
-
-        lifecycleScope.launch(Dispatchers.IO) {
-
-            users = query?.let { Blinkup.findUsers(query) } ?: emptyList()
-//            val searchAdapter = SearchUsersAdapter(users, ::showLoading, ::hideLoading)
-
-            launch(Dispatchers.Main) {
-
-                friendsAdapter.data = users.map { UserWithPresence(it, false, null) }
-                friendsAdapter.notifyDataSetChanged()
-//                searchAdapter.lifecycleOwner = lifecycleOwner
-//
-//                searchRecyclerView.adapter = searchAdapter
-//                searchRecyclerView.layoutManager = LinearLayoutManager(view.context)
-//
-//                layout.addView(searchRecyclerView)
-//
-//                dialogBuilder.setView(layout)
-//                dialogBuilder.setTitle("Searched Users")
-//
-//                dialogBuilder.setNegativeButton("Close")
-//                { dialog, _ ->
-//                    dialog.cancel()
-//                }
-//
-//                dialogBuilder.create().show()
-            }
-
+        if (query.isNullOrEmpty()) {
+            return
         }
-    }
-
-    fun updatePresence() {
-        getFriends()
+        recyclerView.adapter = searchAdapter
+        searchAdapter.lifecycleOwner = lifecycleOwner
+        lifecycleOwner.lifecycleScope.launch {
+            try {
+                showLoading()
+                val users = Blinkup.findUsers(query)
+                searchAdapter.otherResults = users.map { user ->
+                    UserWithPresence(
+                        user,
+                        false,
+                        null
+                    )
+                }
+                searchAdapter.friendsResults =
+                    friendsList.filter { it.user?.name?.contains(query, true) == true }
+                searchAdapter.notifyDataSetChanged()
+            } catch (e: Exception) {
+                showErrorMessage(e.message ?: "Unknown error")
+            } finally {
+                hideLoading()
+            }
+        }
     }
 
 }

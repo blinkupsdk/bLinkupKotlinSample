@@ -29,6 +29,7 @@ class FragmentEnterCode : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<ImageView>(R.id.logo).setImageResource(LoginActivity.logoId)
+        view.findViewById<TextView>(R.id.customerName).text = LoginActivity.customerName
 
         view.findViewById<View>(R.id.submit_button).setOnClickListener {
             showLoading()

@@ -1,30 +1,14 @@
 package com.blinkup.uisdk.adapter
 
-import android.app.AlertDialog
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.PopupMenu
 import android.widget.TextView
-import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.uisdk.R
 import com.blinkup.uisdk.data.UserWithPresence
-import com.blinkupapp.sdk.Blinkup
-import com.blinkupapp.sdk.data.exception.BlinkupException
-import com.blinkupapp.sdk.data.model.Block
-import com.blinkupapp.sdk.data.model.ConnectionRequest
-import com.blinkupapp.sdk.data.model.ConnectionStatus
-import com.blinkupapp.sdk.data.model.ContactResult
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class FriendsListAdapter(
     var data: List<UserWithPresence>,
@@ -41,7 +25,6 @@ class FriendsListAdapter(
     class ViewHolder(
         val view: View,
         val lifecycleOwner: LifecycleOwner,
-        val onDeleteOrBlock: (user: UserWithPresence) -> Unit
     ) :
         RecyclerView.ViewHolder(view) {
         private val nameView: TextView = view.findViewById(R.id.name)
@@ -67,12 +50,8 @@ class FriendsListAdapter(
         val view =
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.user_list_item, parent, false)
-        return ViewHolder(view, lifecycleOwner, ::onDeleteOrBlock)
+        return ViewHolder(view, lifecycleOwner)
 
-    }
-
-    private fun onDeleteOrBlock(userWithPresence: UserWithPresence) {
-        filteredItems = filteredItems.filterNot { it == userWithPresence }
     }
 
     override fun getItemCount(): Int {

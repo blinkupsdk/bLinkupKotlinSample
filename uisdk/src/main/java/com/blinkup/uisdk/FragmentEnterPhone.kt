@@ -13,6 +13,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.permissionx.guolindev.PermissionX
 import android.Manifest
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +31,7 @@ class FragmentEnterPhone : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<ImageView>(R.id.logo).setImageResource(LoginActivity.logoId)
+        view.findViewById<TextView>(R.id.customerName).text = LoginActivity.customerName
 
         PermissionX.init(this)
             .permissions(

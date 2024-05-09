@@ -11,7 +11,7 @@ import com.blinkup.uisdk.utils.findCurrentFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class MainActivity : BaseActivity(), OnPresenceUpdated {
+class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(intent.getIntExtra(THEME, R.style.DefaultTheme))
@@ -32,12 +32,6 @@ class MainActivity : BaseActivity(), OnPresenceUpdated {
 //            }
 //        }
 //    }
-
-    override fun onPresenceUpdated() {
-        supportFragmentManager.fragments.find { it is FragmentFriends }?.let {
-            (it as FragmentFriends).updatePresence()
-        }
-    }
 
     companion object {
         private const val THEME: String = "THEME"

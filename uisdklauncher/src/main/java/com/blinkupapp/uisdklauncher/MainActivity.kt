@@ -20,16 +20,26 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.launch_default_button).setOnClickListener {
-            BlinkupUISDK.launch(this, "Ph1bFOq1moKmm0in2lxsfZ5v-No-Og6wWxEKM-6F1OM=")
+            BlinkupUISDK.launch(
+                this,
+                "Ph1bFOq1moKmm0in2lxsfZ5v-No-Og6wWxEKM-6F1OM=",
+                "Milwaukee Bucks"
+            )
         }
         findViewById<Button>(R.id.launch_dark_red_button).setOnClickListener {
-            BlinkupUISDK.launch(this, "Ph1bFOq1moKmm0in2lxsfZ5v-No-Og6wWxEKM-6F1OM=", R.style.DarkRedTheme)
+            BlinkupUISDK.launch(
+                this,
+                "Ph1bFOq1moKmm0in2lxsfZ5v-No-Og6wWxEKM-6F1OM=",
+                "Milwaukee Bucks",
+                R.style.DarkRedTheme
+            )
         }
 
         findViewById<Button>(R.id.launch_green).setOnClickListener {
             BlinkupUISDK.launch(
                 this,
                 "Ph1bFOq1moKmm0in2lxsfZ5v-No-Og6wWxEKM-6F1OM=",
+                "Milwaukee Bucks",
                 R.style.DarkGreenTheme,
                 R.drawable.client_logo
             )

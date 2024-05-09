@@ -5,16 +5,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.blinkup.uisdk.R
+import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.model.ConnectionRequest
+import kotlinx.coroutines.launch
 
 class RequestsListAdapter(
     var incomingRequests: List<ConnectionRequest>,
     var sentRequests: List<ConnectionRequest>,
     val showLoading: () -> Unit,
     val hideLoading: () -> Unit,
+    val reloadData: () -> Unit,
 ) : AbstractAdapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -24,7 +29,10 @@ class RequestsListAdapter(
 
     class ItemViewHolder(
         val view: View,
-        val lifecycleOwner: LifecycleOwner
+        val lifecycleOwner: LifecycleOwner,
+        val showLoading: () -> Unit,
+        val hideLoading: () -> Unit,
+        val reloadData: () -> Unit,
     ) : RecyclerView.ViewHolder(view) {
         private var username: TextView? = null
         private var name: TextView? = null
@@ -44,6 +52,70 @@ class RequestsListAdapter(
             reply?.visibility = if (isIncoming) View.VISIBLE else View.GONE
             delete?.visibility = if (isIncoming) View.GONE else View.VISIBLE
 
+
+            view.setOnClickListener {
+                if (isIncoming) {
+                    val builder = AlertDialog.Builder(view.context)
+                    builder.setTitle("Friend Request")
+                    builder.setMessage("Do you want to accept or deny friend request?")
+                    builder.setPositiveButton("Accept") { dialog, _ ->
+                        lifecycleOwner.lifecycleScope.launch {
+                            showLoading()
+                            try {
+                                Blinkup.acceptFriendRequest(request)
+                            } catch (e: Exception) {
+                                hideLoading()
+                                return@launch
+                            }
+                            hideLoading()
+                            dialog.dismiss()
+                            reloadData()
+                        }
+                    }
+                    builder.setNegativeButton("Deny") { dialog, _ ->
+                        lifecycleOwner.lifecycleScope.launch {
+                            showLoading()
+                            try {
+                                Blinkup.denyFriendRequest(request)
+                            } catch (e: Exception) {
+                                hideLoading()
+                                return@launch
+                            }
+                            hideLoading()
+                            dialog.dismiss()
+                            reloadData()
+                        }
+                    }
+                    builder.setNeutralButton("Cancel") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    builder.create().show()
+                } else {
+                    val builder = AlertDialog.Builder(view.context)
+                    builder.setTitle("Are you sure?")
+                    builder.setMessage("Do you want to cancel this sent friend request?")
+                    builder.setPositiveButton("Delete") { dialog, _ ->
+                        lifecycleOwner.lifecycleScope.launch {
+                            showLoading()
+                            try {
+                                Blinkup.denyFriendRequest(request)
+                            } catch (e: Exception) {
+                                hideLoading()
+                                return@launch
+                            }
+                            hideLoading()
+                            dialog.dismiss()
+                            reloadData()
+                        }
+                    }
+                    builder.setNegativeButton("Cancel") { dialog, _ ->
+                        // Handle No button click here
+                        dialog.dismiss()
+                    }
+                    builder.create().show()
+
+                }
+            }
         }
     }
 
@@ -59,7 +131,7 @@ class RequestsListAdapter(
         } else {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.request_list_item, parent, false)
-            ItemViewHolder(view, lifecycleOwner)
+            ItemViewHolder(view, lifecycleOwner, showLoading, hideLoading, reloadData)
         }
     }
 

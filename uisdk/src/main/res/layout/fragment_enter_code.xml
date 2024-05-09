@@ -15,6 +15,18 @@
         tools:src="@drawable/blinkup_logo" />
 
     <TextView
+        android:id="@+id/customerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginVertical="16dp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        tools:text="Bucks" />
+
+    <TextView
         android:id="@+id/code_sent_to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,19 +49,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/enter_sms_code"
+        android:textColorHint="?attr/colorDisabledDark"
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
         app:cursorColor="?attr/textColorPrimary"
-        android:textColorHint="?attr/colorDisabledDark"
         app:hintTextColor="?attr/colorDisabledDark">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/sms_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
             android:background="@drawable/secondary_disabled_border"
-            android:textColor="?attr/textColorPrimary"/>
+            android:inputType="number"
+            android:textColor="?attr/textColorPrimary" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

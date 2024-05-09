@@ -6,11 +6,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBar
+import androidx.lifecycle.lifecycleScope
 import com.blinkup.uisdk.base.BaseActivity
 import com.blinkupapp.sdk.Blinkup
 import com.blinkupapp.sdk.data.model.User
+import kotlinx.coroutines.launch
 
 class LoginActivity : BaseActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         intent.getStringExtra(CLIENT_ID)?.let {
@@ -19,6 +22,7 @@ class LoginActivity : BaseActivity() {
         LoginActivity.theme = intent.getIntExtra(THEME, R.style.DefaultTheme)
         setTheme(LoginActivity.theme)
         logoId = intent.getIntExtra(LOGO_ID, 0)
+        customerName = intent.getStringExtra(CUSTOMER_NAME) ?: ""
 
         setContentView(R.layout.activity_basic)
         Blinkup.init(applicationContext)
@@ -32,7 +36,17 @@ class LoginActivity : BaseActivity() {
                 .replace(R.id.container, FragmentEnterPhone())
                 .commit()
         } else {
-            openMainActivity()
+            showLoading()
+            lifecycleScope.launch {
+                try {
+                    user = Blinkup.checkSessionAndLogin()
+                    openMainActivity()
+                } catch (e: Exception) {
+                    showErrorMessage(e.message ?: "Something went wrong")
+                } finally {
+                    hideLoading()
+                }
+            }
         }
     }
 
@@ -48,12 +62,14 @@ class LoginActivity : BaseActivity() {
             context: Context,
             clientId: String,
             theme: Int = R.style.DefaultTheme,
-            logoId: Int
+            logoId: Int,
+            customerName: String
         ): Intent {
             return Intent(context, LoginActivity::class.java).apply {
                 putExtra(CLIENT_ID, clientId)
                 putExtra(THEME, theme)
                 putExtra(LOGO_ID, logoId)
+                putExtra(CUSTOMER_NAME, customerName)
             }
         }
 
@@ -61,9 +77,11 @@ class LoginActivity : BaseActivity() {
         private const val CLIENT_ID = "CLIENT_ID"
         private const val THEME = "THEME"
         private const val LOGO_ID = "LOGO_ID"
+        private const val CUSTOMER_NAME: String = "CUSTOMER_NAME"
         internal var user: User? = null
         internal var clientId: String? = null
         internal var logoId: Int = 0
         internal var theme: Int = R.style.DefaultTheme
+        internal var customerName: String = ""
     }
 }
