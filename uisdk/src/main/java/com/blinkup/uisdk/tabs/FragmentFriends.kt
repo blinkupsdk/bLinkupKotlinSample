@@ -32,7 +32,7 @@ class FragmentFriends() : BaseFragment() {
     private lateinit var recyclerView: RecyclerView
     private val friendsAdapter: FriendsListAdapter =
         FriendsListAdapter(emptyList(), ::showLoading, ::hideLoading, ::getFriends)
-    private val requestsAdapter: RequestsListAdapter = RequestsListAdapter(emptyList(), ::showLoading, ::hideLoading, ::getFriends)
+//    private val requestsAdapter: RequestsListAdapter = RequestsListAdapter(emptyList(), ::showLoading, ::hideLoading, ::getFriends)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -108,6 +108,13 @@ class FragmentFriends() : BaseFragment() {
         }
         view.findViewById<View>(R.id.contacts_button).setOnClickListener {
             val fragment = FragmentContacts()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
+        view.findViewById<View>(R.id.settings_button).setOnClickListener {
+            val fragment = FragmentSettings()
             parentFragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .addToBackStack(null)

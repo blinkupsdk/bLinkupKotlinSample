@@ -44,4 +44,9 @@
     <string name="send_friend_request">Send Friend Request</string>
     <string name="do_you_want_to_send_a_friend_request_to">Do you want to send a friend request to %1$s?</string>
     <string name="request_sent">Request Sent</string>
+    <string name="profile">Profile</string>
+    <string name="save">Save</string>
+    <string name="adjust_permissions">Adjust permissions</string>
+    <string name="system_settings">System settings</string>
+    <string name="manage_blocked_users">Manage blocked users</string>
 </resources>
