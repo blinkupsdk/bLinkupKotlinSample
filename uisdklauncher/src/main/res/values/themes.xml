@@ -24,4 +24,9 @@
         <item name="textColorPrimary">@color/darkGreenText</item>
         <item name="colorDisabledSecondary">@color/darkGreenDisabledSecondary</item>
     </style>
+
+    <style name="DarkGreenTheme" parent="DefaultTheme">
+        <item name="primaryColor">@color/darkGreen</item>
+        <item name="secondaryColor">@color/white</item>
+    </style>
 </resources>
