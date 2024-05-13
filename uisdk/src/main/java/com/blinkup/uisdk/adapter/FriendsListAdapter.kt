@@ -224,7 +224,7 @@ class FriendsListAdapter(
                     DialogType.BLOCKED_USERS -> {
                         try {
                             blockedUsers = Blinkup.getBlocks()
-                            adapter = BlockedListAdapter(blockedUsers, getFriends)
+                            adapter = BlockedListAdapter(blockedUsers, showLoading, hideLoading)
                         } catch (e: BlinkupException) {
                             launch(Dispatchers.Main) {
                                 Toast.makeText(
