@@ -2,32 +2,13 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="MainActivity">
-        <State />
-      </entry>
-      <entry key="blinkupnewmodule">
-        <State />
-      </entry>
       <entry key="clientsampleapp">
         <State />
       </entry>
-      <entry key="myapplication">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\User\.android\avd\Pixel_3a_API_34_extension_level_7_x86_64.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-09-29T16:16:03.616558Z" />
-        </State>
-      </entry>
       <entry key="sampleApp">
+        <State />
+      </entry>
+      <entry key="uisdklauncher">
         <State />
       </entry>
     </value>
