@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="darkRed">#8B0000</color>
+    <color name="darkRedDisabled">#C19393</color>
+    <color name="darkRedText">#470000</color>
+    <color name="darkRedDisabledSecondary">#C39A9A</color>
+
+    <color name="darkGreen">#00471B</color>
+    <color name="darkGreenDisabled">#8DB89D</color>
+    <color name="darkGreenText">#00230D</color>
+    <color name="darkGreenDisabledSecondary">#ADCCB9</color>
+</resources>
