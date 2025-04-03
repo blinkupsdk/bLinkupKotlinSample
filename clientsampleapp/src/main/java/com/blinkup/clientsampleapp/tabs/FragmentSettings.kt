@@ -52,7 +52,7 @@ class FragmentSettings : BaseFragment() {
             dialogBuilder.setPositiveButton("OK") { dialog, _ ->
                 val newName = editName.text.toString()
                 lifecycleScope.launch {
-                    App.user = Blinkup.updateUser(newName, App.user?.emailAddress)
+                    App.user = Blinkup.updateUser(newName, App.user?.phoneNumber)
                     launch(Dispatchers.Main) {
                         view.findViewById<TextView>(R.id.account_name).text = App.user?.name
                     }

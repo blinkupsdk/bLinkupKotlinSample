@@ -176,9 +176,9 @@ class EventsListAdapter(
                 lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
 
-                        var eventList = Blinkup.getEvents()
+                        var eventList = Blinkup.getEventsWithPresence()
 
-                        val adapter = DevDetailsAdapter(eventList, data)
+                        val adapter = DevDetailsAdapter(eventList.mapNotNull{ it.place }, data)
 
                         launch(Dispatchers.Main) {
 
@@ -290,12 +290,7 @@ class EventsListAdapter(
     fun updateData() {
 
         lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-            val newEventList = Blinkup.getEvents().map {
-                Presence(
-                    place = it,
-                    isPresent = Blinkup.isUserAtEvent(it)
-                )
-            }
+            val newEventList = Blinkup.getEventsWithPresence()
             data = newEventList
 
             hideLoading()

@@ -89,13 +89,7 @@ class FragmentPresence : BaseFragment() {
     private fun getEvents() = lifecycleScope.launch(Dispatchers.IO) {
         try {
             showLoading()
-            val events = Blinkup.getEvents()
-            eventsList = events.map {
-                Presence(
-                    place = it,
-                    isPresent = Blinkup.isUserAtEvent(it),
-                )
-            }
+            eventsList = Blinkup.getEventsWithPresence()
             tabSelected(tabLayout.selectedTabPosition)
         } catch (e: Exception) {
             showErrorMessage(e.message ?: "Unknown error")

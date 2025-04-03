@@ -49,7 +49,7 @@ class FragmentMap : BaseFragment() {
     private fun getPlaces() = lifecycleScope.launch(Dispatchers.IO) {
         try {
             showLoading()
-            placesList = Blinkup.getEvents()
+            placesList = Blinkup.getEventsWithPresence().mapNotNull { it.place }
             withContext(Dispatchers.Main) {
                 adapter.data = placesList
             }

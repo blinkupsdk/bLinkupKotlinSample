@@ -113,8 +113,9 @@ class FragmentFriends() : BaseFragment() {
             val friends = Blinkup.getFriendList().filterNot {
                 it.targetUser?.name == null || it.sourceUser?.name == null || it.status == ConnectionStatus.BLOCKED
             }
-            val events = Blinkup.getEvents()
-            val currentEvent = events.find { Blinkup.isUserAtEvent(it) }
+            val events = Blinkup.getEventsWithPresence()
+            val currentEvent = events.firstOrNull { it.isPresent == true }?.place
+            Blinkup.getFriendsAtMyEvents()
             val friendsAtEvent = currentEvent?.let {
                 Blinkup.getUsersAtEvent(it)
             } ?: emptyList()
@@ -132,6 +133,7 @@ class FragmentFriends() : BaseFragment() {
                 ) }
             tabSelected(tabLayout.selectedTabPosition)
         } catch (e: Exception) {
+            e.printStackTrace()
             showErrorMessage(e.message ?: "Unknown error")
         } finally {
             hideLoading()
